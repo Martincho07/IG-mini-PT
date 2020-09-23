@@ -9,5 +9,3 @@
 #pragma once
 #include "coordinate.hpp"
 #include <iostream>
-
-using namespace std;

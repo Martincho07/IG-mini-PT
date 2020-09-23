@@ -5,6 +5,7 @@
  * Autor:      Fernando Peña (NIA: 756012), Jose Daniel Subias Sarrato(NIA: 759533)
  * Fecha:      1/5/2020
  * Asignatura: Informática Gráfica, curso 2020-2021
+ * Coms:
  *
  **********************************************************************************/
 
@@ -12,49 +13,53 @@
 #include "coordinate.hpp"
 
 #include <iostream>
+#include <cmath>
+#include <assert.h>
 
-using namespace std;
+HCoord createPoint(float x, float y, float z){
+    return {{x, y, z, 1.0f}};
+};
 
-// 1
-HCoordinate c = createPoint(1, 2, 3);
+HCoord createDirection( float x, float y, float z) {
+    return {{x, y, z, 0.0f}};
+};
 
-// 2
-HCoordinate c
-createPoint(c, 1, 2, 3);
+HCoord HCoord::operator+(const HCoord &right) const {
 
-// 3
-HCoordinate c
-c.createPoint(1, 2, 3);
+    assert (w == 0 || right.w == 0);
 
+    return {{x + right.x, y + right.y, z + right.z, w + right.w}};
+};
 
-// operaciones
-HCoordinate c = a * b;
+HCoord HCoord::operator-(const HCoord &right) const {
 
+    assert (w != 0 || right.w == 0);
+    return {{x - right.x, y - right.y, z - right.z, w - right.w}};
+};
 
-HCoordinate operator*(HCoordinate &hc1, HCoordinate &hc2) {
-    // operaciones
-    return
+HCoord HCoord::operator*(const float right) const {
+    assert(w == 0);
+    return {{x * right, y * right, z * right, w * right}};
+ };
+
+HCoord HCoord::operator/(const float right) const {
+    assert(w == 0);
+    return {{x / right, y / right, z / right, w / right}};
 }
 
-HCoordinate createPoint(float x, float y, float z) {
-    HCoordinate hc;
-    hc.c[0] = x;
-    hc.c[1] = y;
-    hc.c[2] = z;
-    hc.c[3] = 1;
-    return hc;
+float mod(const HCoord hc) {
+    assert(hc.w == 0);
+    return sqrt(hc.x + hc.y + hc.z);
 };
 
-void createPoint(HCoordinate &hc, float x, float y, float z) {
-    hc.c[0] = x;
-    hc.c[1] = y;
-    hc.c[2] = z;
-    hc.c[3] = 1;
+float dot(const HCoord &a, const HCoord &b) {
+   assert (a.w == 0 && b.w == 0);
+    return (a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.w * b.w);
 };
 
-void createDirection(HCoordinate &hc, float x, float y, float z) {
-    hc.c[0] = x;
-    hc.c[1] = y;
-    hc.c[2] = z;
-    hc.c[3] = 0;
+HCoord cross(const HCoord &a, const HCoord &b) {
+    assert (a.w == 0 && b.w == 0);
+    return createDirection(a.y * b.z - a.z * b.y,
+                           a.z * b.x - a.x * b.z,
+                           a.x * b.y - a.y * b.x);
 };
