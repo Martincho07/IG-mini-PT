@@ -1,24 +1,36 @@
 /*********************************************************************************
- * Biblioteca
+ * Representation of homogeneous coordinates
  *
- * Fichero:    coordinate.hpp
- * Autor:      Fernando Peña (NIA: 756012), Jose Daniel Subias Sarrato(NIA: 759533)
- * Fecha:      22/10/2020
- * Asignatura: Informática Gráfica, curso 2020-2021
- * Coms:
- *
+ * File: coordinate.hpp
+ * Author: Fernando Peña (NIA: 756012)
+ * Author: Jose Daniel Subias Sarrato (NIA: 759533)
+ * Date: 22/10/2020
+ * Coms: Informática Gráfica, 2020-2021
  **********************************************************************************/
 
 #pragma once
 #include <iostream>
 
-struct HCoord {
-    union {
-        struct {
+struct HCoord
+{
+    const union
+    {
+        struct
+        {
             float x, y, z, w;
         };
         float c[4];
     };
+
+    // HCoord() {};
+
+    // HCoord(float x, float y, float z, float w)
+    // {
+    //     this->x = x;
+    //     this->y = y;
+    //     this->z = z;
+    //     this->w = w;
+    // };
 
     // point + point         = ERROR
     // point + direction     = point
@@ -44,8 +56,8 @@ struct HCoord {
     // constexpr
 };
 
-HCoord createPoint(float x, float y, float z);
-HCoord createDirection(float x, float y, float z);
+HCoord point(float x, float y, float z);
+HCoord direction(float x, float y, float z);
 
 // mod(point) = ERROR
 // mod(direction) = scalar
