@@ -1,5 +1,5 @@
 /*********************************************************************************
- * Representation of homogeneous coordinates
+ * Geometry
  *
  * File: coordinate.hpp
  * Author: Fernando Peña (NIA: 756012)
@@ -9,37 +9,32 @@
  **********************************************************************************/
 
 #pragma once
-#include <iostream>
 #include <assert.h>
+#include <iostream>
 
 // Vectors
-struct Vector3
-{
+struct Vector3 {
     float x, y, z;
 
     // Constructors
     Vector3() : x(0.0f), y(0.0f), z(0.0f){};
-    Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z)
-    {
+    Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {
         assert(!hasNaNs());
     };
 
     // Check if any component has the floating point NaN value
-    bool hasNaNs()
-    {
-        return std::isnan(x) || std::isnan(y) || std::isnan(z);
+    bool hasNaNs() {
+        return isnan(x) || isnan(y) || isnan(z);
     }
 
     // Operators
 
     // Sum of two vectors
-    Vector3 operator+(const Vector3 &v) const
-    {
+    Vector3 operator+(const Vector3 &v) const {
         return Vector3(x + v.x, y + v.y, z + v.z);
     }
 
-    Vector3 &operator+=(const Vector3 &v)
-    {
+    Vector3 &operator+=(const Vector3 &v) {
         x += v.x;
         y += v.y;
         z += v.z;
@@ -47,13 +42,11 @@ struct Vector3
     }
 
     // Substraction of two vectors
-    Vector3 operator-(const Vector3 &v) const
-    {
+    Vector3 operator-(const Vector3 &v) const {
         return Vector3(x - v.x, y - v.y, z - v.z);
     }
 
-    Vector3 &operator-=(const Vector3 &v)
-    {
+    Vector3 &operator-=(const Vector3 &v) {
         x -= v.x;
         y -= v.y;
         z -= v.z;
@@ -61,13 +54,11 @@ struct Vector3
     }
 
     // Multiply vector by a scalar
-    Vector3 operator*(float s) const
-    {
+    Vector3 operator*(float s) const {
         return Vector3(s * x, s * y, s * z);
     }
 
-    Vector3 &operator*=(float s)
-    {
+    Vector3 &operator*=(float s) {
         x *= s;
         y *= s;
         z *= s;
@@ -75,14 +66,12 @@ struct Vector3
     }
 
     // Divide vector by a scalar
-    Vector3 operator/(float s) const
-    {
+    Vector3 operator/(float s) const {
         assert(s != 0);
         return Vector3(x / s, y / s, z / s);
     }
 
-    Vector3 &operator/=(float s)
-    {
+    Vector3 &operator/=(float s) {
         assert(s != 0);
         x /= s;
         y /= s;
@@ -91,8 +80,7 @@ struct Vector3
     }
 
     // Vector negation. Returns a new vector pointing to the opposite direction
-    Vector3 operator-() const
-    {
+    Vector3 operator-() const {
         return Vector3(-x, -y, -z);
     }
 };
@@ -107,36 +95,34 @@ float dot(const Vector3 &v1, const Vector3 &v2);
 Vector3 cross(const Vector3 &v1, const Vector3 &v2);
 
 // Modulus of a vector
-float mod(const Vector3 v);
+float modulus(const Vector3 &v);
+
+// Normalize the vector
+Vector3 normalize(const Vector3 &v);
 
 // Points
-struct Point3
-{
+struct Point3 {
     float x, y, z;
 
     // Constructors
     Point3() : x(0.0f), y(0.0f), z(0.0f){};
-    Point3(float _x, float _y, float _z) : x(_x), y(_y), z(_z)
-    {
+    Point3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {
         assert(!hasNaNs());
     };
 
     // Check if any component has the floating point NaN value
-    bool hasNaNs()
-    {
-        return std::isnan(x) || std::isnan(y) || std::isnan(z);
+    bool hasNaNs() {
+        return isnan(x) || isnan(y) || isnan(z);
     }
 
     // Operators
 
-    // Add a vector from the point
-    Point3 operator+(const Vector3 &v) const
-    {
+    // Add a vector to the point
+    Point3 operator+(const Vector3 &v) const {
         return Point3(x + v.x, y + v.y, z + v.z);
     }
 
-    Point3 &operator+=(const Point3 &v)
-    {
+    Point3 &operator+=(const Point3 &v) {
         x += v.x;
         y += v.y;
         z += v.z;
@@ -144,19 +130,16 @@ struct Point3
     }
 
     // Substraction of two points to get a direction
-    Vector3 operator-(const Point3 &p) const
-    {
+    Vector3 operator-(const Point3 &p) const {
         return Vector3(x - p.x, y - p.y, z - p.z);
     }
 
     // Substract a vector from the point
-    Point3 operator-(const Vector3 &v) const
-    {
+    Point3 operator-(const Vector3 &v) const {
         return Point3(x - v.x, y - v.y, z - v.z);
     }
 
-    Point3 &operator-=(const Point3 &v)
-    {
+    Point3 &operator-=(const Point3 &v) {
         x -= v.x;
         y -= v.y;
         z -= v.z;
@@ -164,13 +147,11 @@ struct Point3
     }
 
     // Multiply point by a scalar (it doesnt' make sense mathematically)
-    Point3 operator*(float s) const
-    {
+    Point3 operator*(float s) const {
         return Point3(s * x, s * y, s * z);
     }
 
-    Point3 &operator*=(float s)
-    {
+    Point3 &operator*=(float s) {
         x *= s;
         y *= s;
         z *= s;
@@ -178,14 +159,12 @@ struct Point3
     }
 
     // Divide point by a scalar (it doesn't make sense mathematically)
-    Point3 operator/(const float s) const
-    {
+    Point3 operator/(const float s) const {
         assert(s != 0);
         return Point3(x / s, y / s, z / s);
     }
 
-    Point3 &operator/=(const float s)
-    {
+    Point3 &operator/=(const float s) {
         assert(s != 0);
         x /= s;
         y /= s;
@@ -194,8 +173,7 @@ struct Point3
     }
 
     // Vector negation. Returns a new vector pointing to the opposite direction
-    Point3 operator-() const
-    {
+    Point3 operator-() const {
         return Point3(-x, -y, -z);
     }
 };

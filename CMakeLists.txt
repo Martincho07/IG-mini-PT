@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.18.0)
+project(practica1 VERSION 0.1.0 DESCRIPTION "informatica grafica")
+
+set (CMAKE_CXX_STANDARD 11)
+
+include(CTest)
+enable_testing()
+
+add_subdirectory(lib)
+
+add_library(planet practica1/planet.cpp)
+target_link_libraries(planet LINK_PUBLIC lib)
+
+add_executable(main practica1/practica1.cpp)
+target_link_libraries(main LINK_PUBLIC lib planet)
+
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)

@@ -13,13 +13,11 @@
 #include <assert.h>
 #include <cmath>
 
-Matrix4x4 transpose(const Matrix4x4 &m)
-{
+// Matrix4x4 method definitions
+Matrix4x4 transpose(const Matrix4x4 &m) {
     Matrix4x4 r;
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < 4; j++)
-        {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
             r.m[i][j] = m.m[j][i];
         }
     }
@@ -27,8 +25,7 @@ Matrix4x4 transpose(const Matrix4x4 &m)
 }
 
 // Return the inversed matrix
-Matrix4x4 inverse(const Matrix4x4 &m)
-{
+Matrix4x4 inverse(const Matrix4x4 &m) {
     // https://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
     float A2323 = m.m[2][2] * m.m[3][3] - m.m[2][3] * m.m[3][2];
     float A1323 = m.m[2][1] * m.m[3][3] - m.m[2][3] * m.m[3][1];
@@ -49,7 +46,15 @@ Matrix4x4 inverse(const Matrix4x4 &m)
     float A0113 = m.m[1][0] * m.m[3][1] - m.m[1][1] * m.m[3][0];
     float A0112 = m.m[1][0] * m.m[2][1] - m.m[1][1] * m.m[2][0];
 
-    float det = m.m[0][0] * (m.m[1][1] * A2323 - m.m[1][2] * A1323 + m.m[1][3] * A1223) - m.m[0][1] * (m.m[1][0] * A2323 - m.m[1][2] * A0323 + m.m[1][3] * A0223) + m.m[0][2] * (m.m[1][0] * A1323 - m.m[1][1] * A0323 + m.m[1][3] * A0123) - m.m[0][3] * (m.m[1][0] * A1223 - m.m[1][1] * A0223 + m.m[1][2] * A0123);
+    float det =
+        m.m[0][0] *
+            (m.m[1][1] * A2323 - m.m[1][2] * A1323 + m.m[1][3] * A1223) -
+        m.m[0][1] *
+            (m.m[1][0] * A2323 - m.m[1][2] * A0323 + m.m[1][3] * A0223) +
+        m.m[0][2] *
+            (m.m[1][0] * A1323 - m.m[1][1] * A0323 + m.m[1][3] * A0123) -
+        m.m[0][3] * (m.m[1][0] * A1223 - m.m[1][1] * A0223 + m.m[1][2] * A0123);
+
     det = 1 / det;
 
     return Matrix4x4(
@@ -71,94 +76,85 @@ Matrix4x4 inverse(const Matrix4x4 &m)
         det * (m.m[0][0] * A1212 - m.m[0][1] * A0212 + m.m[0][2] * A0112));
 }
 
-Transform identity()
-{
+// Transform method definitions
+Transform identity() {
     Matrix4x4 m(1, 0, 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1);
-    return Transform(m);
+    return Transform(m, m);
 }
 
 // Return a translation transformation in the direction of the delta vector
-Transform translation(const Vector3 &delta)
-{
+Transform translation(const Vector3 &delta) {
     Matrix4x4 m(1, 0, 0, delta.x,
                 0, 1, 0, delta.y,
                 0, 0, 1, delta.z,
                 0, 0, 0, 1);
-    return Transform(m);
+    Matrix4x4 mInv(1, 0, 0, -delta.x,
+                   0, 1, 0, -delta.y,
+                   0, 0, 1, -delta.z,
+                   0, 0, 0, 1);
+    return Transform(m, mInv);
 }
 
 // Return a scale transformation
-Transform scale(float tx, float ty, float tz)
-{
-    Matrix4x4 m(tx, 0, 0, 0,
-                0, ty, 0, 0,
-                0, 0, tz, 0,
+Transform scale(float sx, float sy, float sz) {
+    Matrix4x4 m(sx, 0, 0, 0,
+                0, sy, 0, 0,
+                0, 0, sz, 0,
                 0, 0, 0, 1);
-    return Transform(m);
+    Matrix4x4 mInv(1 / sx, 0, 0, 0,
+                   0, 1 / sy, 0, 0,
+                   0, 0, 1 / sz, 0,
+                   0, 0, 0, 1);
+    return Transform(m, mInv);
 }
 
 // Return a rotation transformation over the X axis
-Transform rotationX(float theta)
-{
+Transform rotationX(float theta) {
     float sinTheta = sinf(theta);
     float cosTheta = cosf(theta);
     Matrix4x4 m(1, 0, 0, 0,
                 0, cosTheta, -sinTheta, 0,
                 0, sinTheta, cosTheta, 0,
                 0, 0, 0, 1);
-    return Transform(m);
-}
-
-Transform rotationX(float theta)
-{
-    float sinTheta = sinf(theta);
-    float cosTheta = cosf(theta);
-    Matrix4x4 m(1, 0, 0, 0,
-                0, cosTheta, -sinTheta, 0,
-                0, sinTheta, cosTheta, 0,
-                0, 0, 0, 1);
-    return Transform(m);
+    return Transform(m, transpose(m));
 }
 
 // Return a rotation transformation over the Y axis
-Transform rotationY(float theta)
-{
+Transform rotationY(float theta) {
     float sinTheta = sinf(theta);
     float cosTheta = cosf(theta);
     Matrix4x4 m(cosTheta, 0, sinTheta, 0,
-                0, 1, 0, 0,
-                -sinTheta, 0, cosTheta, 0,
+                0, 1, 0, 0, -sinTheta, 0,
+                cosTheta, 0,
                 0, 0, 0, 1);
-    return Transform(m);
+    return Transform(m, transpose(m));
 }
 
 // Return a rotation transformation over the Z axis
-Transform rotationZ(float theta)
-{
+Transform rotationZ(float theta) {
     float sinTheta = sinf(theta);
     float cosTheta = cosf(theta);
     Matrix4x4 m(cosTheta, -sinTheta, 0, 0,
                 sinTheta, cosTheta, 0, 0,
                 0, 0, 0, 0,
                 0, 0, 0, 1);
-    return Transform(m);
+    return Transform(m, transpose(m));
 }
 
 // Return a change of base transformation
-Transform changeBase(const Vector3 &u, const Vector3 &v, const Vector3 &w, const Point3 &o)
-{
+Transform changeBase(const Vector3 &u, const Vector3 &v, const Vector3 &w,
+                     const Point3 &o) {
     Matrix4x4 m(u.x, v.x, v.x, o.x,
                 u.y, v.y, v.y, o.y,
                 u.z, v.z, v.z, o.z,
                 0, 0, 0, 1);
-    return Transform(m);
+    return Transform(m, inverse(m));
 }
 
 // Return the inverse transformation
-Transform inverse(const Transform &t)
-{
-    return Transform(inverse(t.t));
+Transform inverse(const Transform &t) {
+    return Transform(t.mInv, t.m);
 }
