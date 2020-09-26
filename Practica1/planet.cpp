@@ -18,11 +18,26 @@ bool inSurface(const Planet &planet, const Point3 &p) {
 }
 
 void launch(const Planet &origin, const Planet &destination) {
-    Transform canonic = changeBase(Vector3(1.0f, 0.0f, 0.0f),
-                                   Vector3(0.0f, 1.0f, 0.0f),
-                                   Vector3(0.0f, 0.0f, 1.0f),
-                                   Point3(0.0f, 0.0f, 0.0f));
+    // Hay que restar los origenes de los sistemas de coordenadas de los planetas para obtener el vector de la trayeectoria
 
-    Point3 p1 = canonic(Point3(0, 0, 0));
-    Point3 p2 = canonic(Point3(0, 0, 0));
+    Vector3 path = destination.orig - origin.orig;
+
+    // Comprobar que los vectores no atraviesan el planeta
+    assert(dot(path, origin.k) >= 0);
+    assert(dot(path, destination.k) >= 0);
+
+    std::cout << "Orig origin" << origin.orig << std::endl;
+    std::cout << "Dest origin" << destination.orig << std::endl;
+
+    std::cout << "Trayectoria canonico: " << path << std::endl;
+
+    // Ahora cambiamos de base la trayectoria para verla desde el punto de vista desde las dos estaciones
+    Transform ob = changeBase(origin.i, origin.j, origin.k, origin.orig);
+    Transform db = changeBase(destination.i, destination.j, destination.k, destination.orig);
+
+    Vector3 pathFromOrigin = ob(path);
+    Vector3 pathFromDestination = db(path);
+
+    std::cout << "Trayectoria desde orgin: " << pathFromOrigin << std::endl;
+    std::cout << "Trayectoria desde destination: " << pathFromDestination << std::endl;
 };

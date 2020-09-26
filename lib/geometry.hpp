@@ -12,6 +12,9 @@
 #include <assert.h>
 #include <iostream>
 
+struct Vector3;
+struct Point3;
+
 // Vectors
 struct Vector3 {
     float x, y, z;
@@ -84,6 +87,12 @@ struct Vector3 {
         return Vector3(-x, -y, -z);
     }
 };
+
+// Print a vector
+inline std::ostream &operator<<(std::ostream &os, const Vector3 &v) {
+    os << "[ " << v.x << ", " << v.y << ", " << v.z << " ]";
+    return os;
+}
 
 // Return a vector with the absolute value applied to each component
 Vector3 abs(const Vector3 &v);
@@ -176,7 +185,18 @@ struct Point3 {
     Point3 operator-() const {
         return Point3(-x, -y, -z);
     }
+
+    // Cast a vector to a point
+    explicit operator Vector3() const {
+        return Vector3(x, y, z);
+    }
 };
+
+// Print a point
+inline std::ostream &operator<<(std::ostream &os, const Point3 &p) {
+    os << "[ " << p.x << ", " << p.y << ", " << p.z << " ]";
+    return os;
+}
 
 // Return a point with the absolute value applied to each component
 Vector3 abs(const Vector3 &v);

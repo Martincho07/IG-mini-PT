@@ -127,8 +127,8 @@ Transform rotationY(float theta) {
     float sinTheta = sinf(theta);
     float cosTheta = cosf(theta);
     Matrix4x4 m(cosTheta, 0, sinTheta, 0,
-                0, 1, 0, 0, -sinTheta, 0,
-                cosTheta, 0,
+                0, 1, 0, 0,
+                -sinTheta, 0, cosTheta, 0,
                 0, 0, 0, 1);
     return Transform(m, transpose(m));
 }
@@ -139,7 +139,7 @@ Transform rotationZ(float theta) {
     float cosTheta = cosf(theta);
     Matrix4x4 m(cosTheta, -sinTheta, 0, 0,
                 sinTheta, cosTheta, 0, 0,
-                0, 0, 0, 0,
+                0, 0, 1, 0,
                 0, 0, 0, 1);
     return Transform(m, transpose(m));
 }
