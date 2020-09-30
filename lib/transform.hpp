@@ -72,6 +72,8 @@ class Transform {
         float zp = m.m[2][0] * p.x + m.m[2][1] * p.y + m.m[2][2] * p.z + m.m[2][3];
         float wp = m.m[3][0] * p.x + m.m[3][1] * p.y + m.m[3][2] * p.z + m.m[3][3];
 
+        assert(wp != 0); // TODO
+
         if (wp == 1) {
             return Point3(xp, yp, zp);
         } else {
@@ -113,5 +115,5 @@ Transform rotationY(float theta);
 Transform rotationZ(float theta);
 
 // Return a change of base transformation
-Transform changeBase(const Vector3 &u, const Vector3 &v, const Vector3 &w,
-                     const Point3 &o);
+Transform changeBasis(const Vector3 &u, const Vector3 &v, const Vector3 &w,
+                      const Point3 &o);

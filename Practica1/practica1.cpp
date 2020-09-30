@@ -50,6 +50,11 @@ Planet readStation(std::istream &is, bool interactive) {
 }
 
 int main(int argc, char **argv) {
+    std::cout << sinf(1.5708) << std::endl;
+
+    std::cout << cosf(M_PI_2) << std::endl;
+    std::cout << M_PI << std::endl;
+
     // If there's a file as argument, read it
     // Else, ask for the stations from standard input
     Planet planet1, planet2;

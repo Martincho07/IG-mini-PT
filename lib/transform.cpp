@@ -145,8 +145,8 @@ Transform rotationZ(float theta) {
 }
 
 // Return a change of base transformation
-Transform changeBase(const Vector3 &u, const Vector3 &v, const Vector3 &w,
-                     const Point3 &o) {
+Transform changeBasis(const Vector3 &u, const Vector3 &v, const Vector3 &w,
+                      const Point3 &o) {
     Matrix4x4 m(u.x, v.x, v.x, o.x,
                 u.y, v.y, v.y, o.y,
                 u.z, v.z, v.z, o.z,

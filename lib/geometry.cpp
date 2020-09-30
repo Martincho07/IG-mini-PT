@@ -27,6 +27,7 @@ float modulus(const Vector3 &v) {
 }
 
 Vector3 normalize(const Vector3 &v) {
+    assert(modulus(v) != 0); // TODO
     return v / modulus(v);
 }
 
