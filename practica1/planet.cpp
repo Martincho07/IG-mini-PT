@@ -90,8 +90,8 @@ void launch(const Planet &origin, const Planet &destination) {
     std::cout << "db: " << db << std::endl;
     std::cout << "inv db: " << inverse(db) << std::endl;
 
-    Vector3 pathFromOrigin = ob(path);
-    Vector3 pathFromDestination = db(path);
+    Vector3 pathFromOrigin = inverse(ob)(path);
+    Vector3 pathFromDestination = inverse(db)(path);
 
     // Comprobar que las trayectorias no se meten dentro en el planeta
     // Esto es que el ángulo entre la trayectoria y la normal del planeta sea menor o igual que 90 grados
