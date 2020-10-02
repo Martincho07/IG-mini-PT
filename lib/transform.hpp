@@ -20,7 +20,10 @@ struct Matrix4x4 {
     Matrix4x4() : m{0} {};
 
     Matrix4x4(float _m[4][4])
-        : m{_m[0][0], _m[0][1], _m[0][2], _m[0][3], _m[1][0], _m[1][1], _m[1][2], _m[1][3], _m[2][0], _m[2][1], _m[2][2], _m[2][3], _m[3][0], _m[3][1], _m[3][2], _m[3][3]} {};
+        : m{_m[0][0], _m[0][1], _m[0][2], _m[0][3],
+            _m[1][0], _m[1][1], _m[1][2], _m[1][3],
+            _m[2][0], _m[2][1], _m[2][2], _m[2][3],
+            _m[3][0], _m[3][1], _m[3][2], _m[3][3]} {};
 
     Matrix4x4(float m00, float m01, float m02, float m03,
               float m10, float m11, float m12, float m13,
@@ -42,6 +45,15 @@ struct Matrix4x4 {
         return r;
     }
 };
+
+// Print a matrix
+inline std::ostream &operator<<(std::ostream &os, const Matrix4x4 &m) {
+    os << "[[ " << m.m[0][0] << ", " << m.m[0][1] << ", " << m.m[0][2] << ", " << m.m[0][3] << "],"
+       << " [ " << m.m[1][0] << ", " << m.m[1][1] << ", " << m.m[1][2] << ", " << m.m[1][3] << "],"
+       << " [ " << m.m[2][0] << ", " << m.m[2][1] << ", " << m.m[2][2] << ", " << m.m[2][3] << "],"
+       << " [ " << m.m[3][0] << ", " << m.m[3][1] << ", " << m.m[3][2] << ", " << m.m[3][3] << "]]";
+    return os;
+}
 
 // Return the transposed matrix
 Matrix4x4 transpose(const Matrix4x4 &m);
@@ -96,7 +108,13 @@ class Transform {
 
     // Return the inverse transformation
     friend Transform inverse(const Transform &t);
+    friend inline std::ostream &operator<<(std::ostream &os, const Transform &t);
 };
+
+inline std::ostream &operator<<(std::ostream &os, const Transform &t) {
+    os << t.m;
+    return os;
+}
 
 // Return the identity transformation
 Transform identity();

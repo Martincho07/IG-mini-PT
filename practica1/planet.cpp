@@ -28,11 +28,11 @@ Planet::Planet(const Point3 &_center, const Point3 &_refCity, const Vector3 &_ax
 
     // Construct a coordinate system local to the planet
     // The x axis has 0 azimuth
-    Vector3 zPlanet = normalize(cross(u,axis));
+    Vector3 zPlanet = normalize(cross(u, axis));
     Vector3 yPlanet = normalize(axis);
-    Vector3 xPlanet = cross(yPlanet,zPlanet); 
+    Vector3 xPlanet = cross(yPlanet, zPlanet);
 
-        std::cout << "Sistema interno planeta: " << std::endl
+    std::cout << "Sistema interno planeta: " << std::endl
               << "\tx: " << xPlanet.x << " " << xPlanet.y << " " << xPlanet.z << std::endl
               << "\ty: " << yPlanet.x << " " << yPlanet.y << " " << yPlanet.z << std::endl
               << "\tz: " << zPlanet.x << " " << zPlanet.y << " " << zPlanet.z << std::endl;
@@ -42,7 +42,7 @@ Planet::Planet(const Point3 &_center, const Point3 &_refCity, const Vector3 &_ax
 
     std::cout << "Estacion sin rotar: " << std::endl
               << "\tvalues: " << station.x << " " << station.y << " " << station.z << std::endl;
-    station = (rotationY(azimuth) * rotationZ(inclination))(station); 
+    station = (rotationY(azimuth) * rotationZ(inclination))(station);
 
     std::cout << "Estacion rotada: " << std::endl
               << "\tvalues: " << station.x << " " << station.y << " " << station.z << std::endl;
@@ -52,8 +52,6 @@ Planet::Planet(const Point3 &_center, const Point3 &_refCity, const Vector3 &_ax
     k = normalize(orig - center);                                   // Surface normal
     i = normalize(cross(k, axis));                                  // Latitude tangent direction
     j = normalize(cross(k, i));                                     // Longitude tangent direction
-
-
 
     std::cout << "Sistema coords: " << std::endl
               << "\ti: " << i << std::endl
@@ -70,6 +68,7 @@ void launch(const Planet &origin, const Planet &destination) {
     // Hay que restar los origenes de los sistemas de coordenadas de los planetas para obtener el vector de la trayeectoria
 
     Vector3 path = destination.orig - origin.orig;
+    std::cout << "path: " << path << std::endl;
 
     // Comprobar que los vectores no atraviesan el planeta
     std::cout << "Orig: " << dot(path, origin.k) << std::endl;
@@ -81,8 +80,15 @@ void launch(const Planet &origin, const Planet &destination) {
     std::cout << "Trayectoria canonico: " << path << std::endl;
 
     // Ahora cambiamos de base la trayectoria para verla desde el punto de vista desde las dos estaciones
-    Transform ob = inverse(changeBasis(origin.i, origin.j, origin.k, origin.orig));
-    Transform db = inverse(changeBasis(destination.i, destination.j, destination.k, destination.orig));
+    Transform ob = changeBasis(origin.i, origin.j, origin.k, origin.orig);
+    std::cout << dot(origin.i, origin.j) << dot(origin.j, origin.k) << dot(origin.j, origin.i) << dot(origin.k, origin.j) << std::endl;
+    std::cout << "ob: " << ob << std::endl;
+    std::cout << "inv ob: " << inverse(ob) << std::endl;
+
+    Transform db = changeBasis(destination.i, destination.j, destination.k, destination.orig);
+    std::cout << dot(destination.i, destination.j) << dot(destination.j, destination.k) << dot(destination.j, destination.i) << dot(destination.k, destination.i) << std::endl;
+    std::cout << "db: " << db << std::endl;
+    std::cout << "inv db: " << inverse(db) << std::endl;
 
     Vector3 pathFromOrigin = ob(path);
     Vector3 pathFromDestination = db(path);
@@ -90,9 +96,9 @@ void launch(const Planet &origin, const Planet &destination) {
     // Comprobar que las trayectorias no se meten dentro en el planeta
     // Esto es que el ángulo entre la trayectoria y la normal del planeta sea menor o igual que 90 grados
     // (que el coseno sea no negativo)
-    assert(dot(path, origin.k) >= 0);
-    assert(dot(path, destination.k) >= 0);
+    assert(dot(pathFromOrigin, origin.k) >= 0);
+    assert(dot(pathFromDestination, destination.k) >= 0);
 
-    std::cout << "Trayectoria desde orgin: " << pathFromOrigin << std::endl;
+    std::cout << "Trayectoria desde origin: " << pathFromOrigin << std::endl;
     std::cout << "Trayectoria desde destination: " << pathFromDestination << std::endl;
 };
