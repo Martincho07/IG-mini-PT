@@ -9,6 +9,7 @@
  **********************************************************************************/
 
 #include "geometry.hpp"
+#include <math.h>
 
 Vector3 abs(const Vector3 &v) {
     return Vector3(std::abs(v.x), std::abs(v.y), std::abs(v.z));

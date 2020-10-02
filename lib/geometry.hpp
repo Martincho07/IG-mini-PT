@@ -11,6 +11,7 @@
 #pragma once
 #include <assert.h>
 #include <iostream>
+#include <math.h>
 
 struct Vector3;
 struct Point3;
@@ -22,7 +23,7 @@ struct Vector3 {
     // Constructors
     Vector3() : x(0.0f), y(0.0f), z(0.0f){};
     Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {
-        assert(!hasNaNs());
+        //assert(!hasNaNs());
     };
 
     // Check if any component has the floating point NaN value
