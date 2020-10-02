@@ -96,8 +96,8 @@ void launch(const Planet &origin, const Planet &destination) {
     // Comprobar que las trayectorias no se meten dentro en el planeta
     // Esto es que el ángulo entre la trayectoria y la normal del planeta sea menor o igual que 90 grados
     // (que el coseno sea no negativo)
-    assert(dot(pathFromOrigin, origin.k) >= 0);
-    assert(dot(pathFromDestination, destination.k) >= 0);
+    assert(dot(path, origin.k) >= 0);
+    assert(dot(-path, destination.k) >= 0);
 
     std::cout << "Trayectoria desde origin: " << pathFromOrigin << std::endl;
     std::cout << "Trayectoria desde destination: " << pathFromDestination << std::endl;
