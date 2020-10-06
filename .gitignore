@@ -39,3 +39,7 @@
 
 # Cmake builds
 build
+
+# Photos
+*.ppm
+*.zip
