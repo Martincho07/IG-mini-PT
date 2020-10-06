@@ -10,13 +10,17 @@
 
 #pragma once
 
+#include <iostream>
+
 struct RGB {
     float r, g, b;
 
     // Constructors
-    RGB() {};
+    RGB(){};
 
-    RGB(float _r, float _g, float _b) : r(_r), g(_g), b(_b) {};
+    RGB(float _r, float _g, float _b) : r(_r), g(_g), b(_b){};
+
+    // Operators
 
     RGB operator+(const RGB c) const {
         return RGB(r + c.r, g + c.g, b + c.b);
@@ -33,4 +37,14 @@ struct RGB {
     RGB operator/(float s) const {
         return RGB(r / s, g / s, b / s);
     };
+};
+
+inline std::istream &operator>>(std::istream &in, RGB &c) {
+    in >> c.r >> c.g >> c.b;
+    return in;
+};
+
+inline std::ostream &operator<<(std::ostream &out, const RGB &c) {
+    out << c.r << " " << c.g << " " << c.b << std::endl;
+    return out;
 };

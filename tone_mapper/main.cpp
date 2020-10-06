@@ -10,36 +10,22 @@
 
 #include "image.hpp"
 
-
 #include <fstream>
 #include <iostream>
 
-
-
 int main(int argc, char **argv) {
 
-    if (argc == 1){
+    if (argc == 2) {
+        std::ifstream f(argv[1], std::ios::in);
 
-
-
-        std::ifstream f_in;
-
-        if (argc == 1){}
-            if (f_in.open(argv[1], std::ios::in)) {
-
-                Image img = readPPM(f_in);
-
-
-            } else {
-                std::cout << "No se ha podido abrir el fichero: " << argv[1] << std::endl;
-                return 1;
-            }
+        if (f.is_open()) {
+            std::cout << "Fichero abierto" << std::endl;
+            Image img = readPPM(f);
+            f.close();
         } else {
-
-                std::cout << "El unico parametro admitido es el path de un archivo .ppm"
-
+            std::cerr << "Could not open file: " << argv[1] << std::endl;
         }
-
-        f_in.close();
+    } else {
+        std::cout << "El unico parametro admitido es el path de un archivo .ppm" << std::endl;
     }
 }
