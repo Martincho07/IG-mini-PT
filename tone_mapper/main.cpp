@@ -63,12 +63,21 @@ int main(int argc, char **argv) {
             outFile = createOutFilename(inFile);
         }
 
-        Image img;
-        if (readPPM(img, inFile)) {
-            std::cout << "Antes de procesar" << std::endl;
-            std::cout << "inFile: " << inFile << " outFile: " << outFile << std::endl;
-            std::cout << "clamp: " << clamp << std::endl;
+        std::cout << "Antes de procesar" << std::endl;
+        std::cout << "inFile: " << inFile << " outFile: " << outFile << std::endl;
+        std::cout << "clamp: " << clamp << std::endl;
+
+        std::ifstream f(inFile, std::ios::in);
+        if (f.is_open()) {
+            Image img = readPPM(f);
+            img.clamping();
+            img.toDisk();
+            writePPM(img);
+            f.close();
+        } else {
+            std::cerr << "Could not open file: " << inFile << std::endl;
         }
+
     } else {
         help();
         return 0;
