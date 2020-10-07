@@ -84,8 +84,13 @@ int main(int argc, char **argv) {
         std::cout << "clamp: " << clamp << std::endl;
 
         Image img = readPPM(inFile);
+        std::cout << "he leido" << std::endl;
         clamping(img);
+        std::cout << "he hecho clamping" << std::endl;
+        toDisk(img);
+        std::cout << "modificacion para fichero" << std::endl;
         writePPM(img, outFile);
+        std::cout << "fin" << std::endl;
 
     } else {
         help();

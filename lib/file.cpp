@@ -117,19 +117,24 @@ Image readPPM(std::string file) {
 };
 
 bool writePPM(const Image &img, const std::string file) {
+
+    std::cout << img.width << " columnas" << std::endl;
+    std::cout << img.height << " filas" << std::endl;
+    std::cout << img.v.size() << " size" << std::endl;
     std::ofstream os(file, std::ios::out);
     if (!os.is_open()) {
         std::cerr << "Could not open file: " << file << std::endl;
         return false;
     }
-
+    
     os << "P3" << std::endl;
     os << img.width << " " << img.height << std::endl;
     os << "255" << std::endl;
     for (int i = 0; i < img.v.size(); i = i + img.width) {
-        for (int n = 0; n < img.height; i++) {
+        for (int n = 0; n < img.width; n++) {
+
             os << img.v[i + n];
-            n == img.width ? os << std::endl : os << " ";
+            n == img.width-1 ? os << std::endl : os << "   ";
         }
     }
     os.close();

@@ -12,14 +12,14 @@
 
 void clamping(Image &img) {
     for (RGB &pixel : img.v) {
-        if (pixel.r > 255)
-            pixel.r = 255;
+        if (pixel.r > 1.0f)
+            pixel.r = 1.0f;
 
-        if (pixel.g > 255)
-            pixel.g = 255;
+        if (pixel.g > 1.0f)
+            pixel.g = 1.0f;
 
-        if (pixel.b > 255)
-            pixel.b = 255;
+        if (pixel.b > 1.0f)
+            pixel.b = 1.0f;
     }
 };
 
