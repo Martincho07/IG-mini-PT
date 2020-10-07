@@ -1,5 +1,5 @@
 /*********************************************************************************
- * Color
+ * Image
  *
  * File: image.hpp
  * Author: Fernando Peña (NIA: 756012)
@@ -8,98 +8,67 @@
  * Coms: Informática Gráfica, 2020-2021
  **********************************************************************************/
 
-#include <vector>
-#include <string>
+#include "color.hpp"
 #include <fstream>
-#include <color.hpp>
+#include <string>
+#include <vector>
 
 struct Image {
 
-     std::vector<RGB> v;
-     float m;
-     float c;
-     int num_rows;
-     int num_colums;
+    std::vector<RGB> v;
+    float m;
+    float c;
+    int width;
+    int height;
 
     // Constructors
-    Image(const std::vector<RGB>  _v, float _c, float _m, int _num_rows, int _num_colums) : 
-    v(_v), c(_c), m(_m), num_rows(_num_rows), num_colums(_num_colums){}; 
-
+    Image(const std::vector<RGB> _v, float _c, float _m, int _width, int _height)
+        : v(_v), c(_c), m(_m), width(_width), height(_height){};
 
     // Tone mapping functions
-    void clamping() {
+    void clamping(){};
 
-        for (RGB &pixel : v){
+    void equalization(){};
 
-            if ()
+    void equalizeAndClamp(){};
 
-            if()
+    void gammaCurve(){};
 
-            if()
-
-        }
-
-    };
-    void equalization(){
-
-
-
-    };
-    void equalizeAndClamp(){
-
-
-
-    };
-    void gammaCurve(){
-
-
-
-
-    };
-    void clampAndGammaCurve(){
-
-
-
-    };
-
+    void clampAndGammaCurve(){};
 };
 
-
-// Read an image stored in a modified HDR PPM format
-// 
-// .ppm format:
-//
-// P3
-// #MAX=<max>
-// <width> <heigth>
-// <colorResolution>
-// <r> <g> <b>     <r> <g> <b> ...
-// <r> <g> <b>     <r> <g> <b> ...
-// ...
-//
-// Lines starting with # are considered comments
-// With the #MAX=<max> comment it's posible to indicate
-// the real maximum of the image as a real number in case
-// it's different to 1.
+/* Read an image stored in a modified PPM format for representing HDR images
+ *
+ * Modified .ppm format:
+ *
+ * P3
+ * #MAX=<max>
+ * <width> <heigth>
+ * <colorResolution>
+ * <r> <g> <b>     <r> <g> <b> ...
+ * <r> <g> <b>     <r> <g> <b> ...
+ * ...
+ *
+ * Lines starting with # are considered comments
+ * With the #MAX=<max> comment it's posible to indicate
+ * the real maximum of the image as a real number, in case
+ * it's different to 1.
+ */
 Image readPPM(std::ifstream &is);
 
 /*
-
-    Read a imaege stored in memory as vector
-    and create a PPM file
-
-    .pp, format
-    P3
-    <width> <heigth>
-    255
-    <r> <g> <b> ... <r> <g> <b> 
-    <r> <g> <b> ... <r> <g> <b> 
-
-        ...             ...
-
-    <r> <g> <b> ... <r> <g> <b> 
-
-    the resolution(c) is ever equal to 255
-
-*/
-void writePPM(const Image &img);
+ * Read an image stored in memory as vector and create a PPM file
+ *
+ * .ppm format:
+ *
+ * P3
+ * <width> <heigth>
+ * 255
+ * <r> <g> <b> ... <r> <g> <b>
+ * <r> <g> <b> ... <r> <g> <b>
+ *     ...             ...
+ * <r> <g> <b> ... <r> <g> <b>
+ *
+ * The color resolution is always 255
+ */
+void writePPM(std::ofstream os, const Image &img);

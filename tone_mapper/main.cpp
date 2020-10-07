@@ -10,36 +10,106 @@
 
 #include "image.hpp"
 
-
 #include <fstream>
 #include <iostream>
+#include <string>
 
+void help() {
+    std::cout << "Usage: tone_mapper [options] file.ppm\n\n"
+                 "Options:\n"
+                 "  -o <filename>   Specify output filename\n"
+                 "  -clamp <value>  Clamp the image at <value>\n"
+                 "  -h              Show this help screen and quit\n"
+              << std::endl;
+}
 
+void invalidOption(const std::string &arg) {
+    std::cerr << "Invalid option: " << arg << std::endl
+              << std::endl;
+    help();
+}
+
+std::string getFileExtension(const std::string &file) {
+    size_t i = file.rfind('.', file.length());
+    if (i != std::string::npos) {
+        return file.substr(i + 1, file.length() - i);
+    }
+    return "";
+}
+
+#define outId "out_"
+
+std::string createOutFilename(const std::string &file) {
+    size_t i = file.find_last_of('/', file.length());
+
+    if (i == std::string::npos) {
+        i = 0;
+    } else {
+        i++;
+    }
+
+    std::string outFile = file;
+    return outFile.insert(i, outId);
+}
 
 int main(int argc, char **argv) {
+    std::string inFile;
+    std::string outFile;
+    int clamp = 1;
 
-    if (argc == 1){
-
-
-
-        std::ifstream f_in;
-
-        if (argc == 1){}
-            if (f_in.open(argv[1], std::ios::in)) {
-
-                Image img = readPPM(f_in);
-
-
-            } else {
-                std::cout << "No se ha podido abrir el fichero: " << argv[1] << std::endl;
+    // Process arguments
+    for (int i = 1; i < argc; i++) {
+        std::string arg = argv[i];
+        std::cout << "argumento: " << arg << std::endl;
+        if (arg[0] == '-') {
+            // option
+            if (arg.length() == 1) {
+                invalidOption(arg);
                 return 1;
+            } else {
+                if (arg == "-o") {
+                    outFile = argv[i + 1];
+                    i++;
+                } else if (arg == "-clamp") {
+                    clamp = std::stof(argv[i + 1]);
+                    i++;
+                } else if (arg == "-h") {
+                    help();
+                    return 0;
+                } else {
+                    invalidOption(arg);
+                    return 1;
+                }
             }
         } else {
+            // file name
+            inFile = arg;
+            break;
+        }
+    }
 
-                std::cout << "El unico parametro admitido es el path de un archivo .ppm"
-
+    if (!inFile.empty()) {
+        if (getFileExtension(inFile) != "ppm") {
+            std::cerr << "Input file must have .ppm format" << std::endl;
         }
 
-        f_in.close();
+        if (outFile.empty()) {
+            outFile = createOutFilename(inFile);
+        }
+
+        std::cout << "Antes de procesar" << std::endl;
+        std::cout << "inFile: " << inFile << " outFile: " << outFile << std::endl;
+        std::cout << "clamp: " << clamp << std::endl;
+
+        std::ifstream f(inFile, std::ios::in);
+        if (f.is_open()) {
+            Image img = readPPM(f);
+            f.close();
+        } else {
+            std::cerr << "Could not open file: " << inFile << std::endl;
+        }
+    } else {
+        help();
+        return 0;
     }
 }
