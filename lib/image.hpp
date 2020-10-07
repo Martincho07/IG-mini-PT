@@ -30,74 +30,17 @@ struct Image {
     Image(const std::vector<RGB> _v, float _c, float _m, int _width, int _height)
         : v(_v), c(_c), m(_m), width(_width), height(_height){};
 
-    // Tone mapping functions
-    void clamping() {
-
-        for (RGB &pixel : v) {
-
-            if (pixel.r > 255)
-                pixel.r = 255;
-
-            if (pixel.g > 255)
-                pixel.g = 255;
-
-            if (pixel.b > 255)
-                pixel.b = 255;
-        }
-    };
-
-    void equalization(){};
-
-    void equalizeAndClamp(){};
-
-    void gammaCurve(){};
-
-    void clampAndGammaCurve(){};
-
-    void toDisk() {
-    for (RGB &pixel : v) {
-        pixel = pixel * (c / m);
-    }
 };
 
-};
+// Tone mapping functions
+void clamping(Image &img);
 
-/* Read an image stored in a modified PPM format for representing HDR images
- *
- * Modified .ppm format:
- *
- * P3
- * #MAX=<max>
- * <width> <heigth>
- * <colorResolution>
- * <r> <g> <b>     <r> <g> <b> ...
- * <r> <g> <b>     <r> <g> <b> ...
- * ...
- *
- * Lines starting with # are considered comments
- * With the #MAX=<max> comment it's posible to indicate
- * the real maximum of the image as a real number, in case
- * it's different to 1.
- */
-Image readPPM(std::ifstream &is);
+void equalization(Image &img);
 
-/*
- * Read an image stored in memory as vector and create a PPM file
- *
- * .ppm format:
- *
- * P3
- * <width> <heigth>
- * 255
- * <r> <g> <b> ... <r> <g> <b>
- * <r> <g> <b> ... <r> <g> <b>
- *     ...             ...
- * <r> <g> <b> ... <r> <g> <b>
- *
- * The color resolution is always 255
- */
-void writePPM(std::ofstream os, const Image &img);
-<<<<<<< HEAD
+void equalizeAndClamp(Image &img);
 
-=======
->>>>>>> 8e64aa1e9227671a2c6485e1bf55b0ce5005fa08
+void gammaCurve(Image &img);
+
+void clampAndGammaCurve(Image &img);
+
+void toDisk(Image &img);
