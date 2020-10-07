@@ -30,6 +30,7 @@ bool checkFileExtension(const std::string &file, const std::string &ext) {
     return fileExt == ext;
 }
 
+namespace {
 void readPPMComment(std::ifstream &is, float &max) {
     std::string comment;
     char p;
@@ -47,17 +48,18 @@ void readPPMComment(std::ifstream &is, float &max) {
         readPPMComment(is, max);
     }
 };
+} // namespace
 
-bool readPPM(Image &img, const std::string file) {
+Image readPPM(std::string file) {
     if (!checkFileExtension(file, "ppm")) {
         std::cerr << "Input file must have .ppm format" << std::endl;
-        return false;
+        exit(0);
     }
 
     std::ifstream is(file, std::ios::in);
     if (!is.is_open()) {
         std::cerr << "Could not open file: " << file << std::endl;
-        return false;
+        exit(0);
     }
 
     int height, width, colorResolution;
@@ -68,7 +70,7 @@ bool readPPM(Image &img, const std::string file) {
     is >> format;
     if (format != "P3") {
         std::cerr << "Invalid PPM file, the magic number should be 'P3'" << std::endl;
-        return false;
+        exit(0);
     }
 
     // Get width and height
@@ -76,11 +78,11 @@ bool readPPM(Image &img, const std::string file) {
     is >> width >> height;
     if (width < 1) {
         std::cerr << "Unsupported width: " << width << std::endl;
-        return false;
+        exit(0);
     }
     if (height < 1) {
         std::cerr << "Unsupported height: " << height << std::endl;
-        return false;
+        exit(0);
     }
 
     // Get colorResolution
@@ -89,14 +91,14 @@ bool readPPM(Image &img, const std::string file) {
     is >> colorResolution;
     if (colorResolution < 1) {
         std::cerr << "Unsupported color resolution: " << colorResolution << std::endl;
-        return false;
+        exit(0);
     }
 
     // Read last block of comments
     readPPMComment(is, max);
     if (max < 1) {
         std::cerr << "Unsupported max value: " << max << std::endl;
-        return false;
+        exit(0);
     }
 
     // Read RGB tuples row by row
@@ -111,8 +113,7 @@ bool readPPM(Image &img, const std::string file) {
 
     std::cout << colorResolution << " " << max << " " << width << " " << height << std::endl;
     is.close();
-    img = Image(v, colorResolution, max, width, height);
-    return true;
+    return Image(v, colorResolution, max, width, height);
 };
 
 bool writePPM(const Image &img, const std::string file) {

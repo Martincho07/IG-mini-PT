@@ -48,7 +48,7 @@ bool checkFileExtension(const std::string &file, const std::string &ext);
  *
  * Return true if the reading is successful
  */
-bool readPPM(Image &img, const std::string file);
+Image readPPM(const std::string file);
 
 /*
  * Read an image stored in memory as vector and create a PPM file

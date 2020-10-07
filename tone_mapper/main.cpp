@@ -30,6 +30,12 @@ void invalidOption(const std::string &arg) {
     help();
 }
 
+void missingArgument(const std::string &arg) {
+    std::cerr << "Missing value after " << arg << " argument" << std::endl
+              << std::endl;
+    help();
+}
+
 int main(int argc, char **argv) {
     std::string inFile;
     std::string outFile;
@@ -41,9 +47,17 @@ int main(int argc, char **argv) {
         std::cout << "argumento: " << arg << std::endl;
         if (arg[0] == '-') {
             if (arg == "-o") {
+                if (i + 1 >= argc) {
+                    missingArgument(arg);
+                    return 1;
+                }
                 outFile = argv[i + 1];
                 i++;
             } else if (arg == "-clamp") {
+                if (i + 1 >= argc) {
+                    missingArgument(arg);
+                    return 1;
+                }
                 clamp = std::stof(argv[i + 1]);
                 i++;
             } else if (arg == "-h") {
@@ -65,23 +79,13 @@ int main(int argc, char **argv) {
             outFile = createOutFilename(inFile);
         }
 
-
         std::cout << "Antes de procesar" << std::endl;
         std::cout << "inFile: " << inFile << " outFile: " << outFile << std::endl;
         std::cout << "clamp: " << clamp << std::endl;
 
-        std::ifstream f(inFile, std::ios::in);
-        if (f.is_open()) {
-            Image img = readPPM(f);
-            img.clamping();
-            img.toDisk();
-            writePPM(img);
-            f.close();
-        } else {
-            std::cerr << "Could not open file: " << inFile << std::endl;
-
-        }
-
+        Image img = readPPM(inFile);
+        clamping(img);
+        writePPM(img, outFile);
 
     } else {
         help();

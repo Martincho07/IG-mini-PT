@@ -11,9 +11,7 @@
 #include "image.hpp"
 
 void clamping(Image &img) {
-
     for (RGB &pixel : img.v) {
-
         if (pixel.r > 255)
             pixel.r = 255;
 
@@ -34,7 +32,6 @@ void gammaCurve(Image &img){};
 void clampAndGammaCurve(Image &img){};
 
 void toDisk(Image &img) {
-
     for (RGB &pixel : img.v)
         pixel = pixel * (img.c / img.m);
 };

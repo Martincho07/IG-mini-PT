@@ -29,7 +29,6 @@ struct Image {
     // Constructors
     Image(const std::vector<RGB> _v, float _c, float _m, int _width, int _height)
         : v(_v), c(_c), m(_m), width(_width), height(_height){};
-
 };
 
 // Tone mapping functions
