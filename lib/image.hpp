@@ -21,6 +21,8 @@ struct Image {
     int width;
     int height;
 
+    Image(){};
+
     // Constructors
     Image(const std::vector<RGB> _v, float _c, float _m, int _width, int _height)
         : v(_v), c(_c), m(_m), width(_width), height(_height){};
@@ -36,39 +38,3 @@ struct Image {
 
     void clampAndGammaCurve(){};
 };
-
-/* Read an image stored in a modified PPM format for representing HDR images
- *
- * Modified .ppm format:
- *
- * P3
- * #MAX=<max>
- * <width> <heigth>
- * <colorResolution>
- * <r> <g> <b>     <r> <g> <b> ...
- * <r> <g> <b>     <r> <g> <b> ...
- * ...
- *
- * Lines starting with # are considered comments
- * With the #MAX=<max> comment it's posible to indicate
- * the real maximum of the image as a real number, in case
- * it's different to 1.
- */
-Image readPPM(std::ifstream &is);
-
-/*
- * Read an image stored in memory as vector and create a PPM file
- *
- * .ppm format:
- *
- * P3
- * <width> <heigth>
- * 255
- * <r> <g> <b> ... <r> <g> <b>
- * <r> <g> <b> ... <r> <g> <b>
- *     ...             ...
- * <r> <g> <b> ... <r> <g> <b>
- *
- * The color resolution is always 255
- */
-void writePPM(std::ofstream os, const Image &img);
