@@ -104,10 +104,15 @@ int main(int argc, char **argv) {
         std::ifstream f(inFile, std::ios::in);
         if (f.is_open()) {
             Image img = readPPM(f);
+            img.clamping();
+            img.toDisk();
+            writePPM(img);
             f.close();
         } else {
             std::cerr << "Could not open file: " << inFile << std::endl;
         }
+
+
     } else {
         help();
         return 0;

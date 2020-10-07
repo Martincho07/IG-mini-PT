@@ -26,7 +26,21 @@ struct Image {
         : v(_v), c(_c), m(_m), width(_width), height(_height){};
 
     // Tone mapping functions
-    void clamping(){};
+    void clamping(){
+
+        for(RGB &pixel: v){
+
+            if (pixel.r > 255)
+                pixel.r = 255;
+
+            if(pixel.g > 255)
+                pixel.g = 255;
+
+            if(pixel.b > 255)
+                pixel.b = 255;
+        }
+
+    };
 
     void equalization(){};
 
@@ -35,6 +49,14 @@ struct Image {
     void gammaCurve(){};
 
     void clampAndGammaCurve(){};
+
+    void toDisk(){
+
+        for(RGB &pixel: v){
+
+            pixel = pixel * (c/m);
+        }
+    };
 };
 
 /* Read an image stored in a modified PPM format for representing HDR images

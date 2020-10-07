@@ -96,14 +96,14 @@ void writePPM(const Image &img){
     if (f_out.fail()) {
 
         f_out << "P3" << std::endl;
-        f_out << img.num_rows << " " << img.num_colums << std::endl;
+        f_out << img.height << " " << img.width << std::endl;
         f_out << "255" << std::endl;
 
-        for (int i = 0; i < img.v.size(); i+img.num_colums){
+        for (int i = 0; i < img.v.size(); i+img.width){
 
-            for (int n = 0; n < img.num_colums; i++){
+            for (int n = 0; n < img.width; i++){
 
-                if (n == img.num_colums)
+                if (n == img.width)
                     f_out << img.v[i+n].r << " " << img.v[i+n].g << " " << img.v[i+n].b << std::endl;
 
                 else
@@ -115,7 +115,7 @@ void writePPM(const Image &img){
         
     } else {
 
-        std::cout << "Se ha producido un error" << std::endl
+        std::cout << "Se ha producido un error" << std::endl;
 
     }
 
