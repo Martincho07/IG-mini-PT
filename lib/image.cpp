@@ -88,7 +88,7 @@ Image readPPM(std::ifstream &is) {
 };
 
 
-void writePPM(const Image &img){
+void writePPM(std::ofstream os, const Image &img){
 
     std::ofstream f_out;
     f_out.open("salida.ppm",std::ios::out);

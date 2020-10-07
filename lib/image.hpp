@@ -51,7 +51,6 @@ struct Image {
     void gammaCurve(){};
 
     void clampAndGammaCurve(){};
-<<<<<<< HEAD
 
     void toDisk(){
 
@@ -97,6 +96,4 @@ Image readPPM(std::ifstream &is);
  * The color resolution is always 255
  */
 void writePPM(std::ofstream os, const Image &img);
-=======
-};
->>>>>>> 121cbb40567b23da685d62f029dd7168574a5c51
+
