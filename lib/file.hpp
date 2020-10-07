@@ -1,66 +1,25 @@
 /*********************************************************************************
- * Image
+ * File
  *
- * File: image.hpp
+ * File: file.hpp
  * Author: Fernando Peña (NIA: 756012)
  * Author: Jose Daniel Subias Sarrato (NIA: 759533)
- * Date: 6/10/2020
+ * Date: 22/10/2020
  * Coms: Informática Gráfica, 2020-2021
  **********************************************************************************/
 
-#include "color.hpp"
+#include "image.hpp"
+
+#include <cctype>
 #include <fstream>
+#include <iostream>
 #include <string>
-#include <vector>
 
-struct Image {
+#define OUT_ID "out_"
 
-    std::vector<RGB> v;
-    float m;
-    float c;
-    int width;
-    int height;
+std::string createOutFilename(const std::string &file);
 
-    Image(){};
-
-    // Constructors
-    Image(const std::vector<RGB> _v, float _c, float _m, int _width, int _height)
-        : v(_v), c(_c), m(_m), width(_width), height(_height){};
-
-    // Tone mapping functions
-    void clamping(){
-
-        for(RGB &pixel: v){
-
-            if (pixel.r > 255)
-                pixel.r = 255;
-
-            if(pixel.g > 255)
-                pixel.g = 255;
-
-            if(pixel.b > 255)
-                pixel.b = 255;
-        }
-
-    };
-
-    void equalization(){};
-
-    void equalizeAndClamp(){};
-
-    void gammaCurve(){};
-
-    void clampAndGammaCurve(){};
-<<<<<<< HEAD
-
-    void toDisk(){
-
-        for(RGB &pixel: v){
-
-            pixel = pixel * (c/m);
-        }
-    };
-};
+bool checkFileExtension(const std::string &file, const std::string &ext);
 
 /* Read an image stored in a modified PPM format for representing HDR images
  *
@@ -78,8 +37,10 @@ struct Image {
  * With the #MAX=<max> comment it's posible to indicate
  * the real maximum of the image as a real number, in case
  * it's different to 1.
+ * 
+ * Return true if the reading is successful
  */
-Image readPPM(std::ifstream &is);
+bool readPPM(Image &img, const std::string file);
 
 /*
  * Read an image stored in memory as vector and create a PPM file
@@ -95,8 +56,7 @@ Image readPPM(std::ifstream &is);
  * <r> <g> <b> ... <r> <g> <b>
  *
  * The color resolution is always 255
+ * 
+ * Return true if the writting is successful
  */
-void writePPM(std::ofstream os, const Image &img);
-=======
-};
->>>>>>> 121cbb40567b23da685d62f029dd7168574a5c51
+bool writePPM(const Image &img, const std::string file);
