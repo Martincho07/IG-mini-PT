@@ -8,7 +8,10 @@
  * Coms: Informática Gráfica, 2020-2021
  **********************************************************************************/
 
+#pragma once
+
 #include "color.hpp"
+
 #include <fstream>
 #include <string>
 #include <vector>
@@ -28,20 +31,19 @@ struct Image {
         : v(_v), c(_c), m(_m), width(_width), height(_height){};
 
     // Tone mapping functions
-    void clamping(){
+    void clamping() {
 
-        for(RGB &pixel: v){
+        for (RGB &pixel : v) {
 
             if (pixel.r > 255)
                 pixel.r = 255;
 
-            if(pixel.g > 255)
+            if (pixel.g > 255)
                 pixel.g = 255;
 
-            if(pixel.b > 255)
+            if (pixel.b > 255)
                 pixel.b = 255;
         }
-
     };
 
     void equalization(){};
@@ -52,13 +54,12 @@ struct Image {
 
     void clampAndGammaCurve(){};
 
-    void toDisk(){
+    void toDisk() {
+    for (RGB &pixel : v) {
+        pixel = pixel * (c / m);
+    }
+};
 
-        for(RGB &pixel: v){
-
-            pixel = pixel * (c/m);
-        }
-    };
 };
 
 /* Read an image stored in a modified PPM format for representing HDR images
@@ -96,4 +97,7 @@ Image readPPM(std::ifstream &is);
  * The color resolution is always 255
  */
 void writePPM(std::ofstream os, const Image &img);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8e64aa1e9227671a2c6485e1bf55b0ce5005fa08

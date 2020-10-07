@@ -10,6 +10,8 @@
 
 #include "file.hpp"
 
+#include <cctype>
+
 std::string createOutFilename(const std::string &file) {
     size_t i = file.find_last_of('/', file.length());
 
@@ -47,7 +49,7 @@ void readPPMComment(std::ifstream &is, float &max) {
 };
 
 bool readPPM(Image &img, const std::string file) {
-    if (checkFileExtension(file, "ppm")) {
+    if (!checkFileExtension(file, "ppm")) {
         std::cerr << "Input file must have .ppm format" << std::endl;
         return false;
     }
@@ -55,6 +57,7 @@ bool readPPM(Image &img, const std::string file) {
     std::ifstream is(file, std::ios::in);
     if (!is.is_open()) {
         std::cerr << "Could not open file: " << file << std::endl;
+        return false;
     }
 
     int height, width, colorResolution;
@@ -122,7 +125,7 @@ bool writePPM(const Image &img, const std::string file) {
     os << "P3" << std::endl;
     os << img.width << " " << img.height << std::endl;
     os << "255" << std::endl;
-    for (int i = 0; i < img.v.size(); i + img.width) {
+    for (int i = 0; i < img.v.size(); i = i + img.width) {
         for (int n = 0; n < img.height; i++) {
             os << img.v[i + n];
             n == img.width ? os << std::endl : os << " ";

@@ -11,8 +11,6 @@
 #include "file.hpp"
 #include "image.hpp"
 
-#include <fstream>
-#include <iostream>
 #include <string>
 
 void help() {
@@ -65,7 +63,6 @@ int main(int argc, char **argv) {
             outFile = createOutFilename(inFile);
         }
 
-
         std::cout << "Antes de procesar" << std::endl;
         std::cout << "inFile: " << inFile << " outFile: " << outFile << std::endl;
         std::cout << "clamp: " << clamp << std::endl;
@@ -79,9 +76,7 @@ int main(int argc, char **argv) {
             f.close();
         } else {
             std::cerr << "Could not open file: " << inFile << std::endl;
-
         }
-
 
     } else {
         help();
