@@ -11,8 +11,6 @@
 #include "file.hpp"
 #include "image.hpp"
 
-#include <fstream>
-#include <iostream>
 #include <string>
 
 void help() {

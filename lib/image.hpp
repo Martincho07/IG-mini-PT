@@ -8,7 +8,10 @@
  * Coms: Informática Gráfica, 2020-2021
  **********************************************************************************/
 
+#pragma once
+
 #include "color.hpp"
+
 #include <fstream>
 #include <string>
 #include <vector>
