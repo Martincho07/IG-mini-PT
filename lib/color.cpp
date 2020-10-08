@@ -9,3 +9,8 @@
  **********************************************************************************/
 
 #include "color.hpp"
+#include "math.h"
+
+RGB round(const RGB &c) {
+    return RGB(round(c.r), round(c.g), round(c.b));
+}

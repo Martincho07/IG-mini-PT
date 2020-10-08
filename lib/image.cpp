@@ -12,6 +12,15 @@
 
 void clamping(Image &img) {
     for (RGB &pixel : img.v) {
+        // if (pixel.r > 255.0f)
+        //     pixel.r = 255.0f;
+
+        // if (pixel.g > 255.0f)
+        //     pixel.g = 255.0f;
+
+        // if (pixel.b > 255.0f)
+        //     pixel.b = 255.0f;
+
         if (pixel.r > 1.0f)
             pixel.r = 1.0f;
 
@@ -33,5 +42,6 @@ void clampAndGammaCurve(Image &img){};
 
 void toDisk(Image &img) {
     for (RGB &pixel : img.v)
-        pixel = pixel * (img.c / img.m);
+        pixel = round(pixel * 255);
+    // pixel = pixel * (img.c / img.m);
 };

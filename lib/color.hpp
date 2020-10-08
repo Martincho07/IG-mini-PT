@@ -48,3 +48,5 @@ inline std::ostream &operator<<(std::ostream &out, const RGB &c) {
     out << c.r << " " << c.g << " " << c.b;
     return out;
 };
+
+RGB round(const RGB &c);
