@@ -50,15 +50,10 @@ Planet readStation(std::istream &is, bool interactive) {
 }
 
 int main(int argc, char **argv) {
-    std::cout << sinf(1.5708) << std::endl;
-
-    std::cout << cosf(M_PI_2) << std::endl;
-    std::cout << M_PI << std::endl;
+    Planet planet1, planet2;
 
     // If there's a file as argument, read it
     // Else, ask for the stations from standard input
-    Planet planet1, planet2;
-
     if (argc > 1) {
         std::filebuf fb;
         if (fb.open(argv[1], std::ios::in)) {
@@ -72,9 +67,7 @@ int main(int argc, char **argv) {
     } else {
         std::cout << "Origin planet" << std::endl;
         planet1 = readStation(std::cin, true);
-        std::cout
-            << std::endl
-            << "Destination planet" << std::endl;
+        std::cout << "\nDestination planet" << std::endl;
         planet2 = readStation(std::cin, true);
     }
 

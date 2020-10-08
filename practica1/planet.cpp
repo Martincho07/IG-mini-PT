@@ -10,8 +10,9 @@
 
 #include "planet.hpp"
 
-#include <assert.h>
 #include <cmath>
+
+#include <error.hpp>
 
 Planet::Planet(const Point3 &_center, const Point3 &_refCity, const Vector3 &_axis, float inclination, float azimuth)
     : center(_center), refCity(_refCity), axis(_axis) {
@@ -22,9 +23,15 @@ Planet::Planet(const Point3 &_center, const Point3 &_refCity, const Vector3 &_ax
     float radius = modulus(axis) / 2;
 
     // Test that the parameters are correct
-    assert(SIMILAR(modulus(u), radius));
-    assert(inclination > 0 && inclination < M_PI);
-    assert(azimuth >= -M_PI && azimuth <= M_PI);
+    if (!SIMILAR(modulus(u), radius)) {
+        ErrorExit("Reference city is not on the surface of the planet: ", refCity);
+    }
+    if (inclination <= 0 || inclination >= M_PI) {
+        ErrorExit("Inclination must be in the range (0, pi): ", inclination);
+    }
+    if (azimuth <= -M_PI && azimuth > M_PI) {
+        ErrorExit("Azimuth must be in the range (-pi, pi]: ", azimuth);
+    }
 
     // Construct a coordinate system local to the planet
     // The x axis has 0 azimuth
@@ -96,9 +103,14 @@ void launch(const Planet &origin, const Planet &destination) {
     // Comprobar que las trayectorias no se meten dentro en el planeta
     // Esto es que el ángulo entre la trayectoria y la normal del planeta sea menor o igual que 90 grados
     // (que el coseno sea no negativo)
-    assert(dot(path, origin.k) >= 0);
-    assert(dot(-path, destination.k) >= 0);
+    if (dot(path, origin.k) < 0) {
+        ErrorExit("The path points to the inside of the origin planet!");
+    }
+    if (dot(-path, destination.k) >= 0) {
+        ErrorExit("The path points to the inside of the destination planet!");
+    }
 
-    std::cout << "Trayectoria desde origin: " << pathFromOrigin << std::endl;
+    std::cout
+        << "Trayectoria desde origin: " << pathFromOrigin << std::endl;
     std::cout << "Trayectoria desde destination: " << pathFromDestination << std::endl;
 };
