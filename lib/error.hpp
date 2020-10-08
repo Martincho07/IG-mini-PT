@@ -10,24 +10,37 @@
 
 #pragma once
 
-// Error reporting
-void Warning(const char *message);
-// void Error(const char *message);
-// void ErrorExit(const char *message);
+#include <iostream>
+#include <ostream>
 
-template <typename Arg, typename... Args>
-void ErrorExit(Arg &&arg, Args &&... args) {
-    std::cerr << std::forward<Arg>(arg);
-    using expander = int[];
-    (void)expander{0, (void(std::cerr << ',' << std::forward<Args>(args)), 0)...};
-    std::cerr << std::endl;
-    exit(0);
+// https : //stackoverflow.com/questions/29326460/how-to-make-a-variadic-macro-for-stdcout
+inline void Println(std::ostream &os) {
+    os << std::endl;
 }
 
-template <typename Arg, typename... Args>
-void Error(Arg &&arg, Args &&... args) {
-    std::cerr << std::forward<Arg>(arg);
-    using expander = int[];
-    std::cerr << std::endl;
-    (void)expander{0, (void(std::cerr << ',' << std::forward<Args>(args)), 0)...};
+template <typename First, typename... Rest>
+inline void Println(std::ostream &os, First &&first, Rest &&... rest) {
+    os << std::forward<First>(first);
+    Println(os, std::forward<Rest>(rest)...);
+}
+
+// Error reporting functions
+
+template <typename... Args>
+void Warning(Args... args) {
+    std::cerr << "Warning: ";
+    Println(std::cerr, std::forward<Args>(args)...);
+}
+
+template <typename... Args>
+void Error(Args... args) {
+    std::cerr << "Error: ";
+    Println(std::cerr, std::forward<Args>(args)...);
+}
+
+template <typename... Args>
+void ErrorExit(Args... args) {
+    std::cerr << "Error: ";
+    Println(std::cerr, std::forward<Args>(args)...);
+    exit(1);
 }

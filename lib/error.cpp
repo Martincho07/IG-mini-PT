@@ -9,19 +9,3 @@
  **********************************************************************************/
 
 #include "error.hpp"
-
-#include <iostream>
-
-namespace {
-void processError(const char *errorType, const char *message) {
-    std::cerr << errorType << ": " << message << std::endl;
-}
-} // namespace
-
-void Warning(const char *message) {
-    processError("Warning", message);
-}
-
-// void Error(const char *message) {
-//     processError("Error", message);
-// }

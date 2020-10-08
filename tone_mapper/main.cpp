@@ -8,6 +8,7 @@
  * Coms: Informática Gráfica, 2020-2021
  **********************************************************************************/
 
+#include "error.hpp"
 #include "file.hpp"
 #include "image.hpp"
 
@@ -16,24 +17,12 @@
 #include <string>
 
 void help() {
-    std::cout << "Usage: tone_mapper [options] file.ppm\n\n"
+    std::cout << "Usage: tone_mapper [options] filename\n\n"
                  "Options:\n"
                  "  -o <filename>   Specify output filename\n"
                  "  -clamp <value>  Clamp the image at <value>\n"
                  "  -h              Show this help screen and quit\n"
               << std::endl;
-}
-
-void invalidOption(const std::string &arg) {
-    std::cerr << "Invalid option: " << arg << std::endl
-              << std::endl;
-    help();
-}
-
-void missingArgument(const std::string &arg) {
-    std::cerr << "Missing value after " << arg << " argument" << std::endl
-              << std::endl;
-    help();
 }
 
 int main(int argc, char **argv) {
@@ -48,15 +37,13 @@ int main(int argc, char **argv) {
         if (arg[0] == '-') {
             if (arg == "-o") {
                 if (i + 1 >= argc) {
-                    missingArgument(arg);
-                    return 1;
+                    ErrorExit("Missing value after ", arg, " argument");
                 }
                 outFile = argv[i + 1];
                 i++;
             } else if (arg == "-clamp") {
                 if (i + 1 >= argc) {
-                    missingArgument(arg);
-                    return 1;
+                    ErrorExit("Missing value after ", arg, " argument");
                 }
                 clamp = std::stof(argv[i + 1]);
                 i++;
@@ -64,8 +51,7 @@ int main(int argc, char **argv) {
                 help();
                 return 0;
             } else {
-                invalidOption(arg);
-                return 1;
+                ErrorExit("Invalid option");
             }
         } else {
             // file name
@@ -94,7 +80,6 @@ int main(int argc, char **argv) {
 
     } else {
         help();
-        return 0;
     }
 
     return 0;
