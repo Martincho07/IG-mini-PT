@@ -9,6 +9,7 @@
  **********************************************************************************/
 
 #include "file.hpp"
+#include "error.hpp"
 
 #include <cctype>
 
@@ -52,14 +53,12 @@ void readPPMComment(std::ifstream &is, float &max) {
 
 Image readPPM(std::string file) {
     if (!checkFileExtension(file, "ppm")) {
-        std::cerr << "Input file must have .ppm format" << std::endl;
-        exit(0);
+        ErrorExit("Input file must have .ppm extension");
     }
 
     std::ifstream is(file, std::ios::in);
     if (!is.is_open()) {
-        std::cerr << "Could not open file: " << file << std::endl;
-        exit(0);
+        ErrorExit("Could not open file");
     }
 
     int height, width, colorResolution;
@@ -69,20 +68,17 @@ Image readPPM(std::string file) {
     std::string format;
     is >> format;
     if (format != "P3") {
-        std::cerr << "Invalid PPM file, the magic number should be 'P3'" << std::endl;
-        exit(0);
+        ErrorExit("Invalid PPM file, the magic number should be 'P3'");
     }
 
     // Get width and height
     readPPMComment(is, max);
     is >> width >> height;
     if (width < 1) {
-        std::cerr << "Unsupported width: " << width << std::endl;
-        exit(0);
+        ErrorExit("Unsupported width: ", width);
     }
     if (height < 1) {
-        std::cerr << "Unsupported height: " << height << std::endl;
-        exit(0);
+        ErrorExit("Unsupported height: ", height);
     }
 
     // Get colorResolution
@@ -90,20 +86,19 @@ Image readPPM(std::string file) {
 
     is >> colorResolution;
     if (colorResolution < 1) {
-        std::cerr << "Unsupported color resolution: " << colorResolution << std::endl;
-        exit(0);
+        ErrorExit("Unsupported color resolution: ", colorResolution);
     }
 
     // Read last block of comments
     readPPMComment(is, max);
     if (max < 1) {
-        std::cerr << "Unsupported max value: " << max << std::endl;
-        exit(0);
+        ErrorExit("Unsupported max value: ", max);
     }
 
     // Read RGB tuples row by row
     // Each tuple is mutiplied by this factor to get the real RGB value
     float f = max / colorResolution;
+    // float f = 1 / colorResolution;
 
     std::vector<RGB> v(width * height);
     for (int i = 0; i < width * height; i++) {
@@ -113,29 +108,33 @@ Image readPPM(std::string file) {
 
     std::cout << colorResolution << " " << max << " " << width << " " << height << std::endl;
     is.close();
-    return Image(v, colorResolution, max, width, height);
+    return Image(v, width, height);
 };
 
-bool writePPM(const Image &img, const std::string file) {
+bool writePPM(Image &img, const std::string file) {
 
-    std::cout << img.width << " columnas" << std::endl;
-    std::cout << img.height << " filas" << std::endl;
-    std::cout << img.v.size() << " size" << std::endl;
+    float m;
     std::ofstream os(file, std::ios::out);
     if (!os.is_open()) {
-        std::cerr << "Could not open file: " << file << std::endl;
+        Error("Could not open file: ", file);
         return false;
     }
-    
+
+    m = img.getMax();
+
+    for (RGB &pixel : img.v){
+        pixel = pixel * (LDR_LIMIT / m);
+        pixel = round(pixel);
+    }
+
     os << "P3" << std::endl;
-    os << "#MAX=" << img.m << std::endl;
+    os << "#MAX=" << m << std::endl;
     os << img.width << " " << img.height << std::endl;
     os << "255" << std::endl;
     for (int i = 0; i < img.v.size(); i = i + img.width) {
         for (int n = 0; n < img.width; n++) {
-
             os << img.v[i + n];
-            n == img.width-1 ? os << std::endl : os << "   ";
+            n == img.width - 1 ? os << std::endl : os << "   ";
         }
     }
     os.close();

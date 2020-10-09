@@ -4,6 +4,7 @@ add_library(lib geometry.cpp
                 transform.cpp
                 color.cpp
                 image.cpp
-                file.cpp)
+                file.cpp
+                error.cpp)
 
 target_include_directories(lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

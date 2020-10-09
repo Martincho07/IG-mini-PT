@@ -9,14 +9,12 @@
  **********************************************************************************/
 
 #include "image.hpp"
-
-const int LDR_LIMIT = 255;
+#include "math.h"
 
 void clamping(Image &img) {
 
-    img.m = 1.0f;
-
     for (RGB &pixel : img.v) {
+
         if (pixel.r > 1.0f)
             pixel.r = 1.0f;
 
@@ -28,15 +26,29 @@ void clamping(Image &img) {
     }
 };
 
-void equalization(Image &img){};
+void equalization(Image &img, float V){
 
-void equalizeAndClamp(Image &img){};
+    for (RGB &pixel : img.v){
+        pixel = pixel / V;
 
-void gammaCurve(Image &img){};
+    }
 
-void clampAndGammaCurve(Image &img){};
+};
 
-void toDisk(Image &img) {
+void equalizeAndClamp(Image &img,  float V){
+    equalization(img, V);
+    clamping(img);
+
+};
+
+void gammaCurve(Image &img, float V, float gamma){
+    equalization(img, V);
     for (RGB &pixel : img.v)
-        pixel = pixel * (LDR_LIMIT / img.m);
+        pixel = pixel ^ gamma;
+};
+
+void clampAndGammaCurve(Image &img, float V, float gamma){
+    gammaCurve(img,V,gamma);
+    clamping(img);
+
 };

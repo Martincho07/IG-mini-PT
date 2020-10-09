@@ -11,8 +11,8 @@ add_subdirectory(lib)
 add_library(planet practica1/planet.cpp)
 target_link_libraries(planet LINK_PUBLIC lib)
 
-add_executable(main practica1/practica1.cpp)
-target_link_libraries(main LINK_PUBLIC lib planet)
+add_executable(practica1 practica1/main.cpp)
+target_link_libraries(practica1 LINK_PUBLIC lib planet)
 
 add_executable(tone_mapper tone_mapper/main.cpp)
 target_link_libraries(tone_mapper LINK_PUBLIC lib)

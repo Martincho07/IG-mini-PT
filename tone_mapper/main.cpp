@@ -8,15 +8,17 @@
  * Coms: Informática Gráfica, 2020-2021
  **********************************************************************************/
 
+#include "error.hpp"
 #include "file.hpp"
 #include "image.hpp"
 
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <assert.h>
 
 void help() {
-    std::cout << "Usage: tone_mapper [options] file.ppm\n\n"
+    std::cout << "Usage: tone_mapper [options] filename\n\n"
                  "Options:\n"
                  "  -o <filename>   Specify output filename\n"
                  "  -clamp <value>  Clamp the image at <value>\n"
@@ -24,22 +26,13 @@ void help() {
               << std::endl;
 }
 
-void invalidOption(const std::string &arg) {
-    std::cerr << "Invalid option: " << arg << std::endl
-              << std::endl;
-    help();
-}
-
-void missingArgument(const std::string &arg) {
-    std::cerr << "Missing value after " << arg << " argument" << std::endl
-              << std::endl;
-    help();
-}
-
 int main(int argc, char **argv) {
     std::string inFile;
     std::string outFile;
     int clamp = 1;
+    float maxValue;
+    char option = ' ';
+    float v = 0;
 
     // Process arguments
     for (int i = 1; i < argc; i++) {
@@ -48,15 +41,13 @@ int main(int argc, char **argv) {
         if (arg[0] == '-') {
             if (arg == "-o") {
                 if (i + 1 >= argc) {
-                    missingArgument(arg);
-                    return 1;
+                    ErrorExit("Missing value after ", arg, " argument");
                 }
                 outFile = argv[i + 1];
                 i++;
             } else if (arg == "-clamp") {
                 if (i + 1 >= argc) {
-                    missingArgument(arg);
-                    return 1;
+                    ErrorExit("Missing value after ", arg, " argument");
                 }
                 clamp = std::stof(argv[i + 1]);
                 i++;
@@ -64,8 +55,7 @@ int main(int argc, char **argv) {
                 help();
                 return 0;
             } else {
-                invalidOption(arg);
-                return 1;
+                ErrorExit("Invalid option");
             }
         } else {
             // file name
@@ -84,17 +74,52 @@ int main(int argc, char **argv) {
         std::cout << "clamp: " << clamp << std::endl;
 
         Image img = readPPM(inFile);
-        std::cout << "he leido" << std::endl;
-        clamping(img);
-        std::cout << "he hecho clamping" << std::endl;
-        toDisk(img);
-        std::cout << "modificacion para fichero" << std::endl;
+        maxValue = img.getMax();
+
+        std::cout << "Seleccione el tone mapper a aplicar:" << std::endl;
+        std::cout << "\t 1-Clamping. " << std::endl;
+        std::cout << "\t 2-Equalization. " << std::endl;
+        std::cout << "\t 3-Equalize and clamp. " << std::endl;
+        std::cout << "\t 4-Gamma curve. " << std::endl;
+        std::cout << "\t 5-Clamp and gamma curve. " << std::endl;
+        std::cin >> option;
+
+        if (option == '1') {
+            std::cout << "Aplicando clamping..." << std::endl;
+            clampAndGammaCurve(img, 1.0f, 1.0f);
+
+        } else if (option == '2') {
+            std::cout << "Aplicando equalization..." << std::endl;
+            clampAndGammaCurve(img, maxValue, 1.0f);
+
+        } else if (option == '3') {
+            std::cout << "Introduce una v = [0," << maxValue << "]" << std::endl;
+            std::cin >> v;
+            assert(v >= 0 && v <= maxValue);
+            std::cout << "Aplicando equalize and clamp..." << std::endl;
+            clampAndGammaCurve(img, v, 1.0f);
+        
+        } else if (option == '4'){
+            std::cout << "Aplicando gamma curve..." << std::endl;
+            clampAndGammaCurve(img, maxValue, 1.0f/2.2f);
+
+        } else if (option == '5') {
+            std::cout << "Introduce una v = [0," << maxValue << "]" << std::endl;
+            std::cin >> v;
+            assert(v >= 0 && v <= maxValue);
+            std::cout << "Aplicando clamp and gamma curve..." << std::endl;
+            clampAndGammaCurve(img, v, 1.0f/2.2f);
+
+        } else {
+            std::cout << "\t Opcion invalida" << std::endl;
+
+        }
+
         writePPM(img, outFile);
-        std::cout << "fin" << std::endl;
+
 
     } else {
         help();
-        return 0;
     }
 
     return 0;

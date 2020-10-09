@@ -17,6 +17,7 @@
 #include <string>
 
 #define OUT_ID "out_"
+#define LDR_LIMIT 255
 
 /*
  * Add OUT_ID to the beggining of the name of <file>
@@ -67,4 +68,4 @@ Image readPPM(const std::string file);
  *
  * Return true if the writting is successful
  */
-bool writePPM(const Image &img, const std::string file);
+bool writePPM(Image &img, const std::string file);

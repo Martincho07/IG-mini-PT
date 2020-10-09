@@ -11,6 +11,9 @@
 #pragma once
 
 #include <iostream>
+#include <algorithm>
+#include <initializer_list>
+#include "math.h"
 
 struct RGB {
     float r, g, b;
@@ -37,6 +40,16 @@ struct RGB {
     RGB operator/(float s) const {
         return RGB(r / s, g / s, b / s);
     };
+
+    RGB operator^(float s) const{
+        return RGB(pow(r,s), pow(g,s), pow(b,s));
+    };
+
+    float getMaxValue() const {
+
+        return std::max({r, g, b});
+
+    };
 };
 
 inline std::istream &operator>>(std::istream &in, RGB &c) {
@@ -48,3 +61,5 @@ inline std::ostream &operator<<(std::ostream &out, const RGB &c) {
     out << c.r << " " << c.g << " " << c.b;
     return out;
 };
+
+RGB round(const RGB &c);

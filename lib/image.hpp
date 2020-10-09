@@ -16,30 +16,46 @@
 #include <string>
 #include <vector>
 
+#define GAMMA 1.0f/2.2f
+
 struct Image {
 
     std::vector<RGB> v;
-    float m;
-    float c;
     int width;
     int height;
 
     Image(){};
 
     // Constructors
-    Image(const std::vector<RGB> _v, float _c, float _m, int _width, int _height)
-        : v(_v), c(_c), m(_m), width(_width), height(_height){};
+    Image(const std::vector<RGB> _v, int _width, int _height)
+        : v(_v), width(_width), height(_height){};
+
+    float getMax() const {
+
+        float maxValue = 0.0;
+        float aux = -1.0f;
+
+        for (const RGB & pixel: v){
+
+            maxValue = pixel.getMaxValue();
+
+            if (maxValue > aux)
+                aux = maxValue;
+
+        }
+        return aux;
+
+    };
 };
 
 // Tone mapping functions
 void clamping(Image &img);
 
-void equalization(Image &img);
+void equalization(Image &img, float V);
 
-void equalizeAndClamp(Image &img);
+void equalizeAndClamp(Image &img,  float V);
 
-void gammaCurve(Image &img);
+void gammaCurve(Image &img, float V, float gamma=GAMMA);
 
-void clampAndGammaCurve(Image &img);
+void clampAndGammaCurve(Image &img, float V, float gamma=GAMMA);
 
-void toDisk(Image &img);
