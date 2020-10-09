@@ -10,7 +10,12 @@
 
 #include "image.hpp"
 
+const int LDR_LIMIT = 255;
+
 void clamping(Image &img) {
+
+    img.m = 1.0f;
+
     for (RGB &pixel : img.v) {
         if (pixel.r > 1.0f)
             pixel.r = 1.0f;
@@ -33,5 +38,5 @@ void clampAndGammaCurve(Image &img){};
 
 void toDisk(Image &img) {
     for (RGB &pixel : img.v)
-        pixel = pixel * (img.c / img.m);
+        pixel = pixel * (LDR_LIMIT / img.m);
 };

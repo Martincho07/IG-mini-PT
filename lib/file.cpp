@@ -128,6 +128,7 @@ bool writePPM(const Image &img, const std::string file) {
     }
     
     os << "P3" << std::endl;
+    os << "#MAX=" << img.m << std::endl;
     os << img.width << " " << img.height << std::endl;
     os << "255" << std::endl;
     for (int i = 0; i < img.v.size(); i = i + img.width) {
