@@ -15,8 +15,14 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <math.h>
 
+// Reinhard constants for tone mapper algorithm
 #define GAMMA 1.0f/2.2f
+#define FI 8.0f
+#define THRESHOLD 0.05f
+#define ALPHA_1 0.35f
+#define ALPHA_2 ALPHA_1 * 1.6f 
 
 struct Image {
 
@@ -46,6 +52,23 @@ struct Image {
         return aux;
 
     };
+
+    float getMin() const {
+
+        float minValue = 0.0;
+        float aux = INFINITY;
+
+        for (const RGB & pixel: v){
+
+            minValue = pixel.getMinValue();
+
+            if (minValue < aux && minValue != 0.0f)
+                aux = minValue;
+        }
+
+        return aux;
+
+    };
 };
 
 // Tone mapping functions
@@ -59,3 +82,12 @@ void gammaCurve(Image &img, float V, float gamma=GAMMA);
 
 void clampAndGammaCurve(Image &img, float V, float gamma=GAMMA);
 
+void Reinhard(Image &img, float a, float max);
+
+int selectS(int x, int y, const int s[9], const RGB &pixel, float a, float L);
+
+float V(int x, int y, int s, const RGB &pixel, float a, float L);
+
+float V_i(int x, int y, int s,float alpha, const RGB &pixel, float L);
+
+float R_i(int x, int y, int s,float alpha);

@@ -15,6 +15,11 @@
 #include <initializer_list>
 #include "math.h"
 
+// Reinhard constants for pixel luminity
+#define LUMINANCE_R 0.27f
+#define LUMINANCE_G 0.67f
+#define LUMINANCE_B 0.06f
+
 struct RGB {
     float r, g, b;
 
@@ -48,6 +53,17 @@ struct RGB {
     float getMaxValue() const {
 
         return std::max({r, g, b});
+
+    };
+
+    float getMinValue() const {
+
+        return std::min({r, g, b});
+    };
+
+    float L() const {
+
+        return (LUMINANCE_R * r) + (LUMINANCE_G * g) + (LUMINANCE_B * b);
 
     };
 };

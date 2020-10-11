@@ -134,7 +134,7 @@ bool writePPM(Image &img, const std::string file) {
     for (int i = 0; i < img.v.size(); i = i + img.width) {
         for (int n = 0; n < img.width; n++) {
             os << img.v[i + n];
-            n == img.width - 1 ? os << std::endl : os << "   ";
+            n == img.width - 1 ? os << std::endl : os << "  ";
         }
     }
     os.close();

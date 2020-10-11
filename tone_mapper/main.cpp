@@ -82,37 +82,45 @@ int main(int argc, char **argv) {
         std::cout << "\t 3-Equalize and clamp. " << std::endl;
         std::cout << "\t 4-Gamma curve. " << std::endl;
         std::cout << "\t 5-Clamp and gamma curve. " << std::endl;
+        std::cout << "\t 6-Reinhard 2002. " << std::endl;
         std::cin >> option;
 
         if (option == '1') {
-            std::cout << "Aplicando clamping..." << std::endl;
+            std::cout << "Applying clamping..." << std::endl;
             clampAndGammaCurve(img, 1.0f, 1.0f);
 
         } else if (option == '2') {
-            std::cout << "Aplicando equalization..." << std::endl;
+            std::cout << "Applying equalization..." << std::endl;
             clampAndGammaCurve(img, maxValue, 1.0f);
 
         } else if (option == '3') {
-            std::cout << "Introduce una v = [0," << maxValue << "]" << std::endl;
+            std::cout << "Enter a value v = [0," << maxValue << "]" << std::endl;
             std::cin >> v;
             assert(v >= 0 && v <= maxValue);
-            std::cout << "Aplicando equalize and clamp..." << std::endl;
+            std::cout << "Applying equalize and clamp..." << std::endl;
             clampAndGammaCurve(img, v, 1.0f);
         
         } else if (option == '4'){
-            std::cout << "Aplicando gamma curve..." << std::endl;
+            std::cout << "Applying gamma curve..." << std::endl;
             clampAndGammaCurve(img, maxValue, 1.0f/2.2f);
 
         } else if (option == '5') {
-            std::cout << "Introduce una v = [0," << maxValue << "]" << std::endl;
+            std::cout << "Enter a value v = [0," << maxValue << "]" << std::endl;
             std::cin >> v;
             assert(v >= 0 && v <= maxValue);
-            std::cout << "Aplicando clamp and gamma curve..." << std::endl;
+            std::cout << "Applying clamp and gamma curve..." << std::endl;
             clampAndGammaCurve(img, v, 1.0f/2.2f);
 
-        } else {
-            std::cout << "\t Opcion invalida" << std::endl;
+        } else if (option == '6') {
+            std::cout << "Enter a value v = [0," << maxValue << "]" << std::endl;
+            std::cin >> v;
+            assert(v >= 0 && v <= maxValue);
+            std::cout << "Applying Reinhard 2002..." << std::endl;
+            Reinhard(img, v, maxValue);
 
+        } else {
+            std::cout << "Opcion invalida" << std::endl;
+            return 1;
         }
 
         writePPM(img, outFile);
