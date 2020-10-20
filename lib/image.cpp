@@ -52,20 +52,10 @@ void clampAndGammaCurve(Image &img, float V, float gamma){
 
 };
 
-void Reinhard(Image &img, float a, float max){
+void Reinhard(Image &img, float a){
 
-    
-
-    // diferents scales
-    int s[9] = {1, 2, 3, 4, 7, 10, 17, 27, 43};
-
-    // best scale for a pixel
-    float s_m;
-    RGB pixel;
-    int y = 0;
-
-    // world luminity
-    double L_w = 0.0f;
+    // white luminity
+    float L_w = 0.0f;
 
     // pixel luminity
     float L = 0.0f;
@@ -80,87 +70,52 @@ void Reinhard(Image &img, float a, float max){
 
     L_w = expf(L_w / (img.width * img.height));
 
-    
     for (RGB &pixel: img.v){
         L = (a / L_w) * pixel.r;
-        //s_m = selectS(y, n,s, pixel, a, L);   
         pixel.r = (L * (1.0f + L / pow(min_L,2))) / (1.0f + L);
         L = (a / L_w) * pixel.g;
-        //s_m = selectS(y, n,s, pixel, a, L);
         pixel.g = (L * (1.0f + L / pow(min_L,2))) / (1.0f + L);
         L = (a / L_w) * pixel.b;
-        //s_m = selectS(y, n,s, pixel, a, L);
         pixel.b = (L * (1.0f + L / pow(min_L,2))) / (1.0f + L);
     }
     
-    /*
-    for (int i = 0; i < img.v.size(); i = i + img.width) {
-        for (int n = 0; n < img.width; n++) {
-
-            pixel = img.v[i + n];
-            L = (a / L_w) * pixel.r;
-            s_m = selectS(n,(int) i,s, pixel, a, L);   
-            pixel.r =  L / (1.0f + V_i(n,(int) i / img.width,s_m,ALPHA_1,pixel,L));
-
-            L = (a / L_w) * pixel.g;
-            s_m = selectS(n,(int) i,s, pixel, a, L);
-            pixel.g = L / (1.0f + V_i(n,(int) i / img.width,s_m,ALPHA_1,pixel,L));
-
-            L = (a / L_w) * pixel.b;
-            s_m = selectS(n,(int) i,s, pixel, a, L);
-            pixel.b = L / (1.0f + V_i(n,(int) i / img.width,s_m,ALPHA_1,pixel,L));
-                
-        }
-    }*/
-
 };
 
-// Selection the best scale froma a pixel
-int selectS(int x, int y, const int s[9], const RGB &pixel, float a, float L){
+void Mantiuk(Image &img, float a, float s = 0.6f){
 
-    int scale = 0;
+    // white luminity
+    float L_w = 0.0f;
 
-    while (abs(V(x, y, s[scale], pixel, a,L)) >= THRESHOLD){
+    float L_tone_mapping = 0.0f;
+    // pixel luminity
+    float L = 0.0f;
 
-        scale++;
+    float L_pixel = 0.0f;
+
+    // min wite in the image
+    float min_L = img.getMax();
+
+    // reinhard algorithm
+    // https://www.researchgate.net/publication/317749456_A_comparative_review_of_tone-mapping_algorithms_for_high_dynamic_range_video
+    for (const RGB &pixel: img.v)
+        L_w += logf(1e-6f + pixel.L());
+
+    L_w = expf(L_w / (img.width * img.height));
+
+    for (RGB &pixel: img.v){
+        pixel = pixel * (1.0f / 4.0f);
+        L_pixel = pixel.L();
+        L = (a / L_w) * pixel.r;
+        L_tone_mapping = (L * (1.0f + L / pow(min_L,2))) / (1.0f + L);
+        pixel.r = pow(pixel.r / L_pixel, s) * L_tone_mapping;
+
+        L = (a / L_w) * pixel.g;
+        L_tone_mapping = (L * (1.0f + L / pow(min_L,2))) / (1.0f + L);
+        pixel.g = pow(pixel.g / L_pixel, s) * L_tone_mapping;
+
+        L = (a / L_w) * pixel.b;
+        L_tone_mapping = (L * (1.0f + L / pow(min_L,2))) / (1.0f + L);
+        pixel.b = pow(pixel.b / L_pixel, s) * L_tone_mapping;
     }
     
-    //std::cout << "scale: " << scale << std::endl;
-    //std::cout << "V: " << V(x, y, s[scale], pixel, a) << std::endl;
-    //std::cout << "a_1: " << ALPHA_1 << std::endl;
-    //std::cout << "a_2: " << ALPHA_2 << std::endl;
-    //std::cout << "scale: " << s[scale] << std::endl;
-    return s[scale];
-};
-
-// calulate V value for a determinate scale
-float V(int x, int y, int s, const RGB &pixel, float a, float L){
-
-    //std::cout << "denominador: " << (V_i(x,y,s,ALPHA_1,pixel) - V_i(x,y,s,ALPHA_2,pixel))  << std::endl;
-    //std::cout << "op 1: " << V_i(x,y,s,ALPHA_1,pixel) << std::endl;
-    //std::cout << "op 2: " << V_i(x,y,s,ALPHA_2,pixel) << std::endl;
-    return (V_i(x,y,s,ALPHA_1,pixel,L) - V_i(x,y,s,ALPHA_2,pixel,L)) / (((pow(2,FI) * a) / pow(s,2) ) + V_i(x,y,s,ALPHA_1,pixel,L));
-
-};
-
-// operator Vi in reinhard algorithm
-float V_i(int x, int y, int s,float alpha, const RGB &pixel,float L){
-
-    //std::cout << "L: " << pixel.L() << std::endl;
-    //std::cout << "R_i: " << R_i(x, y, s, alpha) << std::endl;
-    return L * R_i(x, y, s, alpha);
-
-};
-
-// operator Ri in reinhard algorithm
-float R_i(int x, int y, int s,float alpha){
-
-    //std::cout << "div: " << (1.0f /(M_PI * pow(alpha * s, 2.0f))) << std::endl;
-    //std::cout << "expo: " << expf((-((pow(x,2) + pow(y,2)) / pow(alpha*s,2))) * (1.0f / (M_PI * pow(alpha * s, 2)))) << std::endl;
-    //std::cout << "x: " << x << std::endl;
-    //std::cout << "y: " << y << std::endl;
-    //std::cout << "numerador: " << pow(x,2) + pow(y,2)  << std::endl;
-    //std::cout << "denominador: " << pow(alpha*s,2) << std::endl;
-
-    return expf((-((pow(x,2) + pow(y,2)) / pow(alpha*s,2))) * (1.0f / (M_PI * pow(alpha * s, 2))));
 };

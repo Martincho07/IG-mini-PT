@@ -83,6 +83,7 @@ int main(int argc, char **argv) {
         std::cout << "\t 4-Gamma curve. " << std::endl;
         std::cout << "\t 5-Clamp and gamma curve. " << std::endl;
         std::cout << "\t 6-Reinhard 2002. " << std::endl;
+        std::cout << "\t 7-Mantiuk 2008. " << std::endl;
         std::cin >> option;
 
         if (option == '1') {
@@ -116,7 +117,14 @@ int main(int argc, char **argv) {
             std::cin >> v;
             assert(v >= 0 && v <= maxValue);
             std::cout << "Applying Reinhard 2002..." << std::endl;
-            Reinhard(img, v, maxValue);
+            Reinhard(img, v);
+
+        } else if (option == '7') {
+            std::cout << "Enter a value v = [0," << maxValue << "]" << std::endl;
+            std::cin >> v;
+            assert(v >= 0 && v <= maxValue);
+            std::cout << "Applying Mantiuk 2008..." << std::endl;
+            Mantiuk(img, v,0.6f);
 
         } else {
             std::cout << "Opcion invalida" << std::endl;
