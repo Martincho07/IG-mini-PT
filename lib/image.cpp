@@ -54,29 +54,31 @@ void clampAndGammaCurve(Image &img, float V, float gamma){
 
 void Reinhard(Image &img, float a){
 
-    // white luminity
-    float L_w = 0.0f;
+    // white luminity average
+    float L_w_avg = 0.0f;
 
     // pixel luminity
     float L = 0.0f;
 
+    float L_w = 0.0f;
+
+    float L_d = 0.0f;
+
     // min wite in the image
     float min_L = img.getMax();
 
-    // reinhard algorithm
+    // Reinhard algorithm
     // http://erikreinhard.com/papers/s2002.pdf
     for (const RGB &pixel: img.v)
-        L_w += logf(1e-6f + pixel.L());
+        L_w_avg += logf(1e-6f + pixel.L());
 
-    L_w = expf(L_w / (img.width * img.height));
+    L_w_avg = expf(L_w_avg / (img.width * img.height));
 
     for (RGB &pixel: img.v){
-        L = (a / L_w) * pixel.r;
-        pixel.r = (L * (1.0f + L / pow(min_L,2))) / (1.0f + L);
-        L = (a / L_w) * pixel.g;
-        pixel.g = (L * (1.0f + L / pow(min_L,2))) / (1.0f + L);
-        L = (a / L_w) * pixel.b;
-        pixel.b = (L * (1.0f + L / pow(min_L,2))) / (1.0f + L);
+
+        L = a / L_w_avg * pixel.L();
+        L_d = (L * (1.0f + L / pow(min_L,2))) / (1.0f + L);
+        pixel / (L_d * pixel.L());
     }
     
 };
@@ -95,7 +97,7 @@ void Mantiuk(Image &img, float a, float s = 0.6f){
     // min wite in the image
     float min_L = img.getMax();
 
-    // reinhard algorithm
+    // Mantiuk algorithm
     // https://www.researchgate.net/publication/317749456_A_comparative_review_of_tone-mapping_algorithms_for_high_dynamic_range_video
     for (const RGB &pixel: img.v)
         L_w += logf(1e-6f + pixel.L());

@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
         } else if (option == '6') {
             std::cout << "Enter a value v = [0," << maxValue << "]" << std::endl;
             std::cin >> v;
-            assert(v >= 0 && v <= maxValue);
+            //assert(v >= 0 && v <= maxValue);
             std::cout << "Applying Reinhard 2002..." << std::endl;
             Reinhard(img, v);
 
