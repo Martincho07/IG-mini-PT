@@ -58,11 +58,11 @@ Image readPPM(std::string file) {
 
     std::ifstream is(file, std::ios::in);
     if (!is.is_open()) {
-        ErrorExit("Could not open file");
+        ErrorExit("Could not open file: ", file);
     }
 
     int height, width, colorResolution;
-    float max = 1;
+    float MAX = 1;
 
     // Make sure that the file format is P3
     std::string format;
@@ -72,7 +72,7 @@ Image readPPM(std::string file) {
     }
 
     // Get width and height
-    readPPMComment(is, max);
+    readPPMComment(is, MAX);
     is >> width >> height;
     if (width < 1) {
         ErrorExit("Unsupported width: ", width);
@@ -82,7 +82,7 @@ Image readPPM(std::string file) {
     }
 
     // Get colorResolution
-    readPPMComment(is, max);
+    readPPMComment(is, MAX);
 
     is >> colorResolution;
     if (colorResolution < 1) {
@@ -90,14 +90,14 @@ Image readPPM(std::string file) {
     }
 
     // Read last block of comments
-    readPPMComment(is, max);
-    if (max < 1) {
-        ErrorExit("Unsupported max value: ", max);
+    readPPMComment(is, MAX);
+    if (MAX < 1) {
+        ErrorExit("Unsupported max value: ", MAX);
     }
 
     // Read RGB tuples row by row
     // Each tuple is mutiplied by this factor to get the real RGB value
-    float f = max / colorResolution;
+    float f = MAX / colorResolution;
     // float f = 1 / colorResolution;
 
     std::vector<RGB> v(width * height);
@@ -106,12 +106,17 @@ Image readPPM(std::string file) {
         v[i] = v[i] * f;
     }
 
-    std::cout << colorResolution << " " << max << " " << width << " " << height << std::endl;
+    Image img = Image(v, width, height);
+
+    std::cout << "[" << width << "px x " << height << "px], color res: " << colorResolution
+              << ", max value: " << MAX
+              << ", range: [" << min(img) << ", " << max(img) << "]" << std::endl;
+
     is.close();
-    return Image(v, width, height);
+    return img;
 };
 
-bool writePPM(Image &img, const std::string file) {
+bool writePPM(Image &img, const std::string file, float max, int colorResolution) {
 
     float m;
     std::ofstream os(file, std::ios::out);
@@ -120,23 +125,49 @@ bool writePPM(Image &img, const std::string file) {
         return false;
     }
 
-    m = img.getMax();
-
-    for (RGB &pixel : img.v){
-        pixel = pixel * (LDR_LIMIT / m);
-        pixel = round(pixel);
-    }
-
+    // HEADER
     os << "P3" << std::endl;
-    os << "#MAX=" << m << std::endl;
+    os << "#MAX=" << max << std::endl;
     os << img.width << " " << img.height << std::endl;
-    os << "255" << std::endl;
+    os << colorResolution << std::endl;
+
+    // PIXEL DATA
+
+    // Each pixel is multiplied before being stored
+    float f = colorResolution / max;
+
     for (int i = 0; i < img.v.size(); i = i + img.width) {
         for (int n = 0; n < img.width; n++) {
-            os << img.v[i + n];
-            n == img.width - 1 ? os << std::endl : os << "  ";
+            os << std::fixed << std::setprecision(0) << round(img.v[i + n] * f);
+            n == img.width - 1 ? os << std::endl : os << "   ";
         }
     }
     os.close();
     return true;
 };
+
+bool writeHDR(const Image &img, const std::string file) {
+    std::ofstream os(file, std::ios::out);
+    if (!os.is_open()) {
+        Error("Could not open file: ", file);
+        return false;
+    }
+
+    // HEADER
+    os << "#?RADIANCE" << std::endl;
+    os << "FORMAT=32-bit_rle_rgbe" << std::endl;
+
+    // RESOLUTION
+    os << std::endl;
+    os << "-Y " << img.height << " +X " << img.width << std::endl;
+
+    // PIXEL DATA
+    for (int i = 0; i < img.v.size(); i = i + img.width) {
+        for (int n = 0; n < img.width; n++) {
+            unsigned char rgbe[4];
+            float2rgbe(img.v[i + n], rgbe);
+            os << rgbe[0] << rgbe[1] << rgbe[2] << rgbe[3];
+        }
+    }
+    return true;
+}

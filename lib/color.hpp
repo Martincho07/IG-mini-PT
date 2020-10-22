@@ -10,10 +10,10 @@
 
 #pragma once
 
-#include <iostream>
+#include "math.h"
 #include <algorithm>
 #include <initializer_list>
-#include "math.h"
+#include <iostream>
 
 // Reinhard constants for pixel luminity
 #define LUMINANCE_R 0.27f
@@ -46,25 +46,8 @@ struct RGB {
         return RGB(r / s, g / s, b / s);
     };
 
-    RGB operator^(float s) const{
-        return RGB(pow(r,s), pow(g,s), pow(b,s));
-    };
-
-    float getMaxValue() const {
-
-        return std::max({r, g, b});
-
-    };
-
-    float getMinValue() const {
-
-        return std::min({r, g, b});
-    };
-
     float L() const {
-
         return (LUMINANCE_R * r) + (LUMINANCE_G * g) + (LUMINANCE_B * b);
-
     };
 };
 
@@ -79,3 +62,14 @@ inline std::ostream &operator<<(std::ostream &out, const RGB &c) {
 };
 
 RGB round(const RGB &c);
+
+float max(const RGB &c);
+float min(const RGB &c);
+
+RGB pow(const RGB &c, float s);
+
+/*
+ *
+ * Convert float pixel to rgbe
+ */
+void float2rgbe(const RGB &c, unsigned char rgbe[4]);

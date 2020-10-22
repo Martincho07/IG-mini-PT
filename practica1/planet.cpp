@@ -106,7 +106,7 @@ void launch(const Planet &origin, const Planet &destination) {
     if (dot(path, origin.k) < 0) {
         ErrorExit("The path points to the inside of the origin planet!");
     }
-    if (dot(-path, destination.k) >= 0) {
+    if (dot(-path, destination.k) < 0) {
         ErrorExit("The path points to the inside of the destination planet!");
     }
 

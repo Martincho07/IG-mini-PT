@@ -11,14 +11,15 @@
 #pragma once
 
 #include "color.hpp"
+#include "tone_mapping.hpp"
 
 #include <fstream>
+#include <math.h>
 #include <string>
 #include <vector>
-#include <math.h>
 
-// Reinhard constants for tone mapper algorithm
-#define GAMMA 1.0f/2.2f
+enum FileFormat { PPM,
+                  HDR };
 
 struct Image {
 
@@ -32,51 +33,24 @@ struct Image {
     Image(const std::vector<RGB> _v, int _width, int _height)
         : v(_v), width(_width), height(_height){};
 
-    float getMax() const {
-
-        float maxValue = 0.0;
-        float aux = -1.0f;
-
-        for (const RGB & pixel: v){
-
-            maxValue = pixel.getMaxValue();
-
-            if (maxValue > aux)
-                aux = maxValue;
-
-        }
-        return aux;
-
-    };
-
-    float getMin() const {
-
-        float minValue = 0.0;
-        float aux = INFINITY;
-
-        for (const RGB & pixel: v){
-
-            minValue = pixel.getMinValue();
-
-            if (minValue < aux && minValue != 0.0f)
-                aux = minValue;
-        }
-
-        return aux;
-
-    };
+    void applyToneMappingOperator(const ToneMappingOperator &op);
 };
+
+float max(const Image &img);
+float min(const Image &img);
+
+float logAverageLuminance(const Image &img);
 
 // Tone mapping functions
 void clamping(Image &img);
 
 void equalization(Image &img, float V);
 
-void equalizeAndClamp(Image &img,  float V);
+void equalizeAndClamp(Image &img, float V);
 
-void gammaCurve(Image &img, float V, float gamma=GAMMA);
+void gammaCurve(Image &img, float V, float gamma);
 
-void clampAndGammaCurve(Image &img, float V, float gamma=GAMMA);
+void clampAndGammaCurve(Image &img, float V, float gamma);
 
 void Reinhard(Image &img, float a);
 
