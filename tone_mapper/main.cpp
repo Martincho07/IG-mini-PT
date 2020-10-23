@@ -130,7 +130,7 @@ int main(int argc, char **argv) {
             } else if (arg == "-reinhard02") {
                 a = getArgValue(argc, argv, i, A);
                 i++;
-                operators.push_back(std::make_shared<Reinhard02>(a, logAverageLuminance(img), maxValue));
+                operators.push_back(std::make_shared<Reinhard02>(a, logAverageLuminance(img), 0.9));
             } else if (arg == "-mantiuk08") {
                 a = getArgValue(argc, argv, i, A);
                 i++;

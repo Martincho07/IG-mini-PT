@@ -9,6 +9,7 @@
  **********************************************************************************/
 
 #include "image.hpp"
+#include "color.hpp"
 #include "math.h"
 #include <cfloat>
 
@@ -46,7 +47,9 @@ float logAverageLuminance(const Image &img) {
     for (const RGB &pixel : img.v) {
         // std::cout << pixel.L() << std::endl;
         // std::cout << logf(1e-6f + pixel.L()) << std::endl;
-        avg_L_w += logf(1e-6f + pixel.L());
+        // std::cout << rgb2lab(pixel).l << std::endl;
+        avg_L_w += logf(1e-6f + rgb2lab(pixel).l);
+        // avg_L_w += logf(1e-6f + pixel.L());
     }
     std::cout << avg_L_w << std::endl;
     std::cout << expf(avg_L_w) << std::endl;
@@ -55,6 +58,8 @@ float logAverageLuminance(const Image &img) {
 
     return avg_L_w;
 }
+
+
 
 void clamping(Image &img) {
     for (RGB &pixel : img.v) {

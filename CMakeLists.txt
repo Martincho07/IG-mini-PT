@@ -15,7 +15,8 @@ add_subdirectory(lib)
 add_executable(unit_tests test/main.cpp
                           test/test_factorial.cpp
                           test/test_hello.cpp
-                          test/geometry_test.cpp)
+                          test/geometry_test.cpp
+                          test/color_test.cpp)
 target_link_libraries(unit_tests LINK_PUBLIC lib)
 
 # Practica 1
