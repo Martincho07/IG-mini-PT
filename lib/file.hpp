@@ -20,7 +20,8 @@
 #define LDR_LIMIT 255
 
 /*
- * Add OUT_ID to the beggining of the name of <file>
+ * Return a new filename with the format:
+ * <path of file>OUT_ID<name of file>.<extension of file>
  */
 std::string createOutFilename(const std::string &file);
 
@@ -68,4 +69,19 @@ Image readPPM(const std::string file);
  *
  * Return true if the writting is successful
  */
-bool writePPM(Image &img, const std::string file);
+bool writePPM(Image &img, const std::string file, float max, int colorResolution);
+
+/*
+ * Read an image stored in memory as vector and create an uncompressed HDR RGBE file
+ *
+ * .hdr format:
+ *
+ * #?RADIANCE
+ * FORMAT=32-bit_rle_rgbe
+ * 
+ * -Y <height> +X <width>
+ * <r><g><b><e><r><g><b><e>...<r><g><b><e>
+ *
+ * Return true if the writting is successful
+ */
+bool writeHDR(const Image &img, const std::string file);
