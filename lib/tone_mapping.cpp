@@ -84,22 +84,41 @@ std::ostream &ClampAndGammaCurve::format(std::ostream &os) const {
 };
 
 RGB Reinhard02::operator()(const RGB &c) const {
-    // // World luminance for the pixel
+    LAB lab_c = rgb2lab(c);
+    // XYZ xyz_c = rgb2xyz(c);
+    // World luminance for the pixel
+    float L_w = lab_c.l;
+    // float L_w = xyz_c.y;
+
     // float L_w = c.L();
-    // // Scaled luminance for the pixel
-    // float L = a / avg_L_w * L_w;
-    // // Tone mapped luminance preserving whites
-    // float L_d = L * (1 + L / pow(min_L, 2)) / (1.0f + L);
-    // // Apply the luminance transformation on the pixel
-    // return GammaCurve(min_L, 2.2)(c / L_w * L_d);
-    float L;
-    L = (a / avg_L_w) * c.r;
-    float r = (L * (1.0f + L / pow(min_L, 2))) / (1.0f + L);
-    L = (a / avg_L_w) * c.g;
-    float g = (L * (1.0f + L / pow(min_L, 2))) / (1.0f + L);
-    L = (a / avg_L_w) * c.b;
-    float b = (L * (1.0f + L / pow(min_L, 2))) / (1.0f + L);
-    return RGB(r, g, b);
+
+    // Scaled luminance for the pixel
+    float L = a / avg_L_w * L_w;
+    // Tone mapped luminance preserving whites
+    float L_d = L * (1 + L / pow(min_L, 2)) / (1.0f + L);
+    // Apply the luminance transformation on the pixel
+    lab_c.l = L_d;
+    // xyz_c.y = L_d;
+    return clamping(lab2rgb(lab_c));
+    // return xyz2rgb(xyz_c);
+    // return Clamp()(c / L_w * L_d);
+
+    // float L = (a / avg_L_w) * c.r;
+    // float r = (L * (1.0f + L / pow(min_L, 2))) / (1.0f + L);
+    // L = (a / avg_L_w) * c.g;
+    // float g = (L * (1.0f + L / pow(min_L, 2))) / (1.0f + L);
+    // L = (a / avg_L_w) * c.b;
+    // float b = (L * (1.0f + L / pow(min_L, 2))) / (1.0f + L);
+    // return RGB(r, g, b);
+
+    // float L_w, L, L_d;
+    // L_w = c.L();
+    // L = (a / avg_L_w) * L_w;
+    // L_d = (L * (1.0f + L / pow(min_L, 2))) / (1.0f + L);
+    // return RGB(
+    //     pow(c.r / L_w, 0.9) * L_d,
+    //     pow(c.g / L_w, 0.9) * L_d,
+    //     pow(c.b / L_w, 0.9) * L_d);
 };
 
 std::ostream &Reinhard02::format(std::ostream &os) const {
@@ -115,7 +134,7 @@ RGB Mantiuk08::operator()(const RGB &c) const {
     // Tone mapped luminance preserving whites
     float L_d = L * (1 + L / pow(min_L, 2)) / (1.0f + L);
     // Apply the luminance transformation on the pixel
-    return pow(c / L_w, s) * L_d;
+    return Clamp()(c / L_w * L_d);
     // pixel = pixel * (1.0f / 4.0f);
     // L_pixel = pixel.L();
     // L = (a / L_w) * pixel.r;

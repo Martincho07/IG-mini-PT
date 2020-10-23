@@ -10,8 +10,10 @@
 
 #pragma once
 
-#include "math.h"
+#include "geometry.hpp"
+
 #include <algorithm>
+#include <cmath>
 #include <initializer_list>
 #include <iostream>
 
@@ -68,8 +70,53 @@ float min(const RGB &c);
 
 RGB pow(const RGB &c, float s);
 
+struct XYZ {
+    float x, y, z;
+    XYZ(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {
+        if (isnan(x) || isnan(y) || isnan(z)) {
+            std::cout << x << " " << y << " " << z << std::endl;
+            exit(1);
+        }
+    }
+};
+inline std::ostream &operator<<(std::ostream &out, const XYZ &c) {
+    out << c.x << " " << c.y << " " << c.z;
+    return out;
+};
+
+struct LAB {
+    float l, a, b;
+    LAB(float _l, float _a, float _b) : l(_l), a(_a), b(_b) {
+        if (isnan(l) || isnan(a) || isnan(b)) {
+            std::cout << l << " " << a << " " << b << std::endl;
+            exit(1);
+        }
+    }
+};
+inline std::ostream &operator<<(std::ostream &out, const LAB &c) {
+    out << c.l << " " << c.a << " " << c.b;
+    return out;
+};
+
 /*
  *
  * Convert float pixel to rgbe
  */
 void float2rgbe(const RGB &c, unsigned char rgbe[4]);
+
+/*
+ * Color conversions. Adapted from http://www.easyrgb.com
+ * Standard-RGB. X, Y and Z input refer to a D65/2o standard illuminant
+ */
+#define REFERENCE_X 95.0489f
+#define REFERENCE_Y 100.0f
+#define REFERENCE_Z 108.884f
+
+XYZ rgb2xyz(const RGB &c);
+RGB xyz2rgb(const XYZ &c);
+
+LAB xyz2lab(const XYZ &c);
+XYZ lab2xyz(const LAB &c);
+
+LAB rgb2lab(const RGB &c);
+RGB lab2rgb(const LAB &c);
