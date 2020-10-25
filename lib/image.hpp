@@ -36,6 +36,7 @@ struct Image {
     void applyToneMappingOperator(const ToneMappingOperator &op);
 };
 
+float maxLum(const Image &img);
 float max(const Image &img);
 float min(const Image &img);
 

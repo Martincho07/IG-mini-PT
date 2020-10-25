@@ -93,13 +93,15 @@ RGB Reinhard02::operator()(const RGB &c) const {
     // float L_w = c.L();
 
     // Scaled luminance for the pixel
-    float L = a / avg_L_w * L_w;
+    float L = (a / avg_L_w) * L_w;
     // Tone mapped luminance preserving whites
-    float L_d = L * (1 + L / pow(min_L, 2)) / (1.0f + L);
+    float L_d = (L * (1 + (L / pow(min_L, 2)))) / (1.0f + L);
     // Apply the luminance transformation on the pixel
     lab_c.l = L_d;
     // xyz_c.y = L_d;
-    return clamping(lab2rgb(lab_c));
+    //return clamping(lab2rgb(lab_c));
+    return lab2rgb(lab_c);
+
     // return xyz2rgb(xyz_c);
     // return Clamp()(c / L_w * L_d);
 

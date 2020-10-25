@@ -15,9 +15,9 @@
 
 void Image::applyToneMappingOperator(const ToneMappingOperator &op) {
     std::cout << "Applying operator: " << op << " ..." << std::endl;
-    for (RGB &pixel : v) {
+    for (RGB &pixel : v) 
         pixel = op(pixel);
-    }
+    
 }
 
 float max(const Image &img) {
@@ -28,7 +28,17 @@ float max(const Image &img) {
         if (aux > maxValue)
             maxValue = aux;
     }
+
     return maxValue;
+};
+
+float maxLum(const Image &img) {
+    float maxLuma = -1.0f;
+    
+    for (const RGB &pixel : img.v) 
+        maxLuma = std::max(rgb2lab(pixel).l, maxLuma);
+    
+    return maxLuma;
 };
 
 float min(const Image &img) {
@@ -44,18 +54,19 @@ float min(const Image &img) {
 
 float logAverageLuminance(const Image &img) {
     float avg_L_w = 0.0f;
+    
     for (const RGB &pixel : img.v) {
         // std::cout << pixel.L() << std::endl;
         // std::cout << logf(1e-6f + pixel.L()) << std::endl;
-        // std::cout << rgb2lab(pixel).l << std::endl;
-        avg_L_w += logf(1e-6f + rgb2lab(pixel).l);
+        //std::cout << rgb2lab(pixel).l << std::endl;
+        avg_L_w += log(1e-45f + rgb2lab(pixel).l);
         // avg_L_w += logf(1e-6f + pixel.L());
+        
     }
     std::cout << avg_L_w << std::endl;
-    std::cout << expf(avg_L_w) << std::endl;
+    std::cout << exp(avg_L_w) << std::endl;
 
-    avg_L_w = expf(avg_L_w / img.v.size());
-
+    avg_L_w = exp(avg_L_w / img.v.size());
     return avg_L_w;
 }
 

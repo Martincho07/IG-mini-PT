@@ -108,9 +108,9 @@ void float2rgbe(const RGB &c, unsigned char rgbe[4]);
  * Color conversions. Adapted from http://www.easyrgb.com
  * Standard-RGB. X, Y and Z input refer to a D65/2o standard illuminant
  */
-#define REFERENCE_X 95.0489f
+#define REFERENCE_X 96.0489f
 #define REFERENCE_Y 100.0f
-#define REFERENCE_Z 108.884f
+#define REFERENCE_Z 108.8840f
 
 XYZ rgb2xyz(const RGB &c);
 RGB xyz2rgb(const XYZ &c);

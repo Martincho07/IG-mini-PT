@@ -116,20 +116,22 @@ LAB xyz2lab(const XYZ &c) {
     float var_Y = c.y / REFERENCE_Y;
     float var_Z = c.z / REFERENCE_Z;
 
-    if (var_X > 0.008856f)
+    float delta = 6.0f / 29.0f;
+
+    if (var_X > pow(delta, 3.0f))
         var_X = pow(var_X, (1.0f / 3.0f));
     else
-        var_X = (7.787f * var_X) + (16.0f / 116.0f);
+        var_X = ( (1.0f / (3.0f * pow(delta, 2.0f))) * var_X) + (4.0f / 29.0f);
 
-    if (var_Y > 0.008856f)
+    if (var_Y > pow(delta, 3.0f))
         var_Y = pow(var_Y, (1.0f / 3.0f));
     else
-        var_Y = (7.787f * var_Y) + (16.0f / 116.0f);
+        var_Y = ((1.0f / (3.0f * pow(delta, 2.0f))) * var_Y) + (4.0f / 29.0f);
 
-    if (var_Z > 0.008856f)
+    if (var_Z > pow(delta, 3.0f))
         var_Z = pow(var_Z, (1.0f / 3.0f));
     else
-        var_Z = (7.787f * var_Z) + (16.0f / 116.0f);
+        var_Z = ((1.0f / (3.0f * pow(delta, 2.0f))) * var_Z) + (4.0f / 29.0f);
 
     return LAB((116.0f * var_Y) - 16.0f,
                500.0f * (var_X - var_Y),
@@ -142,23 +144,25 @@ XYZ lab2xyz(const LAB &c) {
     //            (1 - c.a - c.b) * (c.l / c.b));
 
     float var_Y = (c.l + 16.0f) / 116.0f;
-    float var_X = c.a / 500.0f + var_Y;
-    float var_Z = var_Y - c.b / 200.0f;
+    float var_X = (c.a / 500.0f) + var_Y;
+    float var_Z = var_Y - (c.b / 200.0f);
 
-    if (pow(var_Y, 3.0f) > 0.008856f)
+    float delta = 6.0f / 29.0f;
+
+    if (var_Y > delta)
         var_Y = pow(var_Y, 3.0f);
     else
-        var_Y = (var_Y - 16.0f / 116.0f) / 7.787f;
+        var_Y = (var_Y - (4.0f / 29.0f)) * (3.0f * pow(delta, 2.0f));
 
-    if (pow(var_X, 3.0f) > 0.008856f)
+    if (var_Y > delta)
         var_X = pow(var_X, 3.0f);
     else
-        var_X = (var_X - 16.0f / 116.0f) / 7.787f;
+        var_X = (var_X - (4.0f / 29.0f)) * (3.0f * pow(delta, 2.0f));
 
-    if (pow(var_Z, 3.0f) > 0.008856f)
+    if (var_Y > delta)
         var_Z = pow(var_Z, 3.0f);
     else
-        var_Z = (var_Z - 16.0f / 116.0f) / 7.787f;
+        var_Z = (var_Z - (4.0f / 29.0f)) * (3.0f * pow(delta, 2.0f));
 
     return XYZ(var_X <= 0 ? 0.0 : var_X * REFERENCE_X,
                var_Y <= 0 ? 0.0 : var_Y * REFERENCE_Y,
