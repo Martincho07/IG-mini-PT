@@ -84,14 +84,16 @@ std::ostream &ClampAndGammaCurve::format(std::ostream &os) const {
 };
 
 RGB Reinhard02::operator()(const RGB &c) const {
+    // LAB lab_c = rgb2lab(c);
+    // // XYZ xyz_c = rgb2xyz(c);
+    // // World luminance for the pixel
+    // float L_w = lab_c.l;
+    // // float L_w = xyz_c.y;
+
+    // // float L_w = c.L();
+
     LAB lab_c = rgb2lab(c);
-    // XYZ xyz_c = rgb2xyz(c);
-    // World luminance for the pixel
     float L_w = lab_c.l;
-    // float L_w = xyz_c.y;
-
-    // float L_w = c.L();
-
     // Scaled luminance for the pixel
     float L = (a / avg_L_w) * L_w;
     // Tone mapped luminance preserving whites
@@ -99,19 +101,19 @@ RGB Reinhard02::operator()(const RGB &c) const {
     // Apply the luminance transformation on the pixel
     lab_c.l = L_d;
     // xyz_c.y = L_d;
-    //return clamping(lab2rgb(lab_c));
-    return lab2rgb(lab_c);
-
+    return clamping(lab2rgb(lab_c));
+    // return lab2rgb(lab_c);
     // return xyz2rgb(xyz_c);
     // return Clamp()(c / L_w * L_d);
 
-    // float L = (a / avg_L_w) * c.r;
+    // float L;
+    // L = (a / avg_L_w) * c.r;
     // float r = (L * (1.0f + L / pow(min_L, 2))) / (1.0f + L);
     // L = (a / avg_L_w) * c.g;
     // float g = (L * (1.0f + L / pow(min_L, 2))) / (1.0f + L);
     // L = (a / avg_L_w) * c.b;
     // float b = (L * (1.0f + L / pow(min_L, 2))) / (1.0f + L);
-    // return RGB(r, g, b);
+    // return Equalize(min_L)(RGB(r, g, b));
 
     // float L_w, L, L_d;
     // L_w = c.L();

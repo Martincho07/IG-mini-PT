@@ -6,6 +6,8 @@ add_library(lib geometry.cpp
                 image.cpp
                 file.cpp
                 error.cpp
-                tone_mapping.cpp)
+                tone_mapping.cpp
+                shape.cpp
+                camera.cpp)
 
 target_include_directories(lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

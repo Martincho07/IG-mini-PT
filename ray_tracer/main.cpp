@@ -9,38 +9,56 @@
  **********************************************************************************/
 
 #include "camera.hpp"
-#include "geometry.hpp"
-#include "shape.hpp"
-#include <vector>
-#include "image.hpp"
-#include "file.hpp"
 #include "color.hpp"
+#include "file.hpp"
+#include "geometry.hpp"
+#include "image.hpp"
+#include "shape.hpp"
+#include "tone_mapping.hpp"
 
-int main(int argc, char** argv){
+#include <vector>
 
-    int width = 6;
-    int height = 6;
+int main(int argc, char **argv) {
+
+    int width = 1000;
+    int height = 1000;
 
     float acum_width = -1.0f + (1.0f / width);
     float acum_height = 1.0f - (1.0f / height);
-    std::vector<Shape> scene;
-    Plane p(RGB(50.0f, 70.0f, 255.0f), Vector3(1.0f,0.0f,0.0f), 5.0f); 
-    scene.push_back(p);
+
+    std::vector<std::shared_ptr<Shape>> scene;
+
+    std::shared_ptr<Plane> plane(new Plane(RGB(255, 0, 0), Vector3(-1.0f, 0.0f, 0.0f), 8.0f));
+    scene.push_back(plane);
+    std::shared_ptr<Plane> plane2(new Plane(RGB(50.0f, 70.0f, 255.0f), Vector3(-1.0f, 1.0f, 0.0f), 12.0f));
+    scene.push_back(plane2);
+    std::shared_ptr<Sphere> sphere(new Sphere(RGB(255.0f, 255.0f, 0.0f), Point3(3.0f, 0.0f, 0.0f), 2.0f));
+    scene.push_back(sphere);
+    std::shared_ptr<Sphere> sphere2(new Sphere(RGB(0.0f, 0.0f, 0.0f), Point3(1.2f, 0.25f, 0.25f), 0.2f));
+    scene.push_back(sphere2);
+    std::shared_ptr<Sphere> sphere3(new Sphere(RGB(0.0f, 0.0f, 0.0f), Point3(1.2f, 0.25f, -0.25f), 0.2f));
+    scene.push_back(sphere3);
+    std::shared_ptr<Sphere> sphere4(new Sphere(RGB(255.0f, 102.0f, 254.0f), Point3(1.4f, -0.40f, 0.0f), 0.2f));
+    scene.push_back(sphere4);
 
     Image image;
 
-    Camera c = Camera(Point3(0.0f,0.0f,0.0f), Vector3(1.0f,0.0f,0.0f), Vector3(0.0f,1.0f,0.0f),Vector3(0.0f,0.0f,1.0f));
+    image.width = width;
+    image.height = height;
 
-    for(int y = 0; y < height; y++){
-        for(int x = 0; x < width; x++){
+    // Camera l u f
+    Camera c = Camera(Point3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f));
 
-            image.v.push_back(c.GenerateRay(normalize((Vector3(acum_width,acum_height,1.0f))), scene));            
-            acum_width += 1.0f / (2.0f * width);
+    for (int y = 0.0f; y < height; y++) {
+        for (int x = 0.0f; x < width; x++) {
+            // std::cout << "hola: " << acum_width << " " << acum_height << std::endl;
+            image.v.push_back(c.generateRay((Vector3(acum_width, acum_height, 1.0f)), scene));
+            acum_width += 2.0f / width;
         }
         acum_width = -1.0f + (1.0f / width);
-        acum_height -= 1.0f / (2.0f * height);
+        acum_height -= 2.0f / height;
     }
 
-    writePPM(image, "salida.ppm", max(image), 10000000);
-
+    // image.applyToneMappingOperator(Clamp());
+    writePPM(image, "salida.ppm", max(image), 255);
 };

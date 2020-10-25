@@ -10,33 +10,25 @@
 
 #pragma once
 
-#include "geometry.hpp"
-#include "transform.hpp"
 #include "color.hpp"
+#include "geometry.hpp"
 #include "shape.hpp"
+#include "transform.hpp"
 #include <vector>
 
 struct Camera {
 
-
     Point3 o;
-    Vector3 u, l, f;
-    Transform Camera2World;
+    Vector3 l, u, f;
+    Transform camera2world;
 
-    Camera(Point3 _o, Vector3 _u, Vector3 _l, Vector3 _f) : 
-    o(_o), u(_u) , l (_l), f(_f) {
+    Camera(Point3 _o, Vector3 _l, Vector3 _u, Vector3 _f) : o(_o), l(_l), u(_u), f(_f) {
 
-        Camera2World = Transform( Matrix4x4 (l.x, u.x, f.x,o.x,
-                                             l.y, u.y, f.y, o.y,
-                                             l.z, u.z, f.z, o.z,
-                                             0.0f, 0.0f, 0.0f, 1.0f));
-
-
+        camera2world = Transform(Matrix4x4(l.x, u.x, f.x, o.x,
+                                           l.y, u.y, f.y, o.y,
+                                           l.z, u.z, f.z, o.z,
+                                           0.0f, 0.0f, 0.0f, 1.0f));
     };
 
-    RGB GenerateRay(const Vector3 &d, const std::vector<Shape> &shapes);
-
+    RGB generateRay(const Vector3 &d, const std::vector<std::shared_ptr<Shape>> &shapes);
 };
-
-
-

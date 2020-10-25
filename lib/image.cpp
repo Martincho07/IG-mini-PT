@@ -15,9 +15,8 @@
 
 void Image::applyToneMappingOperator(const ToneMappingOperator &op) {
     std::cout << "Applying operator: " << op << " ..." << std::endl;
-    for (RGB &pixel : v) 
+    for (RGB &pixel : v)
         pixel = op(pixel);
-    
 }
 
 float max(const Image &img) {
@@ -34,10 +33,10 @@ float max(const Image &img) {
 
 float maxLum(const Image &img) {
     float maxLuma = -1.0f;
-    
-    for (const RGB &pixel : img.v) 
+
+    for (const RGB &pixel : img.v)
         maxLuma = std::max(rgb2lab(pixel).l, maxLuma);
-    
+
     return maxLuma;
 };
 
@@ -54,14 +53,15 @@ float min(const Image &img) {
 
 float logAverageLuminance(const Image &img) {
     float avg_L_w = 0.0f;
-    
+
     for (const RGB &pixel : img.v) {
-        // std::cout << pixel.L() << std::endl;
+        // std::cout << "L: " << pixel.L() << std::endl;
+        std::cout << "lab.l: " << rgb2lab(pixel).l * 100 << std::endl;
+
         // std::cout << logf(1e-6f + pixel.L()) << std::endl;
         //std::cout << rgb2lab(pixel).l << std::endl;
         avg_L_w += log(1e-45f + rgb2lab(pixel).l);
         // avg_L_w += logf(1e-6f + pixel.L());
-        
     }
     std::cout << avg_L_w << std::endl;
     std::cout << exp(avg_L_w) << std::endl;
@@ -69,8 +69,6 @@ float logAverageLuminance(const Image &img) {
     avg_L_w = exp(avg_L_w / img.v.size());
     return avg_L_w;
 }
-
-
 
 void clamping(Image &img) {
     for (RGB &pixel : img.v) {
@@ -106,11 +104,10 @@ void clampAndGammaCurve(Image &img, float V, float gamma) {
     clamping(img);
 };
 
-void Reinhard(Image &img, float a){
+void Reinhard(Image &img, float a) {
 
     // white luminity average
     float L_w_avg = 0.0f;
-
 
     // pixel luminity
     float L = 0.0f;
@@ -125,18 +122,16 @@ void Reinhard(Image &img, float a){
     // Reinhard algorithm
     // http://erikreinhard.com/papers/s2002.pdf
 
-    for (const RGB &pixel: img.v)
+    for (const RGB &pixel : img.v)
         L_w_avg += logf(1e-6f + pixel.L());
-
 
     L_w_avg = expf(L_w_avg / (img.width * img.height));
 
-    for (RGB &pixel: img.v){
+    for (RGB &pixel : img.v) {
 
         L = a / L_w_avg * pixel.L();
-        L_d = (L * (1.0f + L / pow(min_L,2))) / (1.0f + L);
+        L_d = (L * (1.0f + L / pow(min_L, 2))) / (1.0f + L);
         pixel / (L_d * pixel.L());
-
     }
 };
 

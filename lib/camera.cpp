@@ -9,23 +9,28 @@
  **********************************************************************************/
 #include <cmath>
 
-Camera::RGB GenerateRay(const Vector3 &d, const std::vector<Shape> &shapes){
+#include "camera.hpp"
 
-    RGB color;
+RGB Camera::generateRay(const Vector3 &d, const std::vector<std::shared_ptr<Shape>> &shapes) {
+
+    RGB color(255, 255, 255);
     float t = INFINITY;
-    float shape_t = 0.0f
+    float shape_t = 0.0f;
 
-    for (const Shape &s : shapes){
+    // std::cout << "rayo desde camera: " << d.x << " " << d.y << " " << d.z << std::endl;
+    // std::cout << "rayo desde camera: " << o << d << std::endl;
+    // std::cout << "rayo en el mundo: " << camera2world(o) << camera2world(d) << std::endl;
 
-        shape_t = s.Intersection(Camera2World(o), Camera2World(d));
-        if (shape_t < t && shape_t > 0.0f){
-
-            color = s.color;
+    for (const std::shared_ptr<Shape> &s : shapes) {
+        shape_t = s->intersection(camera2world(o), camera2world(d));
+        // std::cout << shape_t << std::endl;
+        if (shape_t < t && shape_t > 0.0f) {
+            // std::cout << "me gusta" << std::endl;
+            color = s->color;
             t = shape_t;
         }
-
     }
 
+    // std::cout << "color: " << color << std::endl;
     return color;
-
 };
