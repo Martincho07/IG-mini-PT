@@ -22,7 +22,7 @@ RGB Camera::generateRay(const Vector3 &d, const std::vector<std::shared_ptr<Shap
     // std::cout << "rayo en el mundo: " << camera2world(o) << camera2world(d) << std::endl;
 
     for (const std::shared_ptr<Shape> &s : shapes) {
-        shape_t = s->intersection(camera2world(o), camera2world(d));
+        shape_t = s->intersection(o, camera2world(d));
         // std::cout << shape_t << std::endl;
         if (shape_t < t && shape_t > 0.0f) {
             // std::cout << "me gusta" << std::endl;
