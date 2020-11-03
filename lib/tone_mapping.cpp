@@ -47,7 +47,7 @@ std::ostream &Equalize::format(std::ostream &os) const {
 }
 
 RGB ClampAndEqualize::operator()(const RGB &c) const {
-    return clamping(equalization(c));
+    return equalization(clamping(c));
 };
 
 std::ostream &ClampAndEqualize::format(std::ostream &os) const {
@@ -71,7 +71,7 @@ std::ostream &GammaCurve::format(std::ostream &os) const {
 }
 
 RGB ClampAndGammaCurve::operator()(const RGB &c) const {
-    return clamping(gamma_curve(c));
+    return gamma_curve(clamping(c));
 };
 
 std::ostream &ClampAndGammaCurve::format(std::ostream &os) const {
