@@ -16,6 +16,7 @@
 #include "shape.hpp"
 #include "tone_mapping.hpp"
 
+#include <memory.h>
 #include <vector>
 
 int main(int argc, char **argv) {
@@ -46,13 +47,13 @@ int main(int argc, char **argv) {
     image.width = width;
     image.height = height;
 
-    // Camera l u f
-    Camera c = Camera(Point3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f));
+    // Camera o l u f
+    Camera c = Camera(Point3(0.0f, .0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f));
 
     for (int y = 0.0f; y < height; y++) {
         for (int x = 0.0f; x < width; x++) {
             // std::cout << "hola: " << acum_width << " " << acum_height << std::endl;
-            image.v.push_back(c.generateRay((Vector3(acum_width, acum_height, 1.0f)), scene));
+            image.v.push_back(c.generateRay(normalize(Vector3(acum_width, acum_height, 1.0f)), scene));
             acum_width += 2.0f / width;
         }
         acum_width = -1.0f + (1.0f / width);

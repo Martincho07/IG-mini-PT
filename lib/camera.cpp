@@ -18,7 +18,7 @@ RGB Camera::generateRay(const Vector3 &d, const std::vector<std::shared_ptr<Shap
     float shape_t = 0.0f;
 
     // std::cout << "rayo desde camera: " << d.x << " " << d.y << " " << d.z << std::endl;
-    // std::cout << "rayo desde camera: " << o << d << std::endl;
+    std::cout << "rayo desde camera: " << o << d << std::endl;
     // std::cout << "rayo en el mundo: " << camera2world(o) << camera2world(d) << std::endl;
 
     for (const std::shared_ptr<Shape> &s : shapes) {

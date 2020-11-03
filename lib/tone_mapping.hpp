@@ -105,12 +105,12 @@ class Reinhard02 : public ToneMappingOperator {
     // Log average world luminance of the image
     float avg_L_w;
     // Smallest luminance that will be mapped to white
-    float min_L;
+    float white_L;
     Clamp clamping;
 
   public:
-    Reinhard02(float _a, float _avg_L_w, float _min_L)
-        : a(_a), avg_L_w(_avg_L_w), min_L(_min_L), clamping(){};
+    Reinhard02(float _a, float _avg_L_w, float _white_L)
+        : a(_a), avg_L_w(_avg_L_w), white_L(_white_L), clamping(){};
     ~Reinhard02(){};
     RGB operator()(const RGB &c) const override;
     std::ostream &format(std::ostream &op) const override;

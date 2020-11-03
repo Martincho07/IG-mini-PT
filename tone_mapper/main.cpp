@@ -38,7 +38,7 @@ void help() {
                  "  -gamma-curve gamma  Apply a gamma curve to all the values\n"
                  "  -clamp-and-gamma-curve value gamma\n"
                  "                      Apply a gamma curve after clamping all the values greater than 'value'\n"
-                 "  -reinhard02 a       Apply the Reinhard 2002 operator with a given 'a' key value\n"
+                 "  -reinhard02 a l      Apply the Reinhard 2002 operator with a given 'a' key value\n"
                  "  -mantiuk08 a s      Apply the Mantiuk 2008 operator with a given 'a' key value and 's' value\n"
                  "  -h, -help           Show this help message and quit\n"
                  "\nUse the character 'D' to indicate the default value\n"
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
     std::vector<std::shared_ptr<ToneMappingOperator>> operators;
 
     // Values
-    float step, value, gamma, a, s;
+    float step, value, gamma, a, s, l;
 
     if (argc <= 1) {
         help();
@@ -132,8 +132,10 @@ int main(int argc, char **argv) {
             } else if (arg == "-reinhard02") {
                 a = getArgValue(argc, argv, i, A);
                 i++;
+                l = getArgValue(argc, argv, i, A);
+                i++;
                 std::cout << "luma: " << maxLuma << std::endl;
-                operators.push_back(std::make_shared<Reinhard02>(a, logAverageLuminance(img), 0.9 * maxLuma));
+                operators.push_back(std::make_shared<Reinhard02>(a, logAverageLuminance(img), l * maxLuma));
             } else if (arg == "-mantiuk08") {
                 a = getArgValue(argc, argv, i, A);
                 i++;

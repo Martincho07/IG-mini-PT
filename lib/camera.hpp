@@ -15,6 +15,7 @@
 #include "shape.hpp"
 #include "transform.hpp"
 #include <vector>
+#include <memory>
 
 struct Camera {
 

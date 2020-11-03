@@ -56,7 +56,7 @@ float logAverageLuminance(const Image &img) {
 
     for (const RGB &pixel : img.v) {
         // std::cout << "L: " << pixel.L() << std::endl;
-        std::cout << "lab.l: " << rgb2lab(pixel).l * 100 << std::endl;
+        //std::cout << "lab.l: " << rgb2lab(pixel).l * 100 << std::endl;
 
         // std::cout << logf(1e-6f + pixel.L()) << std::endl;
         //std::cout << rgb2lab(pixel).l << std::endl;

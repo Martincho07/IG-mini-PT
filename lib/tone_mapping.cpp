@@ -94,15 +94,21 @@ RGB Reinhard02::operator()(const RGB &c) const {
 
     LAB lab_c = rgb2lab(c);
     float L_w = lab_c.l;
+    // L_w no mayor al wite
+
+    if (L_w > white_L){
+        L_w = white_L;
+        
+    }
     // Scaled luminance for the pixel
     float L = (a / avg_L_w) * L_w;
     // Tone mapped luminance preserving whites
-    float L_d = (L * (1 + (L / pow(min_L, 2)))) / (1.0f + L);
+    float L_d = (L * (1 + (L / pow(white_L, 2)))) / (1.0f + L);
     // Apply the luminance transformation on the pixel
     lab_c.l = L_d;
     // xyz_c.y = L_d;
     return clamping(lab2rgb(lab_c));
-    // return lab2rgb(lab_c);
+    //return lab2rgb(lab_c);
     // return xyz2rgb(xyz_c);
     // return Clamp()(c / L_w * L_d);
 
@@ -126,7 +132,7 @@ RGB Reinhard02::operator()(const RGB &c) const {
 };
 
 std::ostream &Reinhard02::format(std::ostream &os) const {
-    os << "Reinhard 2002 (a = " << a << ", avg_L_w = " << avg_L_w << ", min_L = " << min_L << ")";
+    os << "Reinhard 2002 (a = " << a << ", avg_L_w = " << avg_L_w << ", white_L = " << white_L << ")";
     return os;
 }
 
