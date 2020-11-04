@@ -16,7 +16,9 @@
 #include "shape.hpp"
 #include "tone_mapping.hpp"
 
-#include <memory.h>
+#include <cassert>
+#include <iostream>
+#include <memory>
 #include <vector>
 
 void carita(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
@@ -132,37 +134,54 @@ void escena4(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     // scene.push_back(sphere3);
 }
 
+void escenaMartins(std::vector<std::shared_ptr<Shape>> &scene) {
+    // Camera l u f
+
+    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(-1, 0, 0), 8));
+    scene.push_back(std::make_shared<Sphere>(RGB(255, 172, 0), Point3(8, 2, 0), 1.0f));
+    scene.push_back(std::make_shared<Quadrilateral>(RGB(0, 255, 0), Point3(7, 6, -3), Point3(7, 8, -1)));
+    scene.push_back(std::make_shared<Triangle>(RGB(255, 255, 255), Point3(7, 8, 3), Point3(7, 8, 1), Point3(7, 6, 3)));
+}
+
 int main(int argc, char **argv) {
 
-    int width = 200;
-    int height = 200;
+    int width = 4000;
+    int height = 4000;
 
-    float acum_width = -1.0f + (1.0f / width);
-    float acum_height = 1.0f - (1.0f / height);
+    Point3 o = Point3(2, 6, 0);
+    Vector3 r = Vector3(0, 0, 1);
+    Vector3 u = Vector3(0, 1, 0);
+    Vector3 f = Vector3(1, 0, 0);
+
+    float mod_u = modulus(u);
+    float mod_r = modulus(r);
+
+    std::cout << "Relacion modulos: " << mod_r / mod_u << std::endl;
+    std::cout << "Relacion pixeles: " << (float)width / (float)height << std::endl;
+    assert((mod_r / mod_u) == (float)width / (float)height);
+
+    float acum_width = -mod_r + (mod_r / width);
+    float acum_height = mod_u - (mod_u / height);
 
     std::vector<std::shared_ptr<Shape>> scene;
-    Camera c;
-    escena4(c, scene);
+    Camera c = Camera(o, r, u, f);
+    escenaMartins(scene);
 
     Image image;
 
     image.width = width;
     image.height = height;
 
-    // Camera o l u f
-    Camera c = Camera(Point3(0.0f, .0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f));
-
     for (int y = 0.0f; y < height; y++) {
         for (int x = 0.0f; x < width; x++) {
-            // std::cout << "hola: " << acum_width << " " << acum_height << std::endl;
+
             image.v.push_back(c.generateRay(normalize(Vector3(acum_width, acum_height, 1.0f)), scene));
             acum_width += 2.0f / width;
         }
-        acum_width = -1.0f + (1.0f / width);
-        acum_height -= 2.0f / height;
+        acum_width = -mod_r + (mod_r / width);
+        acum_height -= (2.0f * mod_u) / height;
     }
 
-    // image.applyToneMappingOperator(Equalize(max(image)));
     writePPM(image, "salida.ppm", 255, 255);
     writeHDR(image, "salida.hdr");
 };

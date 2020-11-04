@@ -14,8 +14,8 @@
 #include "geometry.hpp"
 #include "shape.hpp"
 #include "transform.hpp"
-#include <vector>
 #include <memory>
+#include <vector>
 
 struct Camera {
 
@@ -31,9 +31,6 @@ struct Camera {
                                            l.y, u.y, f.y, o.y,
                                            l.z, u.z, f.z, o.z,
                                            0.0f, 0.0f, 0.0f, 1.0f));
-
-        std::cout << "hola" << std::endl;
-        std::cout << camera2world << std::endl;
     };
 
     RGB generateRay(const Vector3 &d, const std::vector<std::shared_ptr<Shape>> &shapes);

@@ -17,20 +17,15 @@ RGB Camera::generateRay(const Vector3 &d, const std::vector<std::shared_ptr<Shap
     float t = INFINITY;
     float shape_t = 0.0f;
 
-    // std::cout << "rayo desde camera: " << d.x << " " << d.y << " " << d.z << std::endl;
-    std::cout << "rayo desde camera: " << o << d << std::endl;
-    // std::cout << "rayo en el mundo: " << camera2world(o) << camera2world(d) << std::endl;
-
     for (const std::shared_ptr<Shape> &s : shapes) {
         shape_t = s->intersection(o, camera2world(d));
-        // std::cout << shape_t << std::endl;
+
         if (shape_t < t && shape_t > 0.0f) {
-            // std::cout << "me gusta" << std::endl;
+
             color = s->color;
             t = shape_t;
         }
     }
 
-    // std::cout << "color: " << color << std::endl;
     return color;
 };

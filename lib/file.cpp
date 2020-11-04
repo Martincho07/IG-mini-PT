@@ -10,9 +10,8 @@
 
 #include "file.hpp"
 #include "error.hpp"
-
 #include <cctype>
-#include <iomanip> 
+#include <iomanip>
 
 std::string createOutFilename(const std::string &file) {
     size_t i = file.find_last_of('/', file.length());
