@@ -11,7 +11,7 @@
 
 #include "camera.hpp"
 
-RGB Camera::generateRay(const Vector3 &d, const std::vector<std::shared_ptr<Shape>> &shapes) {
+RGB Camera::generateRay(const Vector3 &d, const std::vector<std::shared_ptr<Shape>> &shapes) const {
 
     RGB color(255, 255, 255);
     float t = INFINITY;
