@@ -11,6 +11,7 @@
 #pragma once
 
 #include "image.hpp"
+#include "shape.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -85,3 +86,9 @@ bool writePPM(Image &img, const std::string file, float max, int colorResolution
  * Return true if the writting is successful
  */
 bool writeHDR(const Image &img, const std::string file);
+
+/*
+ * Read a 3D object stored in a PLY file
+ * Returns a list with the triangles that make up the object
+ */
+std::vector<Triangle> readPLY(const std::string file);

@@ -12,6 +12,9 @@
 
 #include "color.hpp"
 #include "geometry.hpp"
+
+#include <vector>
+
 #define EPSILON 0.0000001f
 
 struct Shape {
@@ -74,3 +77,17 @@ struct Quadrilateral : public Shape {
 
     float intersection(Point3 o, Vector3 d) const override;
 };
+
+struct TriangleMesh : public Shape {
+    // Faces
+    std::vector<Triangle> faces;
+
+    // El cuadrilatero recibe como parametros u_c (upper corner) que es la esquina superior derecha
+    // y l_c(lower corner) que es la esquina inferior izquierda
+    TriangleMesh(){};
+    TriangleMesh(RGB _color, std::vector<Triangle> _faces) : Shape(_color), faces(_faces){};
+    ~TriangleMesh(){};
+
+    float intersection(Point3 o, Vector3 d) const override;
+};
+

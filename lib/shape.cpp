@@ -10,6 +10,8 @@
 
 #include "shape.hpp"
 
+#include <cfloat>
+
 float Sphere::intersection(Point3 o, Vector3 d) const {
     float a = pow(modulus(d), 2.0f);
     float b = dot(d, o - center) * 2.0f;
@@ -86,4 +88,19 @@ float Quadrilateral::intersection(Point3 o, Vector3 d) const {
         return t_tri_2;
 
     return -1.0f;
+}
+
+float TriangleMesh::intersection(Point3 o, Vector3 d) const {
+    float t_min, aux;
+    t_min = FLT_MAX;
+    for (const Triangle &t : faces) {
+        aux = t.intersection(o, d);
+        if (aux >= 0 && aux < t_min) {
+            t_min = aux;
+        }
+    }
+    if (t_min == FLT_MAX) {
+        t_min = -1;
+    }
+    return t_min;
 }

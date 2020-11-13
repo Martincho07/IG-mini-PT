@@ -113,7 +113,7 @@ void escena4(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     // Camera l u f
 
     // c = Camera(orig, left, up, front);
-    c = Camera(Point3(0, 0, -10), Vector3(2, 0, 0), Vector3(0, 3, 0), Vector3(0, 0, 10));
+    c = Camera(Point3(0, 0, -20), Vector3(3, 0, 0), Vector3(0, 3, 0), Vector3(0, 0, 10));
 
     scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, 1), -5));
     scene.push_back(std::make_shared<Plane>(RGB(0, 255, 0), Vector3(1, 0, 0), -3));
@@ -122,7 +122,7 @@ void escena4(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     scene.push_back(std::make_shared<Plane>(RGB(0, 255, 255), Vector3(0, 1, 0), -3));
 
     scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, 0, 2), 0.5f));
-    scene.push_back(std::make_shared<Sphere>(RGB(70, 10, 0), Point3(0.8, -2.0, 3.4), 0.5f));
+    scene.push_back(std::make_shared<Sphere>(RGB(0, 80, 255), Point3(0.8, -2.5, -5), 0.5f));
 
     // std::shared_ptr<Sphere> sphere(new Sphere(RGB(255, 102, 254), Point3(0, 0, 5), 0.5f));
     // scene.push_back(sphere);
@@ -134,8 +134,13 @@ void escena4(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     // scene.push_back(sphere3);
 }
 
-void escenaMartins(std::vector<std::shared_ptr<Shape>> &scene) {
+void escenaMartins(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     // Camera l u f
+    Point3 o = Point3(2, 6, 0);
+    Vector3 r = Vector3(0, 0, 1);
+    Vector3 u = Vector3(0, 1, 0);
+    Vector3 f = Vector3(1, 0, 0);
+    c = Camera(o, r, u, f);
 
     scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(-1, 0, 0), 8));
     scene.push_back(std::make_shared<Sphere>(RGB(255, 172, 0), Point3(8, 2, 0), 1.0f));
@@ -143,18 +148,34 @@ void escenaMartins(std::vector<std::shared_ptr<Shape>> &scene) {
     scene.push_back(std::make_shared<Triangle>(RGB(255, 255, 255), Point3(7, 8, 3), Point3(7, 8, 1), Point3(7, 6, 3)));
 }
 
+void escenaPLY(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
+    c = Camera(Point3(800, 700, -20), Vector3(100, 0, 0), Vector3(0, 100, 0), Vector3(0, 0, 10));
+
+    // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(-1, 0, 0), 1000));
+    scene.push_back(std::make_shared<Triangle>(RGB(255, 255, 0), Point3(750, 750, 0), Point3(850, 750, 0), Point3(850, 650, 0)));
+
+    scene.push_back(std::make_shared<Triangle>(RGB(255, 255, 0), Point3(850, 750, 0), Point3(850, 750, 0), Point3(850, 650, 0)));
+
+    // scene.push_back(std::make_shared<TriangleMesh>(RGB(255, 255, 255), readPLY("models/airplane.ply")));
+}
+
+void escenaPLY2(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
+    c = Camera(Point3(896, 595, -200), Vector3(2000, 0, 0), Vector3(0, 2000, 0), Vector3(0, 0, 200));
+
+    // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(-1, 0, 0), 1000));
+    scene.push_back(std::make_shared<Triangle>(RGB(0, 255, 0), Point3(896.994, 595.49, -17.7412), Point3(865.796997, 595.489990, -17.225300), Point3(865.796997, 655.489990, -17.225300)));
+    scene.push_back(std::make_shared<Triangle>(RGB(255, 255, 0), Point3(1033.3, 1255.91, 162.47), Point3(975.054, 1241.46, 158.236), Point3(976.963, 1232.69, 159.918)));
+
+    scene.push_back(std::make_shared<TriangleMesh>(RGB(0, 255, 255), readPLY("models/airplane.ply")));
+}
+
 int main(int argc, char **argv) {
 
-    int width = 4000;
-    int height = 4000;
+    int width = 1000;
+    int height = 1000;
 
-    Point3 o = Point3(2, 6, 0);
-    Vector3 r = Vector3(0, 0, 1);
-    Vector3 u = Vector3(0, 1, 0);
-    Vector3 f = Vector3(1, 0, 0);
-
-    float mod_u = modulus(u);
-    float mod_r = modulus(r);
+    float mod_u = 1;
+    float mod_r = 1;
 
     std::cout << "Relacion modulos: " << mod_r / mod_u << std::endl;
     std::cout << "Relacion pixeles: " << (float)width / (float)height << std::endl;
@@ -164,8 +185,8 @@ int main(int argc, char **argv) {
     float acum_height = mod_u - (mod_u / height);
 
     std::vector<std::shared_ptr<Shape>> scene;
-    Camera c = Camera(o, r, u, f);
-    escenaMartins(scene);
+    Camera c;
+    escenaPLY2(c, scene);
 
     Image image;
 
@@ -182,6 +203,6 @@ int main(int argc, char **argv) {
         acum_height -= (2.0f * mod_u) / height;
     }
 
-    writePPM(image, "salida.ppm", 255, 255);
-    writeHDR(image, "salida.hdr");
+    writePPM(image, "images/salida.ppm", 255, 255);
+    writeHDR(image, "images/salida.hdr");
 };

@@ -171,3 +171,131 @@ bool writeHDR(const Image &img, const std::string file) {
     }
     return true;
 }
+
+std::vector<Triangle> readPLY(const std::string file) {
+    if (!checkFileExtension(file, "ply")) {
+        ErrorExit("Input file must have .ply extension");
+    }
+
+    std::ifstream is(file, std::ios::in);
+    if (!is.is_open()) {
+        ErrorExit("Could not open file: ", file);
+    }
+
+    // Make sure that the file format is ply
+    std::string keyword;
+
+    is >> keyword;
+    if (keyword != "ply") {
+        ErrorExit("Invalid PPM file, the magic number should be 'P3'");
+    }
+
+    // Read format line
+    std::string type, version;
+    is >> keyword >> type >> version;
+    if (keyword != "format") {
+        ErrorExit("Missing file PLY format line");
+    }
+    if (type != "ascii") {
+        ErrorExit("Unsupported PLY type: ", type);
+    }
+    if (version != "1.0") {
+        ErrorExit("Unsupported PLY version: ", version);
+    }
+
+    // Read until 'end_header'
+    std::string line;
+    int numVerts, numFaces;
+    is >> keyword;
+    while (!is.eof() && keyword != "end_header") {
+        if (keyword == "comment") {
+            // ignore the rest of the line
+            std::getline(is, line);
+        } else if (keyword == "element") {
+            std::string elementType;
+            is >> elementType;
+            std::cout << "elementType: " << elementType << std::endl;
+            if (elementType == "vertex") {
+                is >> numVerts;
+                std::cout << numVerts << std::endl;
+                is.ignore(256, '\n');
+                // Vertex information
+                std::string px, py, pz;
+                std::getline(is, px);
+                std::cout << px << std::endl;
+                std::getline(is, py);
+                std::cout << py << std::endl;
+                std::getline(is, pz);
+                std::cout << pz << std::endl;
+                if (px != "property float x" ||
+                    py != "property float y" ||
+                    pz != "property float z") {
+                    ErrorExit("Unsupported vertex properties");
+                }
+                // TODO: Check for aditional UV mapping data
+            } else if (elementType == "face") {
+                is >> numFaces;
+                std::string pf;
+                is.ignore(256, '\n');
+                std::getline(is, pf);
+                std::cout << numFaces << " " << pf << std::endl;
+                if (pf != "property list uchar uint vertex_indices") {
+                    std::cout << numFaces << " " << pf << std::endl;
+                    ErrorExit("Unsupported face properties");
+                }
+            } else {
+                std::cout << numVerts << " " << numFaces << std::endl;
+                ErrorExit("Unsupported element type in PLY file: ", elementType);
+            }
+        } else {
+            ErrorExit("Unsupported keyword in PLY file: ", keyword);
+        }
+        is >> keyword;
+    }
+
+    if (is.eof()) {
+        ErrorExit("Data section on the PLY file is empty");
+    }
+
+    if (numVerts == 0 || numFaces == 0) {
+        ErrorExit("Invalid PLY header");
+    }
+
+    std::cout << numVerts << " " << numFaces << std::endl;
+
+    // Read vertices info
+    std::vector<Point3> vertices;
+
+    for (int i = 0; i < numVerts; i++) {
+        float x, y, z;
+        is >> x >> y >> z;
+        vertices.push_back(Point3(x, y, z));
+        std::cout << vertices[i] << std::endl;
+    }
+
+    // Read faces info
+    // Each face is a triangle that connects 3 vertices
+    std::vector<Triangle> faces;
+
+    int fSize;
+    for (int i = 0; i < numFaces; i++) {
+        // Read number of vertices of the polygon
+        is >> fSize;
+        if (fSize != 3) {
+            ErrorExit("Unsupported list size: ", fSize, ". Only triangles are supported");
+        }
+        // These are the indexes of the vertices in the previous vector
+        float a, b, c;
+        is >> a >> b >> c;
+        faces.push_back(Triangle(RGB(255, 255, 0), vertices[a], vertices[b], vertices[c]));
+        std::cout << a << " " << b << " " << c << " " << std::endl;
+    }
+
+    std::cout << faces[1522].v1 << " " << faces[1522].v2 << " " << faces[1522].v3 << std::endl;
+    std::cout << faces[755].v1 << " " << faces[755].v2 << " " << faces[755].v3 << std::endl;
+
+    std::cout << "Terminado de leer PLY" << std::endl;
+
+    // TODO: Mirar cómo hacer lo del color
+    return faces;
+}
