@@ -33,5 +33,5 @@ struct Camera {
                                            0.0f, 0.0f, 0.0f, 1.0f));
     };
 
-    RGB generateRay(const Vector3 &d, const std::vector<std::shared_ptr<Shape>> &shapes);
+    RGB generateRay(const Vector3 &d, const std::vector<std::shared_ptr<Shape>> &shapes) const;
 };

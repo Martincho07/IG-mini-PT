@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.18.0)
 project(informaticagrafica VERSION 0.1.0 DESCRIPTION "informatica grafica")
 
 set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_FLAGS "-pthread")
 
 include(CTest)
 enable_testing()

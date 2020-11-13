@@ -34,6 +34,8 @@ struct Image {
         : v(_v), width(_width), height(_height){};
 
     void applyToneMappingOperator(const ToneMappingOperator &op);
+
+    void puntOnCoordenate(int f, int c, const RGB r);
 };
 
 float maxLum(const Image &img);
