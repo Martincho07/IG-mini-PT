@@ -295,6 +295,7 @@ std::vector<Triangle> readPLY(const std::string file) {
     std::cout << faces[755].v1 << " " << faces[755].v2 << " " << faces[755].v3 << std::endl;
 
     std::cout << "Terminado de leer PLY" << std::endl;
+    std::cout << "Numero de triangulos: " << faces.size() << std::endl;
 
     // TODO: Mirar cómo hacer lo del color
     return faces;

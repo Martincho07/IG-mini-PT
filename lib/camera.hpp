@@ -20,16 +20,16 @@
 struct Camera {
 
     Point3 o;
-    Vector3 l, u, f;
+    Vector3 r, u, f;
     Transform camera2world;
 
     Camera(){};
 
-    Camera(Point3 _o, Vector3 _l, Vector3 _u, Vector3 _f) : o(_o), l(_l), u(_u), f(_f) {
+    Camera(Point3 _o, Vector3 _r, Vector3 _u, Vector3 _f) : o(_o), r(_r), u(_u), f(_f) {
 
-        camera2world = Transform(Matrix4x4(l.x, u.x, f.x, o.x,
-                                           l.y, u.y, f.y, o.y,
-                                           l.z, u.z, f.z, o.z,
+        camera2world = Transform(Matrix4x4(r.x, u.x, f.x, o.x,
+                                           r.y, u.y, f.y, o.y,
+                                           r.z, u.z, f.z, o.z,
                                            0.0f, 0.0f, 0.0f, 1.0f));
     };
 

@@ -33,6 +33,7 @@
 #include <vector>
 
 #define NUM_REGIONS 8
+#define CAMERA_PLANE_SIZE 1
 
 void carita(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     std::shared_ptr<Plane> plane(new Plane(RGB(255, 0, 0), Vector3(-1.0f, 0.0f, 0.0f), 8.0f));
@@ -166,9 +167,12 @@ void escenaPLY(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
 
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(-1, 0, 0), 1000));
     scene.push_back(std::make_shared<Triangle>(RGB(0, 255, 0), Point3(896.994, 595.49, -17.7412), Point3(865.796997, 595.489990, -17.225300), Point3(865.796997, 655.489990, -17.225300)));
-    scene.push_back(std::make_shared<Triangle>(RGB(255, 255, 0), Point3(1033.3, 1255.91, 162.47), Point3(975.054, 1241.46, 158.236), Point3(976.963, 1232.69, 159.918)));
+    //scene.push_back(std::make_shared<Triangle>(RGB(255, 255, 0), Point3(1033.3, 1255.91, 162.47), Point3(975.054, 1241.46, 158.236), Point3(976.963, 1232.69, 159.918)));
 
-    scene.push_back(std::make_shared<TriangleMesh>(RGB(0, 255, 255), readPLY("models/airplane.ply")));
+    std::vector<Triangle> triangle_mesh = readPLY("../models/airplane.ply");
+    scene.push_back(std::make_shared<TriangleMesh>(RGB(0, 255, 255), triangle_mesh));
+
+    std::cout << "Tamanyo de la escena: " << scene.size() << std::endl;
 }
 
 void escenaCara(std::vector<std::shared_ptr<Shape>> &scene) {
@@ -269,14 +273,11 @@ void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector
 
     float x_min, x_max, y_min, y_max;
 
-    float mod_u = modulus(u);
-    float mod_r = modulus(r);
+    float init_width = -CAMERA_PLANE_SIZE;
+    float init_height = CAMERA_PLANE_SIZE;
 
-    float init_width = -mod_r;
-    float init_height = mod_u;
-
-    float pixel_width = 2 * (mod_r / width);
-    float pixel_height = 2 * (mod_u / height);
+    float pixel_width = 2 * (-CAMERA_PLANE_SIZE / width);
+    float pixel_height = 2 * (CAMERA_PLANE_SIZE / height);
 
     int width_submatrix = width / NUM_REGIONS;
     int height_submatrix = height / NUM_REGIONS;
@@ -361,8 +362,8 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const std::v
 
 int main(int argc, char **argv) {
 
-    int width = 4000;
-    int height = 4000;
+    int width = 1000;
+    int height = 1000;
     int width_inc = width / NUM_REGIONS;
     int height_inc = height / NUM_REGIONS;
     float x, y;
@@ -420,7 +421,7 @@ int main(int argc, char **argv) {
 
     // El productor llena la cola para que los consumers
     // cojan elementos y hagan los calculos
-    producer_task(cbq, u, r, width, height);
+    producer_task(cbq, c.u, c.r, width, height);
     auto init = std::chrono::steady_clock::now();
     std::vector<std::thread> consumers(num_threads);
 

@@ -11,6 +11,7 @@
 #include "shape.hpp"
 
 #include <cfloat>
+#include <cstdlib>
 
 float Sphere::intersection(Point3 o, Vector3 d) const {
     float a = pow(modulus(d), 2.0f);
@@ -69,7 +70,9 @@ float Triangle::intersection(Point3 o, Vector3 d) const {
     t = f * dot(edge2, q);
 
     if (t > EPSILON)
+
         return t;
+
     else
         return -1.0f;
 };
