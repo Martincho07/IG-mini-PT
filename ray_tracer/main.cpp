@@ -33,7 +33,7 @@
 #include <vector>
 
 #define NUM_REGIONS 8
-#define CAMERA_PLANE_SIZE 1
+#define CAMERA_PLANE_SIZE 1.0f
 
 void carita(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     std::shared_ptr<Plane> plane(new Plane(RGB(255, 0, 0), Vector3(-1.0f, 0.0f, 0.0f), 8.0f));
@@ -269,6 +269,9 @@ int getArgValue(int argc, char **argv, int i, int defaultValue) {
     return value;
 }
 
+// Define el comportamiento del producer, que divide
+// la imagen en rectandglos y los coloca en una cola
+// FIFO
 void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector3 &u, const Vector3 &r, int width, int height) {
 
     float x_min, x_max, y_min, y_max;
@@ -276,8 +279,8 @@ void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector
     float init_width = -CAMERA_PLANE_SIZE;
     float init_height = CAMERA_PLANE_SIZE;
 
-    float pixel_width = 2 * (-CAMERA_PLANE_SIZE / width);
-    float pixel_height = 2 * (CAMERA_PLANE_SIZE / height);
+    float pixel_width = 2 * (CAMERA_PLANE_SIZE / (float)width);
+    float pixel_height = 2 * (CAMERA_PLANE_SIZE / (float)height);
 
     int width_submatrix = width / NUM_REGIONS;
     int height_submatrix = height / NUM_REGIONS;
