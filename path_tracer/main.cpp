@@ -8,6 +8,7 @@
  * Coms: Informática Gráfica, 2020-2021
  **********************************************************************************/
 
+#include "BRDF.hpp"
 #include "ConcurrentBoundedQueue.hpp"
 #include "Logger.hpp"
 #include "Semaphore_V2.hpp"
@@ -34,8 +35,6 @@
 
 #define NUM_REGIONS 8
 #define CAMERA_PLANE_SIZE 1.0f
-
-/*
 /*
 void carita(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     std::shared_ptr<Plane> plane(new Plane(RGB(255, 0, 0), Vector3(-1.0f, 0.0f, 0.0f), 8.0f));
@@ -125,21 +124,21 @@ void escena3(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     scene.push_back(sphere3);
 }
 */
-/*
 void escena4(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     // Camera l u f
 
     // c = Camera(orig, left, up, front);
     c = Camera(Point3(0, 0, -20), Vector3(3, 0, 0), Vector3(0, 3, 0), Vector3(0, 0, 10));
 
-    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, 1), -5, false));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 0), Vector3(1, 0, 0), -3, false));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 0, 255), Vector3(1, 0, 0), 3, false));
-    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, 1, 0), 3, true));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 255), Vector3(0, 1, 0), -3, false));
+    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, -1), 5, std::make_shared<LambertianDifuse>(LambertianDifuse(RGB(0.8f, 0.0f, 0.0f)))));
+    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 0), Vector3(-1, 0, 0), 3, std::make_shared<LambertianDifuse>(LambertianDifuse(RGB(0.8f, 0.5f, 0.0f)))));
+    scene.push_back(std::make_shared<Plane>(RGB(0, 0, 255), Vector3(1, 0, 0), 3, std::make_shared<LambertianDifuse>(LambertianDifuse(RGB(0.0f, 0.0f, 0.8f)))));
+    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LigthEmision>(LigthEmision(RGB(1.0f, 1.0f, 1.0f)))));
+    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 255), Vector3(0, 1, 0), 3, std::make_shared<LambertianDifuse>(LambertianDifuse(RGB(0.0f, 0.8f, 0.8f)))));
 
-    scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, 0, 2), 0.5f, false));
-    scene.push_back(std::make_shared<Sphere>(RGB(0, 80, 255), Point3(0.8, -2.5, -5), 0.5f, false));
+    scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, 0, 2), 0.5f, std::make_shared<PerfectSpecular>(PerfectSpecular())));
+    scene.push_back(std::make_shared<Sphere>(RGB(0, 80, 255), Point3(0.8, -2.5, -5), 0.5f, std::make_shared<PerfectSpecular>(PerfectSpecular())));
+    scene.push_back(std::make_shared<Quadrilateral>(RGB(0, 80, 255), Point3(-2.5, 2.5, -19.5), Point3(2.5, 2.5, 4.5), std::make_shared<LambertianDifuse>(LambertianDifuse(RGB(0.0f, 0.0f, 0.8f)))));
 
     // std::shared_ptr<Sphere> sphere(new Sphere(RGB(255, 102, 254), Point3(0, 0, 5), 0.5f));
     // scene.push_back(sphere);
@@ -150,7 +149,6 @@ void escena4(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     // std::shared_ptr<Sphere> sphere3(new Sphere(RGB(0, 0, 255), Point3(4, 10, 7.5), 2.0f));
     // scene.push_back(sphere3);
 }
-*/
 /*
 void escenaMartins(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     // Camera l u f
@@ -258,7 +256,6 @@ void escenaCara(std::vector<std::shared_ptr<Shape>> &scene) {
     scene.push_back(std::make_shared<Triangle>(RGB(255, 255, 255), Point3(7, 8, 3), Point3(7, 8, 1), Point3(7, 6, 3)));
 }
 */
-/*
 int getArgValue(int argc, char **argv, int i, int defaultValue) {
     int value = defaultValue;
     if (i + 1 >= argc || argv[i + 1][0] == '-') {
@@ -351,7 +348,6 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const std::v
 
                 x = (pi.x_max - pi.x_min) * ((((float)rand_r(&seed)) / (float)RAND_MAX)) + pi.x_min;
                 y = (pi.y_max - pi.y_min) * ((((float)rand_r(&seed)) / (float)RAND_MAX)) + pi.y_min;
-
                 color = color + c.generateRay(normalize(Vector3(x, y, 1.0f)), scene);
             }
             color = color / (float)num_rays;
@@ -368,10 +364,8 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const std::v
     std::chrono::duration<double> diff = end - init;
     std::cout << "Tiempo de trabajo del hilo: " << id << " " << diff.count() << std::endl;
 }
-* /
-*/
-int main(int argc, char **argv){
-    /*
+
+int main(int argc, char **argv) {
 
     int width = 1000;
     int height = 1000;
@@ -451,5 +445,4 @@ int main(int argc, char **argv){
     std::cout << "Numero de pixeles: " << height * width << std::endl;
     writePPM(image, "salida.ppm", 255, 255);
     writeHDR(image, "salida.hdr");
-    */
 };

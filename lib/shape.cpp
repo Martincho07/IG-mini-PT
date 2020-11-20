@@ -9,6 +9,7 @@
  **********************************************************************************/
 
 #include "shape.hpp"
+#include "geometry.hpp"
 
 #include <cfloat>
 #include <cstdlib>
@@ -85,6 +86,7 @@ float Quadrilateral::intersection(Point3 o, Vector3 d) const {
     t_tri_2 = t2.intersection(o, d);
 
     if (t_tri_1 > 0)
+
         return t_tri_1;
 
     if (t_tri_2 > 0)
@@ -107,3 +109,28 @@ float TriangleMesh::intersection(Point3 o, Vector3 d) const {
     }
     return t_min;
 }
+
+Vector3 Sphere::normal(Point3 p) const {
+
+    return p - center;
+};
+
+Vector3 Plane::normal(Point3 p) const {
+
+    return n;
+};
+
+Vector3 Triangle::normal(Point3 p) const {
+
+    return cross(v2 - v1, v3 - v1);
+};
+
+Vector3 Quadrilateral::normal(Point3 p) const {
+
+    return t1.normal(p);
+};
+
+Vector3 TriangleMesh::normal(Point3 p) const {
+
+    return Vector3(0, 0, 0);
+};

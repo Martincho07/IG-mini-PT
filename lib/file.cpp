@@ -9,9 +9,11 @@
  **********************************************************************************/
 
 #include "file.hpp"
+#include "BRDF.hpp"
 #include "error.hpp"
 #include <cctype>
 #include <iomanip>
+#include <memory>
 
 std::string createOutFilename(const std::string &file) {
     size_t i = file.find_last_of('/', file.length());
@@ -287,7 +289,7 @@ std::vector<Triangle> readPLY(const std::string file) {
         // These are the indexes of the vertices in the previous vector
         float a, b, c;
         is >> a >> b >> c;
-        faces.push_back(Triangle(RGB(255, 255, 0), vertices[a], vertices[b], vertices[c]));
+        faces.push_back(Triangle(RGB(255, 255, 0), vertices[a], vertices[b], vertices[c], std::make_shared<LambertianDifuse>(LambertianDifuse(RGB(0, 0, 255)))));
         std::cout << a << " " << b << " " << c << " " << std::endl;
     }
 

@@ -8,6 +8,7 @@ add_library(lib geometry.cpp
                 error.cpp
                 tone_mapping.cpp
                 shape.cpp
-                camera.cpp)
+                camera.cpp
+                BRDF.cpp)
 
 target_include_directories(lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -35,6 +35,10 @@ target_link_libraries(tone_mapper LINK_PUBLIC lib)
 add_executable(ray_tracer ray_tracer/main.cpp)
 target_link_libraries(ray_tracer LINK_PUBLIC lib)
 
+# Path Tracer
+add_executable(path_tracer path_tracer/main.cpp)
+target_link_libraries(path_tracer LINK_PUBLIC lib)
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

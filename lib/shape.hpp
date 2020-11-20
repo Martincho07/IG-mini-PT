@@ -10,22 +10,25 @@
 
 #pragma once
 
+#include "BRDF.hpp"
 #include "color.hpp"
 #include "geometry.hpp"
 
+#include <memory>
 #include <vector>
 
 #define EPSILON 0.0000001f
 
 struct Shape {
 
-    RGB color;
+    std::shared_ptr<BRDF> brdf;
 
     Shape(){};
-    Shape(RGB _color) : color(_color){};
+    Shape(std::shared_ptr<BRDF> _brdf) : brdf(_brdf){};
     virtual ~Shape(){};
 
     virtual float intersection(Point3 o, Vector3 d) const = 0;
+    virtual Vector3 normal(Point3 p) const = 0;
 };
 
 struct Sphere : public Shape {
@@ -34,10 +37,11 @@ struct Sphere : public Shape {
     Point3 center;
 
     Sphere(){};
-    Sphere(RGB _color, Point3 _center, float _r) : center(_center), r(_r), Shape(_color){};
+    Sphere(RGB _color, Point3 _center, float _r, std::shared_ptr<BRDF> _brdf) : center(_center), r(_r), Shape(_brdf){};
     ~Sphere(){};
 
     float intersection(Point3 o, Vector3 d) const override;
+    Vector3 normal(Point3 p) const override;
 };
 
 struct Plane : public Shape {
@@ -45,20 +49,22 @@ struct Plane : public Shape {
     float c;
 
     Plane(){};
-    Plane(RGB _color, Vector3 _n, float _c) : n(_n), c(_c), Shape(_color){};
+    Plane(RGB _color, Vector3 _n, float _c, std::shared_ptr<BRDF> _brdf) : n(_n), c(_c), Shape(_brdf){};
     ~Plane(){};
 
     float intersection(Point3 o, Vector3 d) const override;
+    Vector3 normal(Point3 p) const override;
 };
 
 struct Triangle : public Shape {
     Point3 v1, v2, v3;
 
     Triangle(){};
-    Triangle(RGB _color, Point3 _v1, Point3 _v2, Point3 _v3) : v1(_v1), v2(_v2), v3(_v3), Shape(_color){};
+    Triangle(RGB _color, Point3 _v1, Point3 _v2, Point3 _v3, std::shared_ptr<BRDF> _brdf) : v1(_v1), v2(_v2), v3(_v3), Shape(_brdf){};
     ~Triangle(){};
 
     float intersection(Point3 o, Vector3 d) const override;
+    Vector3 normal(Point3 p) const override;
 };
 
 struct Quadrilateral : public Shape {
@@ -68,14 +74,15 @@ struct Quadrilateral : public Shape {
     // El cuadrilatero recibe como parametros u_c (upper corner) que es la esquina superior derecha
     // y l_c(lower corner) que es la esquina inferior izquierda
     Quadrilateral(){};
-    Quadrilateral(RGB _color, Point3 u_c, Point3 l_c) : Shape(_color) {
+    Quadrilateral(RGB _color, Point3 u_c, Point3 l_c, std::shared_ptr<BRDF> _brdf) : Shape(_brdf) {
 
-        t1 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, l_c.z), Point3(u_c.x, u_c.y, u_c.z));
-        t2 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(u_c.x, l_c.y, u_c.z), Point3(u_c.x, u_c.y, u_c.z));
+        t1 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, l_c.z), Point3(u_c.x, u_c.y, u_c.z), _brdf);
+        t2 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(u_c.x, l_c.y, u_c.z), Point3(u_c.x, u_c.y, u_c.z), _brdf);
     };
     ~Quadrilateral(){};
 
     float intersection(Point3 o, Vector3 d) const override;
+    Vector3 normal(Point3 p) const override;
 };
 
 struct TriangleMesh : public Shape {
@@ -85,9 +92,9 @@ struct TriangleMesh : public Shape {
     // El cuadrilatero recibe como parametros u_c (upper corner) que es la esquina superior derecha
     // y l_c(lower corner) que es la esquina inferior izquierda
     TriangleMesh(){};
-    TriangleMesh(RGB _color, std::vector<Triangle> _faces) : Shape(_color), faces(_faces){};
+    TriangleMesh(RGB _color, std::vector<Triangle> _faces, std::shared_ptr<BRDF> _brdf) : Shape(_brdf), faces(_faces){};
     ~TriangleMesh(){};
 
     float intersection(Point3 o, Vector3 d) const override;
+    Vector3 normal(Point3 p) const override;
 };
-
