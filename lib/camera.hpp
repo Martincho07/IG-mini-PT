@@ -14,6 +14,7 @@
 #include "geometry.hpp"
 #include "shape.hpp"
 #include "transform.hpp"
+#include <math.h>
 #include <memory>
 #include <vector>
 
@@ -43,7 +44,7 @@ struct Camera {
 
         o = target - f;
 
-        u = u * std::tanf(fov / 2);
+        u = u * tanf(fov / 2);
         r = r * aspect_ratio * modulus(u);
 
         std::cout << "o " << o << " r " << r << " u " << u << " f " << f << std::endl;

@@ -19,6 +19,7 @@
 #include "geometry.hpp"
 #include "image.hpp"
 #include "pixel.hpp"
+#include "random.hpp"
 #include "shape.hpp"
 #include "tone_mapping.hpp"
 
@@ -128,14 +129,14 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const std::v
 
             for (int i = 0; i < num_rays; i++) {
 
-                x = (pi.x_max - pi.x_min) * ((((float)rand_r(&seed)) / (float)RAND_MAX)) + pi.x_min;
-                y = (pi.y_max - pi.y_min) * ((((float)rand_r(&seed)) / (float)RAND_MAX)) + pi.y_min;
+                x = random_float(pi.x_min, pi.x_max);
+                y = random_float(pi.y_min, pi.y_max);
                 // color = color + c.generateRay(normalize(Vector3(x, y, 1.0f)), scene);
                 color = color + c.generateRay2(x, y, scene);
             }
             color = color / (float)num_rays;
 
-            image->puntOnCoordenate(pi.fila, pi.columna, color);
+            image->fillPixel(pi.fila, pi.columna, color);
             color = RGB(0, 0, 0);
         }
 
@@ -228,7 +229,8 @@ int main(int argc, char **argv) {
 
     // image.applyToneMappingOperator(Equalize(max(image)));
 
-    writePPM(image, "salida.ppm", max(image), 1000000000);
-    // writePPM(image, "salida.ppm", 255, 255);
+    // writePPM(image, "salida.ppm", max(image), 1000000000);
+    image.applyToneMappingOperator(GammaCurve(max(image), 2.2));
+    writePPM(image, "salida.ppm", max(image), 255);
     writeHDR(image, "salida.hdr");
 };

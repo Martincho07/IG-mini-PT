@@ -11,37 +11,52 @@
 #include "BRDF.hpp"
 #include "color.hpp"
 #include "geometry.hpp"
+#include "random.hpp"
 #include "transform.hpp"
+
 #include <cmath>
 #include <iostream>
-#include <random>
 
-RGB LigthEmission::light_contribution() const {
-
-    return ligth_power;
+RGB LightEmission::light_contribution() const {
+    return light_power;
 };
 
-Vector3 LigthEmission::output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const {
-
-    return Vector3(0, 0, 0);
-};
 RGB PerfectSpecular::light_contribution() const {
-
     return RGB(1.0f, 1.0f, 1.0f);
 };
 
-Vector3 PerfectSpecular::output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const {
-
-    return wi + (normal * 2.0f * (dot(wi, normal)));
-};
-
 RGB LambertianDiffuse::light_contribution() const {
-
     // return kd;
     return kd / M_PI; // TODO: arreglar la intensidad de la luz
 };
 
-Vector3 LambertianDiffuse::output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const {
+RGB Phong::light_contribution() const {
+    // TODO
+    //
+    return RGB();
+}
+
+RGB Dielectric::light_contribution() const {
+    // TODO
+    return RGB();
+}
+
+Vector3 specular_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
+    // wi rayo en coordenadas del mundo
+    // Calcular el rayo de salida con la ley de la reflexión
+    // Se devuelve en coordenadas del mundo
+
+    return wi + (normal * 2.0f * (dot(wi, normal)));
+};
+
+Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
+    // wi rayo en coordenadas del mundo
+    // Generar un rayo aleatorio dentro de la hemiesfera
+    // Se devuelve en coordenadas del mundo
+
+    // Hay que generar un espacio de coordenadas local al punto de intersección,
+    // sabiendo la normal en ese punto
+    // Generar una dirección aleatoria en la hemiesfera y cambiarla a coordendas del mundo
 
     float radious = modulus(normal);
     unsigned int seed = rand() % 100;
@@ -58,17 +73,18 @@ Vector3 LambertianDiffuse::output_direction(const Vector3 &wi, const Vector3 &no
     z = normalize(z);
     x = cross(y, z);
 
-    std::random_device rd;                             // obtain a random number from hardware
-    std::mt19937 gen(rd());                            // seed the generator
-    std::uniform_int_distribution<> distr1(1, 157079); // define the range
-    std::uniform_int_distribution<> distr2(1, 628318); // define the range
+    Vector3 out_dir = uniform_hemisphere_sample();
 
-    float inclination = (float)distr1(gen) / 100000;
-    float azimuth = (float)distr2(gen) / 100000;
-
-    Vector3 output_point(0.0f, 1.0f, 0.0f);
-
-    output_point = (rotationY(azimuth) * rotationZ(inclination))(output_point);
-
-    return changeBasis(x, y, z, intersection_point)(output_point);
+    return changeBasis(x, y, z, intersection_point)(out_dir);
 };
+
+Vector3 refraction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
+    // TODO
+    return Vector3();
+};
+
+RGB BRDF::specular_contribution() const {};
+
+RGB BRDF::diffuse_contribution() const {};
+
+RGB BRDF::refraction_contribution() const {};

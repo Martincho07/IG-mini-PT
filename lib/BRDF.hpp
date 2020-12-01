@@ -10,102 +10,99 @@
 #pragma once
 #include "color.hpp"
 #include "geometry.hpp"
-/*
-struct DeltaFunction {
 
-    Vector3 w_r;
-
-    DeltaFunction(){};
-    DeltaFunction(Vector3 _w_r) : w_r(_w_r){};
-    ~DeltaFunction(){};
-
-    float operator()(Vector3 w_i) const {
-
-        if (w_r.x == w_i.x && w_r.y == w_i.y && w_r.z == w_i.z)
-            Vector3(1.0f, 1.0f, 1.0f);
-        else
-            Vector3(0.0f, 0.0f, 0.0f);
-    };
-};
-*/
 enum BRDF_TYPE { LAMBERTIAN_DIFFUSE,
                  PERFECT_SPECULAR,
-                 PHONG_BRDF,
+                 PHONG,
+                 DIELECTRIC,
                  EMISSOR };
 struct BRDF {
 
     BRDF_TYPE type;
+    // Coeficiente difuso
     RGB kd;
+    // Coeficiente especular
     RGB ks;
-    RGB ligth_power;
+    // Coeficiente de refracción
+    RGB kt;
+    // Luz emitida
+    RGB light_power;
+
+    // Máximo valor de cada tupla
+    float max_kd, max_ks, max_kt;
 
     BRDF(BRDF_TYPE _type) : type(_type) {}
     virtual ~BRDF() {}
 
     virtual RGB light_contribution() const = 0;
-    virtual Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const = 0;
+
+    RGB specular_contribution() const;
+
+    RGB diffuse_contribution() const;
+
+    RGB refraction_contribution() const;
 };
 
-struct LigthEmission : BRDF {
-    // LigthEmission() : BRDF(EMISSOR) {}
-    LigthEmission(RGB _ligth_power) : BRDF(EMISSOR) {
-        BRDF::light_power = _light_power;
+struct LightEmission : public BRDF {
+    LightEmission(RGB _light_power) : BRDF(EMISSOR) {
+        light_power = _light_power;
+        max_kd = 0;
+        max_ks = 0;
+        max_kt = 0;
     }
-    RGB light_contribution() const override;
-    Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const override;
+    ~LightEmission() {}
+    RGB light_contribution() const;
 };
 
 struct LambertianDiffuse : public BRDF {
-
-    // LambertianDiffuse() : BRDF(LAMBERTIAN_DIFFUSE) {}
     LambertianDiffuse(RGB _kd) : BRDF(LAMBERTIAN_DIFFUSE) {
-        kd = _kd
-            ks = 0
+        kd = _kd;
+        max_kd = max(kd);
+        max_ks = 0;
+        max_kt = 0;
     }
     ~LambertianDiffuse() {}
-
-    RGB light_contribution() const override;
-    Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const override;
+    RGB light_contribution() const;
 };
 
 struct PerfectSpecular : public BRDF {
-
     PerfectSpecular(RGB _ks) : BRDF(PERFECT_SPECULAR) {
-        ks = _ks
+        ks = _ks;
+        max_kd = 0;
+        max_ks = max(ks);
+        max_kt = 0;
     }
     ~PerfectSpecular() {}
-
-    RGB light_contribution() const override;
-    Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const override;
-};
-/*
-struct PhongBRDF : BRDF {
-
-    PhongBRDF(){};
-    ~PhongBRDF(){};
-};
-*/
-
-enum EVENT {
-    REFLECTION,
-    REFRACTION,
-    REFLECTION,
-    DIFFUSE,
-    DEAD
+    RGB light_contribution() const;
 };
 
-EVENT randomEvent(const Shape &shape, const Point3 &position) {
-    // Russian rulette
+struct Phong : public BRDF {
+    // The specular RGB components should be equal (gray-white reflection)
+    Phong(RGB _kd, RGB _ks) : BRDF(PHONG) {
+        kd = _kd;
+        ks = _ks;
+        max_kd = max(kd);
+        max_ks = max(ks);
+        max_kt = 0;
+    }
+    ~Phong() {}
+    RGB light_contribution() const;
+};
 
-    // Calcular probabilidad de cada evento a partir de las probabilidades del objeto
+struct Dielectric : public BRDF {
+    Dielectric(RGB _ks, RGB _kt) : BRDF(DIELECTRIC) {
+        ks = _ks;
+        kt = _kt;
+        max_kd = 0;
+        max_ks = max(ks);
+        max_kt = max(kt);
+    }
+    ~Dielectric() {}
+    RGB light_contribution() const;
+};
 
-    // Elegir número entre 0 - 1
+Vector3 specular_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point);
 
-    float random
+Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point);
 
-        // Ver dónde ha caído el punto y devolver ese evento
-        if (random)
-}
-
-Vector3 output_direction(EVENT event, const Vector &wi, const Vector3 &normal, const Point3 intersection_point) {
-}
+Vector3 refraction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point);

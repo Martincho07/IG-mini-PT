@@ -19,7 +19,7 @@ void Image::applyToneMappingOperator(const ToneMappingOperator &op) {
         pixel = op(pixel);
 }
 
-void Image::puntOnCoordenate(int f, int c, const RGB r) {
+void Image::fillPixel(int f, int c, const RGB r) {
     //std::cout << "f, c: " << f << " " << c << std::endl;
     v[(f * width) + c] = r;
 };
