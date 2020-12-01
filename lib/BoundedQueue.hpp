@@ -28,8 +28,8 @@ struct BoundedQueue {
     //Com:  constructor
     BoundedQueue(const int _N) : N(_N) { // Construir a partir del numero de elementos
 
-        this->N = N;
-        data = new T[N];
+        // this->N = _N;
+        data = new T[_N];
         empty();
     };
     //-----------------------------------------------------

@@ -28,37 +28,41 @@ struct DeltaFunction {
     };
 };
 */
-enum BRDF_TYPE { LAMBERTIAN_DIFUSE,
+enum BRDF_TYPE { LAMBERTIAN_DIFFUSE,
                  PERFECT_SPECULAR,
                  PHONG_BRDF,
-                 EMISOR };
+                 EMISSOR };
 struct BRDF {
 
     BRDF_TYPE type;
-    BRDF(BRDF_TYPE _type) : type(_type){};
-    virtual ~BRDF(){};
+    RGB kd;
+    RGB ks;
+    RGB ligth_power;
+
+    BRDF(BRDF_TYPE _type) : type(_type) {}
+    virtual ~BRDF() {}
 
     virtual RGB light_contribution() const = 0;
     virtual Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const = 0;
 };
 
-struct LigthEmision : BRDF {
-
-    RGB ligth_power;
-
-    LigthEmision() : BRDF(EMISOR){};
-    LigthEmision(RGB _ligth_power) : ligth_power(_ligth_power), BRDF(EMISOR){};
+struct LigthEmission : BRDF {
+    // LigthEmission() : BRDF(EMISSOR) {}
+    LigthEmission(RGB _ligth_power) : BRDF(EMISSOR) {
+        BRDF::light_power = _light_power;
+    }
     RGB light_contribution() const override;
     Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const override;
 };
 
-struct LambertianDifuse : public BRDF {
+struct LambertianDiffuse : public BRDF {
 
-    RGB kd;
-
-    LambertianDifuse() : BRDF(LAMBERTIAN_DIFUSE){};
-    LambertianDifuse(RGB _kd) : kd(_kd), BRDF(LAMBERTIAN_DIFUSE){};
-    ~LambertianDifuse(){};
+    // LambertianDiffuse() : BRDF(LAMBERTIAN_DIFFUSE) {}
+    LambertianDiffuse(RGB _kd) : BRDF(LAMBERTIAN_DIFFUSE) {
+        kd = _kd
+            ks = 0
+    }
+    ~LambertianDiffuse() {}
 
     RGB light_contribution() const override;
     Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const override;
@@ -66,8 +70,10 @@ struct LambertianDifuse : public BRDF {
 
 struct PerfectSpecular : public BRDF {
 
-    PerfectSpecular() : BRDF(PERFECT_SPECULAR){};
-    ~PerfectSpecular(){};
+    PerfectSpecular(RGB _ks) : BRDF(PERFECT_SPECULAR) {
+        ks = _ks
+    }
+    ~PerfectSpecular() {}
 
     RGB light_contribution() const override;
     Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const override;
@@ -79,3 +85,27 @@ struct PhongBRDF : BRDF {
     ~PhongBRDF(){};
 };
 */
+
+enum EVENT {
+    REFLECTION,
+    REFRACTION,
+    REFLECTION,
+    DIFFUSE,
+    DEAD
+};
+
+EVENT randomEvent(const Shape &shape, const Point3 &position) {
+    // Russian rulette
+
+    // Calcular probabilidad de cada evento a partir de las probabilidades del objeto
+
+    // Elegir número entre 0 - 1
+
+    float random
+
+        // Ver dónde ha caído el punto y devolver ese evento
+        if (random)
+}
+
+Vector3 output_direction(EVENT event, const Vector &wi, const Vector3 &normal, const Point3 intersection_point) {
+}

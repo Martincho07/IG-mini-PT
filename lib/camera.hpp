@@ -33,5 +33,28 @@ struct Camera {
                                            0.0f, 0.0f, 0.0f, 1.0f));
     };
 
+    Camera(float fov, const Point3 &target, float aspect_ratio) {
+        // grados a radianes
+        fov = fov * M_PI / 180;
+
+        r = Vector3(1, 0, 0);
+        u = Vector3(0, 1, 0);
+        f = Vector3(0, 0, 1);
+
+        o = target - f;
+
+        u = u * std::tanf(fov / 2);
+        r = r * aspect_ratio * modulus(u);
+
+        std::cout << "o " << o << " r " << r << " u " << u << " f " << f << std::endl;
+
+        camera2world = Transform(Matrix4x4(r.x, u.x, f.x, o.x,
+                                           r.y, u.y, f.y, o.y,
+                                           r.z, u.z, f.z, o.z,
+                                           0.0f, 0.0f, 0.0f, 1.0f));
+    };
+
     RGB generateRay(Vector3 d, const std::vector<std::shared_ptr<Shape>> &shapes) const;
+
+    RGB generateRay2(float u, float v, const std::vector<std::shared_ptr<Shape>> &shapes) const;
 };

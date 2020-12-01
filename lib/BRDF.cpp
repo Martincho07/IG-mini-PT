@@ -14,13 +14,14 @@
 #include "transform.hpp"
 #include <cmath>
 #include <iostream>
+#include <random>
 
-RGB LigthEmision::light_contribution() const {
+RGB LigthEmission::light_contribution() const {
 
-    return RGB(255.0f, 255.0f, 255.0f);
+    return ligth_power;
 };
 
-Vector3 LigthEmision::output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const {
+Vector3 LigthEmission::output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const {
 
     return Vector3(0, 0, 0);
 };
@@ -34,12 +35,13 @@ Vector3 PerfectSpecular::output_direction(const Vector3 &wi, const Vector3 &norm
     return wi + (normal * 2.0f * (dot(wi, normal)));
 };
 
-RGB LambertianDifuse::light_contribution() const {
+RGB LambertianDiffuse::light_contribution() const {
 
-    return kd / M_PI;
+    // return kd;
+    return kd / M_PI; // TODO: arreglar la intensidad de la luz
 };
 
-Vector3 LambertianDifuse::output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const {
+Vector3 LambertianDiffuse::output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const {
 
     float radious = modulus(normal);
     unsigned int seed = rand() % 100;
@@ -56,22 +58,13 @@ Vector3 LambertianDifuse::output_direction(const Vector3 &wi, const Vector3 &nor
     z = normalize(z);
     x = cross(y, z);
 
-    //std::cout << "x: " << x << std::endl;
-    //std::cout << "y: " << y << std::endl;
-    //std::cout << "z: " << z << std::endl;
+    std::random_device rd;                             // obtain a random number from hardware
+    std::mt19937 gen(rd());                            // seed the generator
+    std::uniform_int_distribution<> distr1(1, 157079); // define the range
+    std::uniform_int_distribution<> distr2(1, 628318); // define the range
 
-    float inclination = (89.0f - 1.0f) * ((((float)rand_r(&seed)) / (float)RAND_MAX)) + 1.0f;
-    float azimuth = (180.0f - 1.0f) * ((((float)rand_r(&seed)) / (float)RAND_MAX)) + 1.0f;
-
-    //std::cout << "PI: " << M_PI << std::endl;
-    //std::cout << "deeg In: " << inclination << std::endl;
-    //std::cout << "deeg Az: " << azimuth << std::endl;
-
-    inclination = (inclination * M_PI) / 180.0f;
-    azimuth = (azimuth * M_PI) / 180.0f;
-
-    //std::cout << "rad In: " << inclination << std::endl;
-    //std::cout << "rad Az: " << azimuth << std::endl;
+    float inclination = (float)distr1(gen) / 100000;
+    float azimuth = (float)distr2(gen) / 100000;
 
     Vector3 output_point(0.0f, 1.0f, 0.0f);
 
