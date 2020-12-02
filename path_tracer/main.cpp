@@ -367,8 +367,8 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const std::v
 
 int main(int argc, char **argv) {
 
-    int width = 1000;
-    int height = 1000;
+    int width = 4000;
+    int height = 4000;
     int width_inc = width / NUM_REGIONS;
     int height_inc = height / NUM_REGIONS;
     float x, y;
@@ -440,9 +440,12 @@ int main(int argc, char **argv) {
     auto end = std::chrono::steady_clock::now();
 
     std::chrono::duration<double> diff = end - init;
+    ClampAndGammaCurve clamp(.5f, 2.2f);
+
+    image.applyToneMappingOperator(clamp);
     std::cout << "Tiempo de rendering: " << diff.count() << std::endl;
     std::cout << "Numero de geometrias: " << scene.size() << std::endl;
     std::cout << "Numero de pixeles: " << height * width << std::endl;
-    writePPM(image, "salida.ppm", 255, 255);
+    writePPM(image, "salida.ppm", max(image), 255);
     writeHDR(image, "salida.hdr");
 };

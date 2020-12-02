@@ -16,9 +16,9 @@
 #include <assert.h>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 // Default values
 #define STEP 0.0f
@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
     std::cout << "Writing output file..." << std::endl;
     switch (outFileFormat) {
     case PPM:
-        writePPM(img, outFile, max(img), LDR_LIMIT);
+        writePPM(img, inFile, max(img), LDR_LIMIT);
         break;
     case HDR:
         writeHDR(img, outFile);

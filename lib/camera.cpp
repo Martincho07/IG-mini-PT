@@ -50,7 +50,7 @@ RGB Camera::generateRay(Vector3 d, const std::vector<std::shared_ptr<Shape>> &sh
             normal = object->normal(p);
 
             if (object->brdf->type == EMISOR) {
-                //std::cout << "Llegoo a luz" << std::endl;
+
                 color = alpha * object->brdf->light_contribution();
                 return color;
             } else if (object->brdf->type == LAMBERTIAN_DIFUSE) {
