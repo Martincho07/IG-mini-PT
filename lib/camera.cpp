@@ -126,20 +126,27 @@ RGB Camera::generateRay2(float x, float y, const std::vector<std::shared_ptr<Sha
                 switch (randomEvent(*shape->brdf)) {
 
                 case DIFFUSE:
-                    // std::cout << "diffuse" << std::endl;
+                    // if (shape->brdf->type == PHONG) {
+                    //     std::cout << "diffuse" << std::endl;
+                    // }
                     d = diffuse_reflection(d, normal, p);
                     rayOrig = p;
-                    alpha = alpha * (shape->brdf->light_contribution() * dot(d, normal));
+                    alpha = alpha * (shape->brdf->diffuse_contribution() * dot(d, normal));
                     break;
 
                 case SPECULAR:
-                    // std::cout << "specular" << std::endl;
+                    // if (shape->brdf->type == PHONG) {
+                    //     std::cout << "specular" << std::endl;
+                    // }
                     d = specular_reflection(-d, normal, p);
+                    // alpha = alpha * (shape->brdf->specular_contribution() * dot(d, normal));
                     rayOrig = p;
                     break;
 
                 case REFRACTION:
                     // std::cout << "refraction" << std::endl;
+                    d = refraction(d, normal, p);
+                    alpha = alpha * (shape->brdf->refraction_contribution());
                     break;
 
                 default:
@@ -292,8 +299,8 @@ RGB Camera::generateRay2(float x, float y, const std::vector<std::shared_ptr<Sha
     // Coger un color dependiendo de la posición
     RGB colors[8] = {RGB(100, 50, 100), RGB(255, 0, 0), RGB(0, 255, 0), RGB(0, 0, 255), RGB(255, 255, 0), RGB(255, 0, 255), RGB(0, 255, 255), RGB(100, 200, 0)};
 
-    // color = (RGB(128.0f + n.z, 128.0f + n.y, 128.0f + n.x) + colors[imin]) / 2;
-    color = RGB(128.0f + n.z, 128.0f + n.y, 128.0f + n.x);
+    color = (RGB(128.0f + n.z, 128.0f + n.y, 128.0f + n.x) + colors[imin % 8]) / 2;
+    // color = RGB(128.0f + n.z, 128.0f + n.y, 128.0f + n.x);
 
     // if (n.x < 0) {
     //     std::cout << "menor de 0" << std::endl;

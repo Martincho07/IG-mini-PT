@@ -154,7 +154,7 @@ int main(int argc, char **argv) {
 
     std::vector<std::shared_ptr<Shape>> scene;
     Camera c;
-    escena4(width, height, c, scene);
+    escenaDielectrico(width, height, c, scene);
 
     int width_inc = width / NUM_REGIONS;
     int height_inc = height / NUM_REGIONS;

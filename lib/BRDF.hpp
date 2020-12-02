@@ -41,6 +41,8 @@ struct BRDF {
     RGB diffuse_contribution() const;
 
     RGB refraction_contribution() const;
+
+    RGB phong_specular_contribution() const;
 };
 
 struct LightEmission : public BRDF {

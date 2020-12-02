@@ -34,10 +34,23 @@ float random_float(float min, float max) {
 }
 
 Vector3 uniform_hemisphere_sample() {
-    float inclination = random_float(0.00001, 1.57079);
-    float azimuth = random_float(0.00001, 6.28318);
+    // Utilizando matrices de transformación
+    // float inclination = random_float(0.00001, 1.57079);
+    // float azimuth = random_float(0.00001, 6.28318);
+
+    // Vector3 direction(0.0f, 1.0f, 0.0f);
+
+    // return (rotationY(azimuth) * rotationZ(inclination))(direction);
+
+    // // Calculando directamente
+    float inclination = acosf(sqrtf(random_float()));
+    // float inclination = random_float(M_PI / 2);
+    float azimuth = 2 * M_PI * random_float();
 
     Vector3 direction(0.0f, 1.0f, 0.0f);
-
-    return (rotationY(azimuth) * rotationZ(inclination))(direction);
+    Vector3 vector = (rotationY(azimuth) * rotationZ(inclination))(direction);
+    // std::cout << vector << std::endl;
+    // vector = Vector3(-sinf(inclination) * cosf(azimuth), cosf(inclination), sinf(inclination) * sinf(azimuth));
+    // std::cout << vector << std::endl;
+    return vector;
 }
