@@ -11,35 +11,52 @@
 #include "BRDF.hpp"
 #include "color.hpp"
 #include "geometry.hpp"
+#include "random.hpp"
 #include "transform.hpp"
+
 #include <cmath>
 #include <iostream>
 
-RGB LigthEmision::light_contribution() const {
-
-    return RGB(255.0f, 255.0f, 255.0f);
+RGB LightEmission::light_contribution() const {
+    return light_power;
 };
 
-Vector3 LigthEmision::output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const {
-
-    return Vector3(0, 0, 0);
-};
 RGB PerfectSpecular::light_contribution() const {
-
     return RGB(1.0f, 1.0f, 1.0f);
 };
 
-Vector3 PerfectSpecular::output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const {
+RGB LambertianDiffuse::light_contribution() const {
+    // return kd;
+    return kd / M_PI; // TODO: arreglar la intensidad de la luz
+};
+
+RGB Phong::light_contribution() const {
+    // TODO
+    //
+    return RGB();
+}
+
+RGB Dielectric::light_contribution() const {
+    // TODO
+    return RGB();
+}
+
+Vector3 specular_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
+    // wi rayo en coordenadas del mundo
+    // Calcular el rayo de salida con la ley de la reflexión
+    // Se devuelve en coordenadas del mundo
 
     return wi + (normal * 2.0f * (dot(wi, normal)));
 };
 
-RGB LambertianDifuse::light_contribution() const {
+Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
+    // wi rayo en coordenadas del mundo
+    // Generar un rayo aleatorio dentro de la hemiesfera
+    // Se devuelve en coordenadas del mundo
 
-    return kd / M_PI;
-};
-
-Vector3 LambertianDifuse::output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const {
+    // Hay que generar un espacio de coordenadas local al punto de intersección,
+    // sabiendo la normal en ese punto
+    // Generar una dirección aleatoria en la hemiesfera y cambiarla a coordendas del mundo
 
     float radious = modulus(normal);
     unsigned int seed = rand() % 100;
@@ -56,26 +73,93 @@ Vector3 LambertianDifuse::output_direction(const Vector3 &wi, const Vector3 &nor
     z = normalize(z);
     x = cross(y, z);
 
-    //std::cout << "x: " << x << std::endl;
-    //std::cout << "y: " << y << std::endl;
-    //std::cout << "z: " << z << std::endl;
+    Vector3 out_dir = uniform_hemisphere_sample();
 
-    float inclination = (89.0f - 1.0f) * ((((float)rand_r(&seed)) / (float)RAND_MAX)) + 1.0f;
-    float azimuth = (180.0f - 1.0f) * ((((float)rand_r(&seed)) / (float)RAND_MAX)) + 1.0f;
+    return changeBasis(x, y, z, intersection_point)(out_dir);
+};
 
-    //std::cout << "PI: " << M_PI << std::endl;
-    //std::cout << "deeg In: " << inclination << std::endl;
-    //std::cout << "deeg Az: " << azimuth << std::endl;
+/*
+Vector3 refraction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
+    // TODO
+    float ior = 1.8; // index of refraction del objeto
+    // Coeficientes de refracción
+    Vector3 Nrefr = normal;
+    float NdotI = dot(Nrefr, wi);
+    float etai = 1; // etai is the index of refraction of the medium the ray is in before entering the second medium
+    float etat = ior;
 
-    inclination = (inclination * M_PI) / 180.0f;
-    azimuth = (azimuth * M_PI) / 180.0f;
+    if (NdotI < 0) {
+        // we are outside the surface, we want cos(theta) to be positive
+        NdotI = -NdotI;
+    } else {
+        // we are inside the surface, cos(theta) is already positive but reverse normal direction
+        Nrefr = -normal;
+        // swap the refraction indices
+        std::swap(etai, etat);
+    }
+    float eta = etai / etat; // n_1 / n_2
 
-    //std::cout << "rad In: " << inclination << std::endl;
-    //std::cout << "rad Az: " << azimuth << std::endl;
+    float cosi = dot(wi, normal);
+    float k = 1 - eta * eta * (1 - cosi * cosi);
+    if (k < 0)
+        // total internal reflection. There is no refraction in this case
+        return Vector3(0, 0, 0);
+    else
+        return wi * eta + Nrefr * (eta * NdotI - sqrtf(k));
+};
+*/
 
-    Vector3 output_point(0.0f, 1.0f, 0.0f);
+Vector3 refraction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
+    // TODO
+    float ior = 1.5;
+    float cosi = dot(wi, normal);
 
-    output_point = (rotationY(azimuth) * rotationZ(inclination))(output_point);
+    float etai = 1;
+    float etat = ior;
 
-    return changeBasis(x, y, z, intersection_point)(output_point);
+    Vector3 n = normal;
+
+    if (cosi < 0) {
+        cosi = -cosi;
+    } else {
+        std::swap(etai, etat);
+        n = -normal;
+    }
+
+    float eta = etai / etat;
+
+    float k = 1 - eta * eta * (1 - cosi * cosi);
+
+    // return k < 0 ? Vector3(0, 0, 0) : wi * eta + n * (eta * cosi - sqrtf(k));
+    return k < 0 ? Vector3(0, 0, 0) : wi * eta + n * (eta * cosi - sqrtf(k));
+};
+
+RGB BRDF::specular_contribution() const {
+    // return RGB(1, 1, 1);
+    // return ks / max_ks;
+    return ks;
+};
+
+RGB BRDF::diffuse_contribution() const {
+    // TODO
+    // return kd / M_PI;
+    // return kd / max_kd;
+    return kd;
+};
+
+RGB BRDF::refraction_contribution() const {
+    // return kt / max_kt;
+    return kt;
+};
+
+RGB BRDF::phong_specular_contribution() const {
+    // return kt / max_kt;
+
+    /// TODO
+    float alpha = 1;
+
+    // Hay que pasar como parámetros el vector origen y el vector reflejado
+    Vector3 wo;
+    Vector3 wr;
+    return ks * ((alpha + 2) / 2 * M_PI) * fabs(dot(wo, wr));
 };

@@ -10,72 +10,101 @@
 #pragma once
 #include "color.hpp"
 #include "geometry.hpp"
-/*
-struct DeltaFunction {
 
-    Vector3 w_r;
-
-    DeltaFunction(){};
-    DeltaFunction(Vector3 _w_r) : w_r(_w_r){};
-    ~DeltaFunction(){};
-
-    float operator()(Vector3 w_i) const {
-
-        if (w_r.x == w_i.x && w_r.y == w_i.y && w_r.z == w_i.z)
-            Vector3(1.0f, 1.0f, 1.0f);
-        else
-            Vector3(0.0f, 0.0f, 0.0f);
-    };
-};
-*/
-enum BRDF_TYPE { LAMBERTIAN_DIFUSE,
+enum BRDF_TYPE { LAMBERTIAN_DIFFUSE,
                  PERFECT_SPECULAR,
-                 PHONG_BRDF,
-                 EMISOR };
+                 PHONG,
+                 DIELECTRIC,
+                 EMISSOR };
 struct BRDF {
 
     BRDF_TYPE type;
-    BRDF(BRDF_TYPE _type) : type(_type){};
-    virtual ~BRDF(){};
+    // Coeficiente difuso
+    RGB kd;
+    // Coeficiente especular
+    RGB ks;
+    // Coeficiente de refracción
+    RGB kt;
+    // Luz emitida
+    RGB light_power;
+
+    // Máximo valor de cada tupla
+    float max_kd, max_ks, max_kt;
+
+    BRDF(BRDF_TYPE _type) : type(_type) {}
+    virtual ~BRDF() {}
 
     virtual RGB light_contribution() const = 0;
-    virtual Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const = 0;
+
+    RGB specular_contribution() const;
+
+    RGB diffuse_contribution() const;
+
+    RGB refraction_contribution() const;
+
+    RGB phong_specular_contribution() const;
 };
 
-struct LigthEmision : BRDF {
-
-    RGB ligth_power;
-
-    LigthEmision() : BRDF(EMISOR){};
-    LigthEmision(RGB _ligth_power) : ligth_power(_ligth_power), BRDF(EMISOR){};
-    RGB light_contribution() const override;
-    Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const override;
+struct LightEmission : public BRDF {
+    LightEmission(RGB _light_power) : BRDF(EMISSOR) {
+        light_power = _light_power;
+        max_kd = 0;
+        max_ks = 0;
+        max_kt = 0;
+    }
+    ~LightEmission() {}
+    RGB light_contribution() const;
 };
 
-struct LambertianDifuse : public BRDF {
-
-    RGB kd;
-
-    LambertianDifuse() : BRDF(LAMBERTIAN_DIFUSE){};
-    LambertianDifuse(RGB _kd) : kd(_kd), BRDF(LAMBERTIAN_DIFUSE){};
-    ~LambertianDifuse(){};
-
-    RGB light_contribution() const override;
-    Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const override;
+struct LambertianDiffuse : public BRDF {
+    LambertianDiffuse(RGB _kd) : BRDF(LAMBERTIAN_DIFFUSE) {
+        kd = _kd;
+        max_kd = max(kd);
+        max_ks = 0;
+        max_kt = 0;
+    }
+    ~LambertianDiffuse() {}
+    RGB light_contribution() const;
 };
 
 struct PerfectSpecular : public BRDF {
-
-    PerfectSpecular() : BRDF(PERFECT_SPECULAR){};
-    ~PerfectSpecular(){};
-
-    RGB light_contribution() const override;
-    Vector3 output_direction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) const override;
+    PerfectSpecular(RGB _ks) : BRDF(PERFECT_SPECULAR) {
+        ks = _ks;
+        max_kd = 0;
+        max_ks = max(ks);
+        max_kt = 0;
+    }
+    ~PerfectSpecular() {}
+    RGB light_contribution() const;
 };
-/*
-struct PhongBRDF : BRDF {
 
-    PhongBRDF(){};
-    ~PhongBRDF(){};
+struct Phong : public BRDF {
+    // The specular RGB components should be equal (gray-white reflection)
+    Phong(RGB _kd, RGB _ks) : BRDF(PHONG) {
+        kd = _kd;
+        ks = _ks;
+        max_kd = max(kd);
+        max_ks = max(ks);
+        max_kt = 0;
+    }
+    ~Phong() {}
+    RGB light_contribution() const;
 };
-*/
+
+struct Dielectric : public BRDF {
+    Dielectric(RGB _ks, RGB _kt) : BRDF(DIELECTRIC) {
+        ks = _ks;
+        kt = _kt;
+        max_kd = 0;
+        max_ks = max(ks);
+        max_kt = max(kt);
+    }
+    ~Dielectric() {}
+    RGB light_contribution() const;
+};
+
+Vector3 specular_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point);
+
+Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point);
+
+Vector3 refraction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point);

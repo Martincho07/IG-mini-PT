@@ -36,7 +36,6 @@
 #define CAMERA_PLANE_SIZE 1.0f
 
 /*
-/*
 void carita(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     std::shared_ptr<Plane> plane(new Plane(RGB(255, 0, 0), Vector3(-1.0f, 0.0f, 0.0f), 8.0f));
     scene.push_back(plane);

@@ -86,7 +86,6 @@ float Quadrilateral::intersection(Point3 o, Vector3 d) const {
     t_tri_2 = t2.intersection(o, d);
 
     if (t_tri_1 > 0)
-
         return t_tri_1;
 
     if (t_tri_2 > 0)

@@ -75,9 +75,10 @@ struct Quadrilateral : public Shape {
     // y l_c(lower corner) que es la esquina inferior izquierda
     Quadrilateral(){};
     Quadrilateral(RGB _color, Point3 u_c, Point3 l_c, std::shared_ptr<BRDF> _brdf) : Shape(_brdf) {
-
-        t1 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, l_c.z), Point3(u_c.x, u_c.y, u_c.z), _brdf);
-        t2 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(u_c.x, l_c.y, u_c.z), Point3(u_c.x, u_c.y, u_c.z), _brdf);
+        // t1 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, l_c.z), Point3(u_c.x, u_c.y, u_c.z), _brdf);
+        // t2 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(u_c.x, l_c.y, u_c.z), Point3(u_c.x, u_c.y, u_c.z), _brdf);
+        t1 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, u_c.z), Point3(u_c.x, l_c.y, l_c.z), _brdf);
+        t2 = Triangle(_color, Point3(u_c.x, u_c.y, u_c.z), Point3(l_c.x, u_c.y, u_c.z), Point3(u_c.x, l_c.y, l_c.z), _brdf);
     };
     ~Quadrilateral(){};
 
