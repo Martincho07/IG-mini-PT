@@ -156,11 +156,6 @@ int main(int argc, char **argv) {
     Camera c;
     escenaDielectrico(width, height, c, scene);
 
-<<<<<<< HEAD
-    int width = 4000;
-    int height = 4000;
-=======
->>>>>>> 2d6be2695223e5c63094977641963eb9ae88e199
     int width_inc = width / NUM_REGIONS;
     int height_inc = height / NUM_REGIONS;
     float x, y;
