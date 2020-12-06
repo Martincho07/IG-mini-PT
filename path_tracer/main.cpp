@@ -156,6 +156,11 @@ int main(int argc, char **argv) {
     Camera c;
     escenaDielectrico(width, height, c, scene);
 
+<<<<<<< HEAD
+    int width = 4000;
+    int height = 4000;
+=======
+>>>>>>> 2d6be2695223e5c63094977641963eb9ae88e199
     int width_inc = width / NUM_REGIONS;
     int height_inc = height / NUM_REGIONS;
     float x, y;
@@ -223,6 +228,9 @@ int main(int argc, char **argv) {
     auto end = std::chrono::steady_clock::now();
 
     std::chrono::duration<double> diff = end - init;
+    ClampAndGammaCurve clamp(.5f, 2.2f);
+
+    image.applyToneMappingOperator(clamp);
     std::cout << "Tiempo de rendering: " << diff.count() << std::endl;
     std::cout << "Numero de geometrias: " << scene.size() << std::endl;
     std::cout << "Numero de pixeles: " << height * width << std::endl;
