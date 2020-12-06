@@ -13,6 +13,7 @@
 
 #include <cfloat>
 #include <cstdlib>
+#include <iostream>
 
 float Sphere::intersection(Point3 o, Vector3 d) const {
     float a = pow(modulus(d), 2.0f);
@@ -26,8 +27,12 @@ float Sphere::intersection(Point3 o, Vector3 d) const {
         return (-b + sqrt(delta)) / (2 * b);
     } else {
 
-        return std::min((-b + sqrt(delta)) / (2 * a),
-                        (-b - sqrt(delta)) / (2 * a));
+        float min = std::min((-b + sqrt(delta)) / (2 * a),
+                             (-b - sqrt(delta)) / (2 * a));
+
+        //if (min == 0.0f)
+        //std::cout << "FFFFFFF" << std::endl;
+        return min;
     }
 }
 

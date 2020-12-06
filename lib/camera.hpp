@@ -36,7 +36,7 @@ struct Camera {
 
     Camera(float fov, const Point3 &target, float aspect_ratio) {
         // grados a radianes
-        fov = fov * M_PI / 180;
+        fov = (fov * M_PI) / 180.0f;
 
         r = Vector3(1, 0, 0);
         u = Vector3(0, 1, 0);
@@ -44,8 +44,8 @@ struct Camera {
 
         o = target - f;
 
-        u = u * tanf(fov / 2);
-        r = r * aspect_ratio * modulus(u);
+        u = u * (tanf(fov / 2.0f));
+        r = r * (aspect_ratio * modulus(u));
 
         std::cout << "o " << o << " r " << r << " u " << u << " f " << f << std::endl;
 
@@ -59,3 +59,5 @@ struct Camera {
 
     RGB generateRay2(float u, float v, const std::vector<std::shared_ptr<Shape>> &shapes) const;
 };
+
+float intersection(const std::vector<std::shared_ptr<Shape>> &scene, std::shared_ptr<Shape> &shape, const Point3 &ray_orig, const Vector3 &direction);

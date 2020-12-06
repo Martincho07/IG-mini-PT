@@ -135,6 +135,8 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const std::v
                 color = color + c.generateRay2(x, y, scene);
             }
             color = color / (float)num_rays;
+            //if (max(color) == 1.0f)
+            // std::cout << max(color) << std::endl;
 
             image->fillPixel(pi.fila, pi.columna, color);
             color = RGB(0, 0, 0);
@@ -156,16 +158,11 @@ int main(int argc, char **argv) {
     Camera c;
     escenaDielectrico(width, height, c, scene);
 
-<<<<<<< HEAD
-    int width = 4000;
-    int height = 4000;
-=======
->>>>>>> 2d6be2695223e5c63094977641963eb9ae88e199
     int width_inc = width / NUM_REGIONS;
     int height_inc = height / NUM_REGIONS;
     float x, y;
 
-    int num_threads, pixel_rays;
+    unsigned int num_threads, pixel_rays;
 
     float mod_u = 1;
     float mod_r = 1;
@@ -182,20 +179,17 @@ int main(int argc, char **argv) {
 
     for (int i = 0; i < argc; i++) {
         std::string arg = argv[i];
-        if (arg[0] == '-' && arg == "-threads") {
-
-            num_threads = getArgValue(argc, argv, i, 1);
-            i++;
-        } else if (arg[0] == '-' && arg == "-pixel_rays") {
-
+        if (arg[0] == '-' && arg == "-pixel_rays") {
             pixel_rays = getArgValue(argc, argv, i, 1);
             i++;
-        }
+        } else if (i != 0) {
+            std::cout << "Opcion: " << arg << " no valida" << std::endl;
+            return 1;
+        };
     }
 
+    num_threads = std::thread::hardware_concurrency();
     std::cout << "Numero de usados hilos: " << num_threads << std::endl;
-    unsigned int num_threads_available = std::thread::hardware_concurrency();
-    std::cout << "Hasta " << num_threads_available << " hilos pueden ser ejecutados de manera concurrente.\n";
 
     Image image;
 
@@ -209,7 +203,7 @@ int main(int argc, char **argv) {
     // Se inicializa la imagen con in fondo blanco
     for (int i = 0; i < width * height; i++) {
 
-        image.v.push_back(RGB(255, 255, 255));
+        image.v.push_back(RGB(0.0f, 0.0f, 0.0f));
     }
 
     // El productor llena la cola para que los consumers
@@ -235,10 +229,9 @@ int main(int argc, char **argv) {
     std::cout << "Numero de geometrias: " << scene.size() << std::endl;
     std::cout << "Numero de pixeles: " << height * width << std::endl;
 
-    // image.applyToneMappingOperator(Equalize(max(image)));
+    //image.applyToneMappingOperator(Equalize(max(image)));
 
     // writePPM(image, "salida.ppm", max(image), 1000000000);
-    image.applyToneMappingOperator(GammaCurve(max(image), 2.2));
     writePPM(image, "salida.ppm", max(image), 255);
     writeHDR(image, "salida.hdr");
 };

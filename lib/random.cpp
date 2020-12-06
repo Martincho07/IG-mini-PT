@@ -43,7 +43,7 @@ Vector3 uniform_hemisphere_sample() {
     // return (rotationY(azimuth) * rotationZ(inclination))(direction);
 
     // // Calculando directamente
-    float inclination = acosf(sqrtf(random_float()));
+    float inclination = acosf(sqrtf(1.0f - random_float()));
     // float inclination = random_float(M_PI / 2);
     float azimuth = 2 * M_PI * random_float();
 

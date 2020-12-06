@@ -22,6 +22,8 @@
 // #define COLORES
 
 #ifndef DEBUG
+
+/*
 RGB Camera::generateRay(Vector3 d, const std::vector<std::shared_ptr<Shape>> &shapes) const {
 
     RGB color(0, 0, 0);
@@ -53,13 +55,8 @@ RGB Camera::generateRay(Vector3 d, const std::vector<std::shared_ptr<Shape>> &sh
             p = o + d * t;
             normal = object->normal(p);
 
-<<<<<<< HEAD
-            if (object->brdf->type == EMISOR) {
-
-=======
             if (object->brdf->type == EMISSOR) {
                 //std::cout << "Llegoo a luz" << std::endl;
->>>>>>> 2d6be2695223e5c63094977641963eb9ae88e199
                 color = alpha * object->brdf->light_contribution();
                 return color;
             } else if (object->brdf->type == LAMBERTIAN_DIFFUSE) {
@@ -79,91 +76,76 @@ RGB Camera::generateRay(Vector3 d, const std::vector<std::shared_ptr<Shape>> &sh
 
     return color;
 };
+*/
+RGB Camera::generateRay2(float x, float y, const std::vector<std::shared_ptr<Shape>> &scene) const {
 
-RGB Camera::generateRay2(float x, float y, const std::vector<std::shared_ptr<Shape>> &shapes) const {
-
-    RGB color(0, 0, 0);
-    RGB alpha(1, 1, 1);
-
-    float t = INFINITY;
-    float shape_t = 0;
-
+    bool success = true;
+    float distance;
+    RGB alpha(1.0f, 1.0f, 1.0f);
     Vector3 normal;
+    Point3 interc_point, ray_orig;
+    ray_orig = o;
     std::shared_ptr<Shape> shape;
-
-    Point3 p;
-    Point3 rayOrig = o;
 
     // Calculate ray direction
     Vector3 xr = r * x;
     Vector3 yu = u * y;
-    Vector3 d = xr + yu + f;
-    normalize(d);
+    Vector3 direction = xr + yu + f;
+    normalize(direction);
 
     // Mientras que no se llegue a una luz o la ruleta diga evento DEAD
-    while (true) {
-        t = INFINITY;
-        shape_t = 0.0f;
+    while (success) {
 
-        for (const std::shared_ptr<Shape> &s : shapes) {
-            shape_t = s->intersection(rayOrig, d);
+        distance = intersection(scene, shape, ray_orig, direction);
+        //std::cout << "t: " << t << std::endl;
+        if (distance != INFINITY && distance > 0.0f) {
 
-            if (shape_t < t && shape_t > 0.0f) {
-                t = shape_t;
-                shape = s;
-            }
-        }
+            interc_point = ray_orig + direction * distance;
+            normal = shape->normal(interc_point);
 
-        if (t != INFINITY && t > 0.0f) {
+            // Si es emisor se calcula la perdida de lus en el camino
+            // y se retorna la intensidad de la luz
+            if (shape->material->type == EMISSOR) {
+                //if (shape->material->type == PLASTIC)
+                //std::cout << "power: " << shape->material->get_light_power() << std::endl;
+                //std::cout << "alpha: " << alpha << std::endl;
+                //std::cout << "alpha ret: " << alpha * shape->material->get_light_power() << std::endl;
+                return alpha * shape->material->get_light_power();
 
-            p = rayOrig + d * t;
-            normal = shape->normal(p);
-
-            // Comprobar si es emisor
-            if (shape->brdf->type == EMISSOR) {
-                // std::cout << "Llegoo a luz" << std::endl;
-                color = alpha * shape->brdf->light_contribution();
-                return color;
+                // En caso contrario se usa la ruleta rusa para determinar si
+                // se sigue o no
             } else {
-                // Si es reflectante, realizar ruleta rusa
-                // std::cout << "material " << shape->brdf->max_kd << " " << shape->brdf->max_ks << " " << shape->brdf->max_kt << std::endl;
 
-                switch (randomEvent(*shape->brdf)) {
+                if (shape->material->type == DIELECTRIC)
+                    set_dielectric_properties(*shape->material, direction, normal);
 
-                case DIFFUSE:
-                    // if (shape->brdf->type == PHONG) {
-                    //     std::cout << "diffuse" << std::endl;
-                    // }
-                    d = diffuse_reflection(d, normal, p);
-                    rayOrig = p;
-                    alpha = alpha * (shape->brdf->diffuse_contribution() * dot(d, normal));
-                    break;
-
-                case SPECULAR:
-                    // if (shape->brdf->type == PHONG) {
-                    //     std::cout << "specular" << std::endl;
-                    // }
-                    d = specular_reflection(-d, normal, p);
-                    // alpha = alpha * (shape->brdf->specular_contribution() * dot(d, normal));
-                    rayOrig = p;
-                    break;
-
-                case REFRACTION:
-                    // std::cout << "refraction" << std::endl;
-                    d = refraction(d, normal, p);
-                    alpha = alpha * (shape->brdf->refraction_contribution());
-                    break;
-
-                default:
-                    // DEAD
-                    // std::cout << "dead" << std::endl;
-                    return color;
-                }
+                RussianRoulette(*shape->material, normal, interc_point, direction, alpha, success);
+                ray_orig = interc_point;
             }
+        } else {
+
+            return RGB(0.0f, 0.0f, 0.0f);
         }
     }
-    return color;
+    return RGB(0.0f, 0.0f, 0.0f);
 };
+
+float intersection(const std::vector<std::shared_ptr<Shape>> &scene, std::shared_ptr<Shape> &shape, const Point3 &ray_orig, const Vector3 &direction) {
+
+    float distance = INFINITY;
+    float shape_t = 0.0f;
+
+    for (const std::shared_ptr<Shape> &s : scene) {
+        shape_t = s->intersection(ray_orig, direction);
+
+        if (shape_t < distance && shape_t > 0.0f) {
+            distance = shape_t;
+            shape = s;
+        }
+    }
+
+    return distance;
+}
 
 #else
 

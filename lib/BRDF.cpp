@@ -17,36 +17,13 @@
 #include <cmath>
 #include <iostream>
 
-RGB LightEmission::light_contribution() const {
-    return light_power;
-};
-
-RGB PerfectSpecular::light_contribution() const {
-    return RGB(1.0f, 1.0f, 1.0f);
-};
-
-RGB LambertianDiffuse::light_contribution() const {
-    // return kd;
-    return kd / M_PI; // TODO: arreglar la intensidad de la luz
-};
-
-RGB Phong::light_contribution() const {
-    // TODO
-    //
-    return RGB();
-}
-
-RGB Dielectric::light_contribution() const {
-    // TODO
-    return RGB();
-}
-
-Vector3 specular_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
+Vector3 specular_reflection(const Vector3 &wi, const Vector3 &normal) {
     // wi rayo en coordenadas del mundo
     // Calcular el rayo de salida con la ley de la reflexión
     // Se devuelve en coordenadas del mundo
+    float cosI = -dot(wi, normal);
 
-    return wi + (normal * 2.0f * (dot(wi, normal)));
+    return wi + normal * 2.0f * cosI;
 };
 
 Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
@@ -59,7 +36,7 @@ Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point
     // Generar una dirección aleatoria en la hemiesfera y cambiarla a coordendas del mundo
 
     float radious = modulus(normal);
-    unsigned int seed = rand() % 100;
+    //unsigned int seed = rand() % 100;
 
     Vector3 Nt, x, y, z;
 
@@ -109,50 +86,44 @@ Vector3 refraction(const Vector3 &wi, const Vector3 &normal, const Point3 inters
 };
 */
 
-Vector3 refraction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
-    // TODO
-    float ior = 1.5;
-    float cosi = dot(wi, normal);
-
-    float etai = 1;
-    float etat = ior;
-
-    Vector3 n = normal;
-
-    if (cosi < 0) {
-        cosi = -cosi;
-    } else {
-        std::swap(etai, etat);
-        n = -normal;
-    }
-
-    float eta = etai / etat;
-
-    float k = 1 - eta * eta * (1 - cosi * cosi);
-
-    // return k < 0 ? Vector3(0, 0, 0) : wi * eta + n * (eta * cosi - sqrtf(k));
-    return k < 0 ? Vector3(0, 0, 0) : wi * eta + n * (eta * cosi - sqrtf(k));
+Vector3 reflection(const Vector3 &wi, const Vector3 &normal) {
+    return wi + (normal * (2 * -dot(normal, wi)));
 };
 
-RGB BRDF::specular_contribution() const {
+Vector3 refraction(const Vector3 &wi, const Vector3 &normal, float n1, float n2, bool &suscesfull) {
+
+    float n = n1 / n2;
+    float cosI = -dot(normal, wi);
+    float sinT2 = n * n * (1.0f - cosI * cosI);
+    if (sinT2 > 1.0f) {
+        suscesfull = false;
+        return Vector3();
+    }
+
+    float cosT = std::sqrt(1.0f - sinT2);
+    suscesfull = true;
+    return (wi * n) + (normal * (n * cosI - cosT));
+};
+
+RGB MaterialProperty::specular_contribution() const {
     // return RGB(1, 1, 1);
     // return ks / max_ks;
     return ks;
 };
 
-RGB BRDF::diffuse_contribution() const {
+RGB MaterialProperty::diffuse_contribution() const {
     // TODO
     // return kd / M_PI;
     // return kd / max_kd;
     return kd;
 };
 
-RGB BRDF::refraction_contribution() const {
+RGB MaterialProperty::refraction_contribution() const {
     // return kt / max_kt;
     return kt;
 };
 
-RGB BRDF::phong_specular_contribution() const {
+RGB MaterialProperty::phong_specular_contribution() const {
     // return kt / max_kt;
 
     /// TODO
@@ -163,3 +134,40 @@ RGB BRDF::phong_specular_contribution() const {
     Vector3 wr;
     return ks * ((alpha + 2) / 2 * M_PI) * fabs(dot(wo, wr));
 };
+
+float Fresnel_ks(Vector3 const &wi, const Vector3 &normal, float n1, float n2) {
+
+    float n = n1 / n2;
+    float cosI = -dot(normal, wi);
+    float sinT2 = n * n * (1.0f - cosI * cosI);
+    if (sinT2 > 1.0f)
+        return 1.0f;
+
+    float cosT = sqrt(1.0f - sinT2);
+    float r0rth = (n1 * cosI - n2 * cosT) / (n1 * cosI + n2 * cosT);
+    float rPar = (n2 * cosI - n1 * cosT) / (n2 * cosI + n1 * cosT);
+
+    return (r0rth * r0rth + rPar * rPar) / 2.0f;
+};
+
+void set_dielectric_properties(MaterialProperty &material, const Vector3 direccion, const Vector3 normal) {
+
+    float fresnel_ks, fresnel_kt;
+
+    if (dot(direccion, normal) < 0.0f)
+
+        fresnel_ks = Fresnel_ks(direccion, normal, AIR_N, material.n);
+    else
+
+        fresnel_ks = Fresnel_ks(direccion, -normal, material.n, AIR_N);
+
+    fresnel_kt = 1.0f - fresnel_ks;
+    fresnel_ks = 0.9f * fresnel_ks;
+    fresnel_kt = 0.9f * fresnel_kt;
+
+    material.set_max_ks(fresnel_ks);
+    material.set_max_kt(fresnel_kt);
+
+    material.set_ks(RGB(fresnel_ks, fresnel_ks, fresnel_ks));
+    material.set_kt(RGB(fresnel_kt, fresnel_kt, fresnel_kt));
+}

@@ -113,11 +113,11 @@ void escena4(int &width, int &height, Camera &c, std::vector<std::shared_ptr<Sha
     // c = Camera(Point3(0, 0, -10), Vector3(3, 0, 0), Vector3(0, 3, 0), Vector3(0, 0, 10));
     c = Camera(30, Point3(0, 0, -15), (float)width / height);
 
-    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.0f, 0.0f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.0f, 0.0f)))));
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, 1), 5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 0), Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 0, 255), Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.0f, 0.8f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 255), Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.8f, 0.8f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.0f, 0.8f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.8f, 0.8f)))));
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(1.0f, 0, 0)))));
 
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, -1), 5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(2, 0.8, 1)))));
@@ -126,7 +126,7 @@ void escena4(int &width, int &height, Camera &c, std::vector<std::shared_ptr<Sha
 
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LigthEmission>(LigthEmission(RGB(1.0f, 1.0f, 1.0f)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(0, 80, 255), Point3(0.8, 1, -5), 1, std::make_shared<LigthEmission>(LigthEmission(RGB(1, 1, 1)))));
-    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LightEmission>(LightEmission(RGB(10000, 10000, 10000)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, -1, 0), 3, std::make_shared<LightPower>(LightPower(RGB(10000, 10000, 10000)))));
     // // scene.push_back(std::make_shared<Quadrilateral>(RGB(255, 0, 255), Point3(-3, -2, 0), Point3(3, -2, 3), std::make_shared<LigthEmission>(LigthEmission(RGB(1.0f, 1.0f, 1.0f)))));
     // scene.push_back(std::make_shared<Quadrilateral>(RGB(255, 0, 255), Point3(-2, 2.995, -2), Point3(2, 2.995, 3), std::make_shared<LightEmission>(LightEmission(RGB(1000, 1000, 1000)))));
     // scene.push_back(std::make_shared<Quadrilateral>(RGB(255, 0, 255), Point3(-1, 2.995, -5), Point3(1, 2.995, -2), std::make_shared<LightEmission>(LightEmission(RGB(1000, 1000, 1000)))));
@@ -137,12 +137,12 @@ void escena4(int &width, int &height, Camera &c, std::vector<std::shared_ptr<Sha
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(-1.5, -1.5, -2), 1.5f, std::make_shared<PerfectSpecular>(PerfectSpecular())));
     // scene.push_back(std::make_shared<Sphere>(RGB(0, 80, 255), Point3(0.8, -2.5, -5), 0.5f, std::make_shared<PerfectSpecular>(PerfectSpecular())));
 
-    scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(-1, -1.5, 2), 1, std::make_shared<PerfectSpecular>(PerfectSpecular(RGB(0.5, 0.5, 0.5)))));
-    scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, 1, -1), 1, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8, 0.5, 0.1)))));
+    scene.push_back(std::make_shared<Sphere>(Point3(-1, -1.5, 2), 1, std::make_shared<PerfectSpecular>(PerfectSpecular(0.5))));
+    scene.push_back(std::make_shared<Sphere>(Point3(0, 1, -1), 1, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8, 0.5, 0.1)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(-1.5, -1.5, 0), 1.5, std::make_shared<Phong>(Phong(RGB(0.7, 0.7, 0.1), RGB(0.2, 0.2, 0.1)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(-1.5, -1.5, 0), 1.5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8, 0.5, 0.5)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, -1), 1.5, std::make_shared<PerfectSpecular>(PerfectSpecular(RGB(0.8, 0.5, 0.5)))));
-    scene.push_back(std::make_shared<Sphere>(RGB(0, 80, 255), Point3(0.8, -2.5, -2), 0.5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.5, 0, 0.5)))));
+    scene.push_back(std::make_shared<Sphere>(Point3(0.8, -2.5, -2), 0.5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.5, 0, 0.5)))));
 
     // scene.push_back(std::make_shared<Quadrilateral>(RGB(0, 80, 255), Point3(-2.5, 2.5, -19.5), Point3(2.5, 2.5, 4.5), std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.0f, 0.8f)))));
 
@@ -165,11 +165,11 @@ void pruebaGeometria(int &width, int &height, Camera &c, std::vector<std::shared
     // c = Camera(Point3(0, 0, -10), Vector3(3, 0, 0), Vector3(0, 3, 0), Vector3(0, 0, 10));
     c = Camera(30, Point3(0, 0, -15), (float)width / height);
 
-    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.0f, 0.0f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.0f, 0.0f)))));
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, 1), 5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 0), Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 0, 255), Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.0f, 0.8f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 255), Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.8f, 0.8f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.0f, 0.8f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.8f, 0.8f)))));
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(1.0f, 0, 0)))));
 
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, -1), 5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(2, 0.8, 1)))));
@@ -178,7 +178,7 @@ void pruebaGeometria(int &width, int &height, Camera &c, std::vector<std::shared
 
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LigthEmission>(LigthEmission(RGB(1.0f, 1.0f, 1.0f)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(0, 80, 255), Point3(0.8, 1, -5), 1, std::make_shared<LigthEmission>(LigthEmission(RGB(1, 1, 1)))));
-    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LightEmission>(LightEmission(RGB(10000, 10000, 10000)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, -1, 0), 3, std::make_shared<LightPower>(LightPower(RGB(10000, 10000, 10000)))));
     // // // scene.push_back(std::make_shared<Quadrilateral>(RGB(255, 0, 255), Point3(-3, -2, 0), Point3(3, -2, 3), std::make_shared<LigthEmission>(LigthEmission(RGB(1.0f, 1.0f, 1.0f)))));
     // scene.push_back(std::make_shared<Quadrilateral>(RGB(255, 0, 255), Point3(-1, 2.995, -1), Point3(1, 2.995, 1), std::make_shared<LightEmission>(LightEmission(RGB(1000, 1000, 1000)))));
     // scene.push_back(std::make_shared<Quadrilateral>(RGB(255, 0, 255), Point3(-1, 2.995, -5), Point3(1, 2.995, -2), std::make_shared<LightEmission>(LightEmission(RGB(1000, 1000, 1000)))));
@@ -192,12 +192,12 @@ void pruebaGeometria(int &width, int &height, Camera &c, std::vector<std::shared
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(-1.5, -1.5, -2), 1.5f, std::make_shared<PerfectSpecular>(PerfectSpecular())));
     // scene.push_back(std::make_shared<Sphere>(RGB(0, 80, 255), Point3(0.8, -2.5, -5), 0.5f, std::make_shared<PerfectSpecular>(PerfectSpecular())));
 
-    scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(-1, -1.5, 2), 1, std::make_shared<PerfectSpecular>(PerfectSpecular(RGB(0.5, 0.5, 0.5)))));
-    scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, 1, -1), 1, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8, 0.5, 0.1)))));
+    scene.push_back(std::make_shared<Sphere>(Point3(-1, -1.5, 2), 1, std::make_shared<PerfectSpecular>(PerfectSpecular(0.5f))));
+    scene.push_back(std::make_shared<Sphere>(Point3(0, 1, -1), 1, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8, 0.5, 0.1)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(-1.5, -1.5, 0), 1.5, std::make_shared<Phong>(Phong(RGB(0.7, 0.7, 0.1), RGB(0.2, 0.2, 0.1)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(-1.5, -1.5, 0), 1.5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8, 0.5, 0.5)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, -1), 1.5, std::make_shared<PerfectSpecular>(PerfectSpecular(RGB(0.8, 0.5, 0.5)))));
-    scene.push_back(std::make_shared<Sphere>(RGB(0, 80, 255), Point3(0.8, -2.5, -2), 0.5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.5, 0, 0.5)))));
+    scene.push_back(std::make_shared<Sphere>(Point3(0.8, -2.5, -2), 0.5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.5, 0, 0.5)))));
 
     // scene.push_back(std::make_shared<Quadrilateral>(RGB(0, 80, 255), Point3(-2.5, 2.5, -19.5), Point3(2.5, 2.5, 4.5), std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.0f, 0.8f)))));
 
@@ -219,46 +219,50 @@ void escenaPhong(int &width, int &height, Camera &c, std::vector<std::shared_ptr
 
     c = Camera(30, Point3(0, 0, -15), (float)width / height);
 
-    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.0f, 0.0f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.0f, 0.0f)))));
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, 1), 5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 0), Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 0, 255), Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.0f, 0.8f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 255), Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.8f, 0.8f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(1.0f, 0, 0)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.0f, 0.8f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.8f, 0.8f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(1.0f, 0, 0)))));
 
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LightEmission>(LightEmission(RGB(10000, 10000, 10000)))));
     // scene.push_back(std::make_shared<Quadrilateral>(RGB(255, 0, 255), Point3(-1, 2.995, -1), Point3(1, 2.995, 1), std::make_shared<LightEmission>(LightEmission(RGB(1000, 1000, 1000)))));
-    scene.push_back(std::make_shared<Quadrilateral>(RGB(255, 0, 255), Point3(-2, 2.995, -5), Point3(2, 2.995, 5), std::make_shared<LightEmission>(LightEmission(RGB(1000, 1000, 1000)))));
+    scene.push_back(std::make_shared<Quadrilateral>(Point3(-2, 2.995, -5), Point3(2, 2.995, 5), std::make_shared<LightPower>(LightPower(RGB(1.0f, 1.0f, 1.0f)))));
 
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, 0), 1.5, std::make_shared<Phong>(Phong(RGB(0.5, 0.5, 0.5), RGB(0.4, 0.4, 0.4)))));
-    scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, 0), 1.5, std::make_shared<Phong>(Phong(RGB(0.5, 0.5, 0.5), RGB(0.2, 0.2, 0.2)))));
-    scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, 0), 1.5, std::make_shared<PerfectSpecular>(PerfectSpecular(RGB(0.5, 0.5, 0.5)))));
+    scene.push_back(std::make_shared<Sphere>(Point3(0, -1.5, 0), 1.5, std::make_shared<Phong>(Phong(RGB(0.5, 0.5, 0.5), 0.2))));
+    scene.push_back(std::make_shared<Sphere>(Point3(0, -1.5, 0), 1.5, std::make_shared<PerfectSpecular>(PerfectSpecular(0.5f))));
 
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(2, -2, -3), 1, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8, 0.5, 0.5)))));
 }
 
 void escenaDielectrico(int &width, int &height, Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     // Camera l u f
-    width = 480;
-    height = 480;
+    width = 1920;
+    height = 1080;
 
-    c = Camera(30, Point3(0, 0, -15), (float)width / height);
+    c = Camera(30.0f, Point3(0, 0, -15), (float)width / (float)height);
 
-    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.0f, 0.0f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.65f, 0.65f, 0.9)))));
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, 1), 5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 0), Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 0, 255), Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.0f, 0.8f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(0, 255, 255), Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.8f, 0.8f)))));
-    scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(1.0f, 0, 0)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.3f, 0.2f, 0.0f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.0f, 0.0f, 0.2f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.3f, 0.3f, 0.3f)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.3f, 0.3f, 0.3)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, 0, 1), -20, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.2f, 0.2f, 0.2f)))));
 
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LightEmission>(LightEmission(RGB(10000, 10000, 10000)))));
     // scene.push_back(std::make_shared<Quadrilateral>(RGB(255, 0, 255), Point3(-1, 2.995, -1), Point3(1, 2.995, 1), std::make_shared<LightEmission>(LightEmission(RGB(1000, 1000, 1000)))));
-    scene.push_back(std::make_shared<Quadrilateral>(RGB(255, 0, 255), Point3(-2, 2.995, -5), Point3(2, 2.995, 5), std::make_shared<LightEmission>(LightEmission(RGB(1000, 1000, 1000)))));
+    scene.push_back(std::make_shared<Quadrilateral>(Point3(-2, 2.995, -5), Point3(2, 2.995, 5), std::make_shared<LightPower>(LightPower(RGB(1.0f, 1.0f, 1.0f)))));
 
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, 0), 1.5, std::make_shared<Phong>(Phong(RGB(0.5, 0.5, 0.5), RGB(0.4, 0.4, 0.4)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, 0), 1.5, std::make_shared<Phong>(Phong(RGB(0.5, 0.5, 0.5), RGB(0.2, 0.2, 0.2)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, 0), 1.5, std::make_shared<PerfectSpecular>(PerfectSpecular(RGB(0.5, 0.5, 0.5)))));
-    scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, 0), 1.5, std::make_shared<Dielectric>(Dielectric(RGB(0.0, 0.0, 0.0), RGB(0.9, 0.9, 0.9)))));
+    // LambertianDiffuse
+    // Plastic(RGB(0.7f, 0.0f, 0.6f), 0.2f
+    // PerfectSpecular
+    scene.push_back(std::make_shared<Sphere>(Point3(0, -1.5, -3), 1.5, std::make_shared<Plastic>(Plastic(RGB(0.8f, 0.0f, 0.6f), 0.01f))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, 0), 1.5, std::make_shared<Dielectric>(Dielectric(RGB(0.0, 0.0, 0.0), RGB(0.9, 0.9, 0.9)))));
 
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(2, -2, -3), 1, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8, 0.5, 0.5)))));

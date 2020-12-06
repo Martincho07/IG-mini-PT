@@ -14,10 +14,11 @@
 #include "geometry.hpp"
 
 enum EVENT {
-    DIFFUSE,
-    SPECULAR,
-    REFRACTION,
-    DEAD
+    DIFFUSE_EVENT,
+    SPECULAR_EVENT,
+    REFRACTION_EVENT,
+    DEAD_EVENT
 };
 
-EVENT randomEvent(const BRDF &material);
+EVENT randomEvent(const MaterialProperty &material);
+void RussianRoulette(const MaterialProperty &material, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success);
