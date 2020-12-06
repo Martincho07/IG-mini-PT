@@ -290,11 +290,11 @@ std::vector<Triangle> readPLY(const std::string file) {
         float a, b, c;
         is >> a >> b >> c;
         faces.push_back(Triangle(RGB(255, 255, 0), vertices[a], vertices[b], vertices[c], std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0, 0, 255)))));
-        std::cout << a << " " << b << " " << c << " " << std::endl;
+        // std::cout << a << " " << b << " " << c << " " << std::endl;
     }
 
-    std::cout << faces[1522].v1 << " " << faces[1522].v2 << " " << faces[1522].v3 << std::endl;
-    std::cout << faces[755].v1 << " " << faces[755].v2 << " " << faces[755].v3 << std::endl;
+    // std::cout << faces[1522].v1 << " " << faces[1522].v2 << " " << faces[1522].v3 << std::endl;
+    // std::cout << faces[755].v1 << " " << faces[755].v2 << " " << faces[755].v3 << std::endl;
 
     std::cout << "Terminado de leer PLY" << std::endl;
     std::cout << "Numero de triangulos: " << faces.size() << std::endl;
