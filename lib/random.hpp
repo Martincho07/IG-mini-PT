@@ -26,3 +26,7 @@ float random_float(float min, float max);
 
 // Random direction sampled uniformly on unit hemisphere
 Vector3 uniform_hemisphere_sample();
+
+// Random direction sampled uniformly on unit hemisphere for
+// phong lobule
+Vector3 phong_uniform_hemisphere_sample(float alpha);

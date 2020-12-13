@@ -13,7 +13,7 @@
 #include <cmath>
 #include <iostream>
 
-#define AIR_N 1.00029f
+#define AIR_N 1.000293f
 
 enum OBJECT_TYPE { DIFFUSE,
                    PERFECT_SPECULAR,
@@ -149,7 +149,11 @@ struct Plastic : public MaterialProperty {
 
 struct Phong : public MaterialProperty {
     // The specular RGB components should be equal (gray-white reflection)
-    Phong(RGB _kd, float _ks) : MaterialProperty(PHONG) {
+    float alpha;
+    Phong(RGB _kd, float _ks, float _alpha) : MaterialProperty(PHONG) {
+        std::cout << "AAA: " << _alpha << std::endl;
+        alpha = _alpha;
+        std::cout << "AAA: " << alpha << std::endl;
         kd = _kd;
         ks = RGB(_ks, _ks, _ks);
         max_kd = max(kd);
@@ -157,6 +161,10 @@ struct Phong : public MaterialProperty {
         max_kt = 0.0f;
     }
     ~Phong() {}
+    float get_alpha() {
+        ///std::cout << alpha << std::endl;
+        return 10.0f;
+    };
 };
 
 struct Dielectric : public MaterialProperty {
@@ -171,6 +179,8 @@ struct Dielectric : public MaterialProperty {
 Vector3 specular_reflection(const Vector3 &wi, const Vector3 &normal);
 
 Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point);
+
+Vector3 phong_reflection(const Vector3 &wr, const Vector3 &normal, const Point3 intersection_point, float alpha);
 
 Vector3 reflection(const Vector3 &wi, const Vector3 &normal);
 

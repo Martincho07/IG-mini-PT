@@ -90,12 +90,32 @@ struct TriangleMesh : public Shape {
     // Faces
     std::vector<Triangle> faces;
 
-    // El cuadrilatero recibe como parametros u_c (upper corner) que es la esquina superior derecha
-    // y l_c(lower corner) que es la esquina inferior izquierda
+    int last_intersection;
+
     TriangleMesh(){};
-    TriangleMesh(std::vector<Triangle> _faces, std::shared_ptr<MaterialProperty> _material) : Shape(_material), faces(_faces){};
+    TriangleMesh(std::vector<Triangle> _faces, std::shared_ptr<MaterialProperty> _brdf, Point3 center, float scale) : Shape(_brdf), faces(_faces) {
+        int last_intersection = 0;
+
+        // Buscar el centro de la malla
+        Point3 c = centroid();
+
+        std::cout << "centroid: " << c << std::endl;
+
+        // Recolocar el objeto y ajustar la escala
+        Vector3 offset = center - c * scale;
+        for (Triangle &f : faces) {
+            f.v1 = (f.v1 * scale) + offset;
+            f.v2 = (f.v2 * scale) + offset;
+            f.v3 = (f.v3 * scale) + offset;
+
+            // Copiar brdf en los triángulos
+            f.material = _brdf;
+        }
+    };
     ~TriangleMesh(){};
 
     float intersection(Point3 o, Vector3 d) const override;
+    void recalculateNormals();
     Vector3 normal(Point3 p) const override;
+    Point3 centroid() const;
 };

@@ -34,7 +34,7 @@ struct Camera {
                                            0.0f, 0.0f, 0.0f, 1.0f));
     };
 
-    Camera(float fov, const Point3 &target, float aspect_ratio) {
+    Camera(float fov, const Point3 &target, float distance, float aspect_ratio) {
         // grados a radianes
         fov = (fov * M_PI) / 180.0f;
 
@@ -42,7 +42,7 @@ struct Camera {
         u = Vector3(0, 1, 0);
         f = Vector3(0, 0, 1);
 
-        o = target - f;
+        o = target - f + Vector3(0, 0, distance);
 
         u = u * (tanf(fov / 2.0f));
         r = r * (aspect_ratio * modulus(u));

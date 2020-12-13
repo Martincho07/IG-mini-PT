@@ -102,11 +102,18 @@ float Quadrilateral::intersection(Point3 o, Vector3 d) const {
 float TriangleMesh::intersection(Point3 o, Vector3 d) const {
     float t_min, aux;
     t_min = FLT_MAX;
+    int i = 0;
     for (const Triangle &t : faces) {
         aux = t.intersection(o, d);
         if (aux >= 0 && aux < t_min) {
             t_min = aux;
+
+            // Se modifica el valor de la clase aunque el método sea constante
+            int *ptr;
+            ptr = (int *)(&last_intersection);
+            *ptr = i;
         }
+        i++;
     }
     if (t_min == FLT_MAX) {
         t_min = -1;
@@ -136,5 +143,31 @@ Vector3 Quadrilateral::normal(Point3 p) const {
 
 Vector3 TriangleMesh::normal(Point3 p) const {
 
-    return Vector3(0, 0, 0);
+    return faces[last_intersection].normal(p);
 };
+
+Point3 TriangleMesh::centroid() const {
+    float area_sum = 0.0;
+    Point3 centroid = Point3(0.0, 0.0, 0.0);
+    for (int i = 0; i < faces.size(); i++) {
+        Triangle t = faces[i];
+
+        // Calculate the triangle center. It's the average of its vertices
+        Point3 center = Point3(t.v1.x + t.v2.x + t.v3.x,
+                               t.v1.y + t.v2.y + t.v3.y,
+                               t.v1.z + t.v2.z + t.v3.z);
+        center /= 3;
+
+        float area = 0.5 * modulus(cross(t.v2 - t.v1, t.v3 - t.v1));
+        centroid += center * area;
+        area_sum += area;
+    }
+    std::cout << "area: " << area_sum << std::endl;
+    return centroid / area_sum;
+};
+
+void TriangleMesh::recalculateNormals() {
+    for (Triangle &f : faces) {
+        // Si el triángulo apunta dentro de la figura, A C B
+    }
+}

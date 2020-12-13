@@ -55,6 +55,35 @@ Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point
     return changeBasis(x, y, z, intersection_point)(out_dir);
 };
 
+Vector3 phong_reflection(const Vector3 &wr, const Vector3 &normal, const Point3 intersection_point, float alpha) {
+    // wi rayo en coordenadas del mundo
+    // Generar un rayo aleatorio dentro de la hemiesfera
+    // Se devuelve en coordenadas del mundo
+
+    // Hay que generar un espacio de coordenadas local al punto de intersección,
+    // sabiendo la normal en ese punto
+    // Generar una dirección aleatoria en la hemiesfera y cambiarla a coordendas del mundo
+
+    float radious = modulus(normal);
+    //unsigned int seed = rand() % 100;
+
+    Vector3 Nt, x, y, z;
+
+    if (std::fabs(wr.x) > std::fabs(wr.y))
+        Nt = Vector3(wr.z, 0, -wr.x) / sqrtf(wr.x * wr.x + wr.z * wr.z);
+    else
+        Nt = Vector3(0, -wr.z, wr.y) / sqrtf(wr.y * wr.y + wr.z * wr.z);
+
+    y = normalize(wr);
+    z = cross(wr, Nt);
+    z = normalize(z);
+    x = cross(y, z);
+
+    Vector3 out_dir = phong_uniform_hemisphere_sample(alpha);
+
+    return changeBasis(x, y, z, intersection_point)(out_dir);
+};
+
 /*
 Vector3 refraction(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
     // TODO
@@ -162,8 +191,8 @@ void set_dielectric_properties(MaterialProperty &material, const Vector3 direcci
         fresnel_ks = Fresnel_ks(direccion, -normal, material.n, AIR_N);
 
     fresnel_kt = 1.0f - fresnel_ks;
-    fresnel_ks = 0.9f * fresnel_ks;
-    fresnel_kt = 0.9f * fresnel_kt;
+    fresnel_ks = 0.95f * fresnel_ks;
+    fresnel_kt = 0.95f * fresnel_kt;
 
     material.set_max_ks(fresnel_ks);
     material.set_max_kt(fresnel_kt);

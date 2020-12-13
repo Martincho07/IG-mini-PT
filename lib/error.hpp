@@ -13,13 +13,16 @@
 #include <iostream>
 #include <ostream>
 
+#include <execinfo.h>
+#include <stdio.h>
+
 // https : //stackoverflow.com/questions/29326460/how-to-make-a-variadic-macro-for-stdcout
 inline void Println(std::ostream &os) {
     os << std::endl;
 }
 
 template <typename First, typename... Rest>
-inline void Println(std::ostream &os, First &&first, Rest &&... rest) {
+inline void Println(std::ostream &os, First &&first, Rest &&...rest) {
     os << std::forward<First>(first);
     Println(os, std::forward<Rest>(rest)...);
 }
@@ -43,4 +46,14 @@ void ErrorExit(Args... args) {
     std::cerr << "Error: ";
     Println(std::cerr, std::forward<Args>(args)...);
     exit(1);
+}
+
+inline void Backtrace() {
+    void *callstack[128];
+    int i, frames = backtrace(callstack, 128);
+    char **strs = backtrace_symbols(callstack, frames);
+    for (i = 0; i < frames; ++i) {
+        printf("%s\n", strs[i]);
+    }
+    free(strs);
 }

@@ -13,7 +13,9 @@
 #include "color.hpp"
 #include "geometry.hpp"
 #include "random.hpp"
+#include <cmath>
 #include <iostream>
+#include <memory>
 
 EVENT randomEvent(const MaterialProperty &material) {
     // Russian roulette
@@ -83,13 +85,43 @@ void RussianRoulette(const MaterialProperty &material, const Vector3 &normal, co
             //std::cout << "dir: " << direction << std::endl;
             direction = specular_reflection(direction, -normal);
         }
-        contribution = contribution * (material.ks / material.max_ks);
+
+        if (material.type == PHONG) {
+
+            Vector3 reflected_ray = direction;
+            MaterialProperty phong = material;
+            MaterialProperty *ptrPhong = &phong;
+            float alpha = static_cast<Phong *>(ptrPhong)->get_alpha();
+            //std::cout << "alpha: " << alpha << std::endl;
+
+            direction = phong_reflection(direction, normal, point, alpha);
+            if (dot(direction, normal) < 0.0f) {
+                success = false;
+                return;
+            }
+
+            float cosTh = dot(reflected_ray, direction);
+            RGB ant = contribution;
+
+            contribution = contribution * ((material.ks * (((alpha + 2.0f) / 2.0f * (float)M_PI) * pow(abs(cosTh), alpha))) / material.max_ks);
+
+            if (isinf(max(contribution))) {
+                std::cout << "antes: " << ant << std::endl;
+                std::cout << "mult: " << ((material.ks * (((alpha + 2.0f) / 2.0f * (float)M_PI) * pow(abs(cosTh), alpha))) / material.max_ks) << std::endl;
+            }
+
+        } else {
+
+            contribution = contribution * (material.ks / material.max_ks);
+        }
+
         //if (material.type == PLASTIC)
         //std::cout << "tupla especular: " << material.ks / material.max_ks << std::endl;
+
         break;
 
     case REFRACTION_EVENT:
-        std::cout << "F" << std::endl;
+        //std::cout << "F" << std::endl;
         if (dot(direction, normal) < 0.0f)
 
             direction = refraction(direction, normal, AIR_N, material.n, success);

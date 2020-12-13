@@ -224,7 +224,7 @@ int main(int argc, char **argv) {
     std::chrono::duration<double> diff = end - init;
     ClampAndGammaCurve clamp(.5f, 2.2f);
 
-    image.applyToneMappingOperator(clamp);
+    //image.applyToneMappingOperator(clamp);
     std::cout << "Tiempo de rendering: " << diff.count() << std::endl;
     std::cout << "Numero de geometrias: " << scene.size() << std::endl;
     std::cout << "Numero de pixeles: " << height * width << std::endl;
@@ -232,6 +232,6 @@ int main(int argc, char **argv) {
     //image.applyToneMappingOperator(Equalize(max(image)));
 
     // writePPM(image, "salida.ppm", max(image), 1000000000);
-    writePPM(image, "salida.ppm", max(image), 255);
-    writeHDR(image, "salida.hdr");
+    writePPM(image, "diamante.ppm", max(image), 255);
+    writeHDR(image, "diamante.hdr");
 };

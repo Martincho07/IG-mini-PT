@@ -56,7 +56,6 @@ RGB Camera::generateRay(Vector3 d, const std::vector<std::shared_ptr<Shape>> &sh
             normal = object->normal(p);
 
             if (object->brdf->type == EMISSOR) {
-                //std::cout << "Llegoo a luz" << std::endl;
                 color = alpha * object->brdf->light_contribution();
                 return color;
             } else if (object->brdf->type == LAMBERTIAN_DIFFUSE) {
@@ -98,7 +97,7 @@ RGB Camera::generateRay2(float x, float y, const std::vector<std::shared_ptr<Sha
 
         distance = intersection(scene, shape, ray_orig, direction);
         //std::cout << "t: " << t << std::endl;
-        if (distance != INFINITY && distance > 0.0f) {
+        if (distance != INFINITY && distance > 1e-6f) {
 
             interc_point = ray_orig + direction * distance;
             normal = shape->normal(interc_point);
