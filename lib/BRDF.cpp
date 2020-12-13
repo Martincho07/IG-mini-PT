@@ -136,20 +136,20 @@ Vector3 refraction(const Vector3 &wi, const Vector3 &normal, float n1, float n2,
 
 RGB MaterialProperty::specular_contribution() const {
     // return RGB(1, 1, 1);
-    // return ks / max_ks;
-    return ks;
+    return ks / max_ks;
+    // return ks;
 };
 
 RGB MaterialProperty::diffuse_contribution() const {
     // TODO
     // return kd / M_PI;
     // return kd / max_kd;
-    return kd;
+    return kd / max_kd;
 };
 
 RGB MaterialProperty::refraction_contribution() const {
     // return kt / max_kt;
-    return kt;
+    return kt / max_kt;
 };
 
 RGB MaterialProperty::phong_specular_contribution() const {

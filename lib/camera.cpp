@@ -97,7 +97,7 @@ RGB Camera::generateRay2(float x, float y, const std::vector<std::shared_ptr<Sha
 
         distance = intersection(scene, shape, ray_orig, direction);
         //std::cout << "t: " << t << std::endl;
-        if (distance != INFINITY && distance > 1e-6f) {
+        if (distance != INFINITY && distance > 1e-4f) {
 
             interc_point = ray_orig + direction * distance;
             normal = shape->normal(interc_point);
@@ -137,7 +137,7 @@ float intersection(const std::vector<std::shared_ptr<Shape>> &scene, std::shared
     for (const std::shared_ptr<Shape> &s : scene) {
         shape_t = s->intersection(ray_orig, direction);
 
-        if (shape_t < distance && shape_t > 0.0f) {
+        if (shape_t < distance && shape_t > 1e-4f) {
             distance = shape_t;
             shape = s;
         }
@@ -147,94 +147,6 @@ float intersection(const std::vector<std::shared_ptr<Shape>> &scene, std::shared
 }
 
 #else
-
-#ifdef COLORES
-
-RGB Camera::generateRay(Vector3 d, const std::vector<std::shared_ptr<Shape>> &shapes) const {
-
-    RGB colors[8] = {RGB(100, 50, 100), RGB(255, 0, 0), RGB(0, 255, 0), RGB(0, 0, 255), RGB(255, 255, 0), RGB(255, 0, 255), RGB(0, 255, 255), RGB(100, 200, 0)};
-
-    RGB color(255, 255, 255);
-    float tmin = INFINITY;
-    float t = 0.0f;
-
-    for (int i = 0; i < shapes.size(); i++) {
-        t = shapes[i]->intersection(o, camera2world(d));
-
-        if (t < tmin && t > 0.0f) {
-            color = colors[i];
-            tmin = t;
-        }
-    }
-
-    return color;
-};
-
-#else
-
-// Definir el color en base a la normal del objeto
-RGB Camera::generateRay(Vector3 d, const std::vector<std::shared_ptr<Shape>> &shapes) const {
-
-    RGB color(255, 255, 255);
-    float tmin = INFINITY;
-    float t = 0.0f;
-
-    Vector3 n;
-
-    // for (std::shared_ptr<Shape> s : shapes) {
-    //     t = s->intersection(o, camera2world(d));
-
-    //     if (t < tmin && t > 0.0f) {
-    //         Point3 p = o + camera2world(d) * t;
-    //         n = s->normal(p);
-    //         tmin = t;
-    //     }
-    // }
-
-    int imin;
-
-    for (int i = 0; i < shapes.size(); i++) {
-        t = shapes[i]->intersection(o, camera2world(d));
-        if (t < tmin && t > 0.0f) {
-            Point3 p = o + camera2world(d) * t;
-            n = shapes[i]->normal(p);
-            tmin = t;
-            imin = i;
-        }
-    }
-
-    n = normalize(n);
-    n = n * 127.0f;
-
-    // std::cout << n << std::endl;
-
-    // x -> más azul
-    // y -> más verde
-    // z -> más rojo
-
-    // Coger un color aleatorio
-    RGB colors[8] = {RGB(100, 50, 100), RGB(255, 0, 0), RGB(0, 255, 0), RGB(0, 0, 255), RGB(255, 255, 0), RGB(255, 0, 255), RGB(0, 255, 255), RGB(100, 200, 0)};
-
-    color = (RGB(128.0f + n.z, 128.0f + n.y, 128.0f + n.x) + colors[imin]) / 2;
-
-    // if (n.x < 0) {
-    //     std::cout << "menor de 0" << std::endl;
-    //     exit(1);
-    // }
-
-    // float green = std::abs(n.x * n.y * 255);
-
-    // // Si la normal apunta hacia la cámara, rojo
-    // if (n.z < 0) {
-    //     color = RGB(255, green, 0);
-    // }
-    // // Si no, azul
-    // else {
-    //     color = RGB(0, green, 255);
-    // }
-
-    return color;
-};
 
 // Definir el color en base a la normal del objeto
 RGB Camera::generateRay2(float x, float y, const std::vector<std::shared_ptr<Shape>> &shapes) const {
@@ -249,6 +161,7 @@ RGB Camera::generateRay2(float x, float y, const std::vector<std::shared_ptr<Sha
     Vector3 yu = u * y;
 
     Vector3 d = xr + yu + f;
+
     normalize(d);
 
     // for (std::shared_ptr<Shape> s : shapes) {
@@ -283,10 +196,13 @@ RGB Camera::generateRay2(float x, float y, const std::vector<std::shared_ptr<Sha
     // z -> más rojo
 
     // Coger un color dependiendo de la posición
-    RGB colors[8] = {RGB(100, 50, 100), RGB(255, 0, 0), RGB(0, 255, 0), RGB(0, 0, 255), RGB(255, 255, 0), RGB(255, 0, 255), RGB(0, 255, 255), RGB(100, 200, 0)};
 
+#ifdef COLORES
+    RGB colors[8] = {RGB(100, 50, 100), RGB(255, 0, 0), RGB(0, 255, 0), RGB(0, 0, 255), RGB(255, 255, 0), RGB(255, 0, 255), RGB(0, 255, 255), RGB(100, 200, 0)};
     color = (RGB(128.0f + n.z, 128.0f + n.y, 128.0f + n.x) + colors[imin % 8]) / 2;
-    // color = RGB(128.0f + n.z, 128.0f + n.y, 128.0f + n.x);
+#else
+    color = RGB(128.0f + n.z, 128.0f + n.y, 128.0f + n.x);
+#endif
 
     // if (n.x < 0) {
     //     std::cout << "menor de 0" << std::endl;
@@ -306,7 +222,5 @@ RGB Camera::generateRay2(float x, float y, const std::vector<std::shared_ptr<Sha
 
     return color;
 };
-
-#endif
 
 #endif

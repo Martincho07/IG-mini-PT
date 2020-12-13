@@ -156,7 +156,7 @@ int main(int argc, char **argv) {
 
     std::vector<std::shared_ptr<Shape>> scene;
     Camera c;
-    escenaDielectrico(width, height, c, scene);
+    escena4(width, height, c, scene);
 
     int width_inc = width / NUM_REGIONS;
     int height_inc = height / NUM_REGIONS;
@@ -222,7 +222,6 @@ int main(int argc, char **argv) {
     auto end = std::chrono::steady_clock::now();
 
     std::chrono::duration<double> diff = end - init;
-    ClampAndGammaCurve clamp(.5f, 2.2f);
 
     //image.applyToneMappingOperator(clamp);
     std::cout << "Tiempo de rendering: " << diff.count() << std::endl;
@@ -231,7 +230,9 @@ int main(int argc, char **argv) {
 
     //image.applyToneMappingOperator(Equalize(max(image)));
 
+    image.applyToneMappingOperator(GammaCurve(max(image), 2.2));
+
     // writePPM(image, "salida.ppm", max(image), 1000000000);
-    writePPM(image, "diamante.ppm", max(image), 255);
-    writeHDR(image, "diamante.hdr");
+    writePPM(image, "salida.ppm", max(image), 255);
+    writeHDR(image, "salida.hdr");
 };
