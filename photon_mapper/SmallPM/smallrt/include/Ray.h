@@ -20,20 +20,19 @@ In no event shall copyright holders be liable for any damage.
 #include "Vector3.h"
 
 class Object3D;
-	
+
 /** This is a constant used to dismiss intersections very close to previous
 		intersections. */
 const Real SMALLEST_DIST = 1e-6;
 
-/// This is the refraction index of air. 
+/// This is the refraction index of air.
 const Real DEFAULT_REFRACTION_INDEX = 1.0;
-
 
 /** The Ray class is used to find intersections between a ray and the scene,
 		but it also stores information. For instance the Ray remembers intersection
 		points, and the refraction index of material it is passing through. */
 class Ray
-{		
+{
 	/// Origin of the ray
 	Vector3 origin;
 
@@ -41,33 +40,32 @@ class Ray
 	Vector3 direction;
 
 	/// The parameter -i.e. the distance we have traversed along the ray
-	Real t;                             
+	Real t;
 
 	/// Level is the number of times the ray has been traced recursively.
 	int level;
 
 	/// has the ray hit something ?!
-	bool hit;  
+	bool hit;
+
 public:
-  
-	
 	// Construct a ray. First argument is position. Second argument
 	// is the direction of the ray. The magnitude of the second argument
 	// is construed as the step length.
-	Ray(const Vector3& p, const Vector3& d, int _level=0);
-    Ray();
+	Ray(const Vector3 &p, const Vector3 &d, int _level = 0);
+	Ray();
 
 	// Get ray position.
 	const Vector3 get_position() const;
 
 	// Get ray origin.
-	const Vector3& get_origin() const;
-  
+	const Vector3 &get_origin() const;
+
 	// Get ray parameter.
 	Real get_parameter() const;
 
 	// Get direction of ray.
-	const Vector3& get_direction() const;
+	const Vector3 &get_direction() const;
 
 	// Conditional set parameter. Set parameter only if it corresponds
 	// to a closer hit point than stored parameter. Set the associated
@@ -78,17 +76,7 @@ public:
 	int get_level() const;
 
 	const Ray &operator=(const Ray &r);
-	void shift(const Real d=1.e-4);
+	void shift(const Real d = 1.e-4);
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-

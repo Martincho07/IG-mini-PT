@@ -23,8 +23,8 @@ In no event shall copyright holders be liable for any damage.
 #include "Mesh.h"
 #include "LightSource.h"
 #include "globals.h"
-typedef std::vector<Object3D*>::iterator    Object3DPtrIterator;
-typedef std::vector<LightSource*>::iterator LightSourcePtrIterator;
+typedef std::vector<Object3D *>::iterator Object3DPtrIterator;
+typedef std::vector<LightSource *>::iterator LightSourcePtrIterator;
 
 /** class World. World contains global information about the scene.
 		In particular World contains a list of lights and objects. However, World 
@@ -34,7 +34,7 @@ typedef std::vector<LightSource*>::iterator LightSourcePtrIterator;
 class World
 {
 	/// List of all objects in our world
-	std::vector<Object3D*>    object_list;
+	std::vector<Object3D *> object_list;
 
 	/// Ambient colour
 	Vector3 ambient;
@@ -43,14 +43,15 @@ class World
 			continue into the void. */
 	Vector3 background;
 	bool fixed;
+
 public:
 	World();
 
 	/// List of all lightsources in world
-	std::vector<LightSource*> light_source_list;
+	std::vector<LightSource *> light_source_list;
 
 	/// Set & get ambient level
-	void set_ambient(const Vector3& amb);
+	void set_ambient(const Vector3 &amb);
 	Vector3 get_ambient();
 
 	/// Set & get background color.
@@ -58,24 +59,19 @@ public:
 	Vector3 get_background();
 
 	/// Add a light source to our World
-	void add_light(LightSource* ls);
-	const LightSource &light(const int idx)const;
-	int nb_lights()const;
+	void add_light(LightSource *ls);
+	const LightSource &light(const int idx) const;
+	int nb_lights() const;
 
 	/// Add an object to our world
-	void add_object(Object3D* o3d);
-	void add_objects(std::vector<Object3D*> &o3ds);
+	void add_object(Object3D *o3d);
+	void add_objects(std::vector<Object3D *> &o3ds);
 
 	/// Fix all the primitives in the scene, and makes all needed actions before
 	//	rendering
 	void fix();
 
 	/// Return the object that first intersects `ray'
-	Real first_intersection(Ray& ray, Intersection &it);
-
+	Real first_intersection(Ray &ray, Intersection &it);
 };
 #endif
-
-
-
-
