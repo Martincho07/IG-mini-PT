@@ -41,7 +41,7 @@ RGB Camera::trace_path(float x, float y, const std::vector<std::shared_ptr<Shape
 
         distance = intersection(scene, shape, ray_orig, direction);
 
-        if (distance != INFINITY && distance > 0.0f) {
+        if (distance != INFINITY && distance > 1e-4f) {
 
             interc_point = ray_orig + direction * distance;
             normal = shape->normal(interc_point);
@@ -54,8 +54,6 @@ RGB Camera::trace_path(float x, float y, const std::vector<std::shared_ptr<Shape
                 // En caso contrario se usa la ruleta rusa para determinar si
                 // se sigue o no
             } else {
-                //if (shape->material->type == PERFECT_SPECULAR)
-                //std::cout << "norm: " << normal << std::endl;
 
                 if (shape->material->type == TEXTURE) {
 
@@ -89,7 +87,7 @@ float intersection(const std::vector<std::shared_ptr<Shape>> &scene, std::shared
     for (const std::shared_ptr<Shape> &s : scene) {
         shape_t = s->intersection(ray_orig, direction);
 
-        if (shape_t < distance && shape_t > 0.0f) {
+        if (shape_t < distance && shape_t > 1e-4f) {
             distance = shape_t;
             shape = s;
         }

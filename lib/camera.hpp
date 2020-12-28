@@ -45,7 +45,7 @@ struct Camera {
         u = Vector3(0, 1, 0);
         f = Vector3(0, 0, 1);
 
-        o = target - f + Vector3(0, 0, distance);
+        o = target - f - Vector3(0, 0, distance);
 
         u = u * (tanf(fov / 2.0f));
         r = r * (aspect_ratio * modulus(u));

@@ -1,0 +1,31 @@
+find_package(PNG)
+#set(FIRST true)
+if(PNG_FOUND)
+	include_directories(${PNG_INCLUDE_DIR})
+	set(imagelibs ${imagelibs} ${PNG_LIBRARY})
+	add_definitions(-Dcimg_use_png)
+endif(PNG_FOUND)
+
+find_package(JPEG)
+if(JPEG_FOUND)
+	include_directories(${JPEG_INCLUDE_DIR})
+	set(imagelibs ${imagelibs} ${JPEG_LIBRARY})
+	add_definitions(-Dcimg_use_jpeg)
+endif(JPEG_FOUND)
+
+find_package(TIFF)
+if(TIFF_FOUND)
+	include_directories(${TIFF_INCLUDE_DIR})
+	set(imagelibs ${imagelibs} ${TIFF_LIBRARY})
+	add_definitions(-Dcimg_use_tiff)
+endif(TIFF_FOUND)
+
+include(image/FFTW3-Cmake.txt)
+if(FFTW3_FOUND)
+	include_directories(${FFTW3_INCLUDE_DIR})
+	set(imagelibs ${imagelibs} ${FFTW3_LIBRARY})
+	add_definitions(-Dcimg_use_fftw3)
+endif(FFTW3_FOUND)
+
+set(imagesrcs )
+	

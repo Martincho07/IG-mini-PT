@@ -8,8 +8,10 @@
  * Coms: Informática Gráfica, 2020-2021
  **********************************************************************************/
 
-#include "geometry.hpp"
 #include <cmath>
+
+#include "error.hpp"
+#include "geometry.hpp"
 
 Vector3 abs(const Vector3 &v) {
     return Vector3(std::abs(v.x), std::abs(v.y), std::abs(v.z));
@@ -28,6 +30,10 @@ float modulus(const Vector3 &v) {
 }
 
 Vector3 normalize(const Vector3 &v) {
+    if (modulus(v) == 0) {
+        Backtrace();
+        exit(1);
+    }
     assert(modulus(v) != 0); // TODO
     return v / modulus(v);
 }
