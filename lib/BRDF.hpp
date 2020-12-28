@@ -1,5 +1,5 @@
 /*********************************************************************************
- * Image
+ * BRDF
  *
  * File: BRDF.hpp
  * Author: Fernando Peña (NIA: 756012)
@@ -8,14 +8,18 @@
  * Coms: Informática Gráfica, 2020-2021
  **********************************************************************************/
 #pragma once
+
 #include "color.hpp"
 #include "geometry.hpp"
+#include "image.hpp"
 #include <cmath>
 #include <iostream>
+#include <memory>
 
 #define AIR_N 1.000293f
 
 enum OBJECT_TYPE { DIFFUSE,
+                   TEXTURE,
                    PERFECT_SPECULAR,
                    PHONG,
                    DIELECTRIC,
@@ -32,49 +36,21 @@ struct MaterialProperty {
     RGB kt;
     // Luz emitida
     RGB light_power;
+    // Textura del material
+    TextureMappingUV texture;
+    // Alfa de phong
+    float alpha;
 
     // Máximo valor de cada tupla
     float max_kd, max_ks, max_kt, n;
 
     MaterialProperty(OBJECT_TYPE _type) : type(_type) {}
+    MaterialProperty(){};
     virtual ~MaterialProperty() {}
-
-    RGB specular_contribution() const;
-
-    RGB diffuse_contribution() const;
-
-    RGB refraction_contribution() const;
-
-    RGB phong_specular_contribution() const;
 
     RGB get_light_power() {
 
         return light_power;
-    };
-
-    RGB Diffuse_lobe() const {
-
-        return kd / M_PI; // TODO: arreglar la intensidad de la luz
-    };
-
-    RGB PerfectSpecular_lobe() const {
-        return RGB(1.0f, 1.0f, 1.0f);
-    };
-
-    RGB Phong_lobe(const Vector3 &normal, const Vector3 &wr) const {
-        float alpha = 50;
-        return ks * ((2.0f + alpha) / (2.0f * M_PI)) * pow(abs(dot(normal, wr)), alpha);
-    }
-
-    RGB Reflection_lobe() const {
-
-        // TODO
-        return RGB();
-    }
-
-    RGB BRDF() {
-
-        return RGB();
     };
 
     void set_ks(RGB _ks) {
@@ -96,12 +72,22 @@ struct MaterialProperty {
 
         max_kt = _kt;
     };
+
+    RGB getKd(float u, float v) {
+
+        return texture.getUV_color(u, v);
+    }
+
+    float get_alpha() const {
+
+        return alpha;
+    };
 };
 
 struct LightPower : MaterialProperty {
 
     LightPower(RGB _light_power) : MaterialProperty(EMISSOR) {
-        std::cout << "light: " << _light_power << std::endl;
+
         light_power = _light_power;
     }
 };
@@ -123,6 +109,19 @@ struct LambertianDiffuse : public MaterialProperty {
         max_kt = 0.0f;
     }
     ~LambertianDiffuse() {}
+};
+
+struct Texture : public MaterialProperty {
+
+    Texture(TextureMappingUV _texture) : MaterialProperty(TEXTURE) {
+        kd = RGB(0.0f, 0.0f, 0.0f);
+        max_kd = 0.0f;
+        max_ks = 0.0f;
+        max_kt = 0.0f;
+        texture = _texture;
+        //std::cout << "sssss h: " << texture.img.height << std::endl;
+    }
+    ~Texture() {}
 };
 
 struct PerfectSpecular : public MaterialProperty {
@@ -149,11 +148,9 @@ struct Plastic : public MaterialProperty {
 
 struct Phong : public MaterialProperty {
     // The specular RGB components should be equal (gray-white reflection)
-    float alpha;
     Phong(RGB _kd, float _ks, float _alpha) : MaterialProperty(PHONG) {
-        std::cout << "AAA: " << _alpha << std::endl;
+
         alpha = _alpha;
-        std::cout << "AAA: " << alpha << std::endl;
         kd = _kd;
         ks = RGB(_ks, _ks, _ks);
         max_kd = max(kd);
@@ -161,10 +158,6 @@ struct Phong : public MaterialProperty {
         max_kt = 0.0f;
     }
     ~Phong() {}
-    float get_alpha() {
-        ///std::cout << alpha << std::endl;
-        return 10.0f;
-    };
 };
 
 struct Dielectric : public MaterialProperty {

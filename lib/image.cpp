@@ -12,6 +12,7 @@
 #include "color.hpp"
 #include "math.h"
 #include <cfloat>
+#include <iostream>
 
 void Image::applyToneMappingOperator(const ToneMappingOperator &op) {
     std::cout << "Applying operator: " << op << " ..." << std::endl;
@@ -20,8 +21,19 @@ void Image::applyToneMappingOperator(const ToneMappingOperator &op) {
 }
 
 void Image::fillPixel(int f, int c, const RGB r) {
-    //std::cout << "f, c: " << f << " " << c << std::endl;
+
     v[(f * width) + c] = r;
+};
+
+RGB Image::getPixel(float u_coord, float v_coord) {
+
+    int fila = (int)((1.0f - u_coord) * (height - 1.0f));
+    int columna = (int)(v_coord * (width - 1.0f));
+    //std::cout << "uuuuuuuu: " << u_coord << std::endl;
+    //std::cout << "vvvvvvvv: " << v_coord << std::endl;
+    //std::cout << "elemento: " << (fila * width) + columna << std::endl;
+    //std::cout << "sizeeeee: " << v.size() << std::endl;
+    return v[(fila * width) + columna];
 };
 
 float max(const Image &img) {

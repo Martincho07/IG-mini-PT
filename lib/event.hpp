@@ -11,7 +11,13 @@
 #pragma once
 
 #include "BRDF.hpp"
+#include "color.hpp"
 #include "geometry.hpp"
+#include "random.hpp"
+#include "shape.hpp"
+#include <cmath>
+#include <iostream>
+#include <memory>
 
 enum EVENT {
     DIFFUSE_EVENT,
@@ -22,3 +28,5 @@ enum EVENT {
 
 EVENT randomEvent(const MaterialProperty &material);
 void RussianRoulette(const MaterialProperty &material, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success);
+EVENT randomEvent(const RGB &texture);
+void RussianRoulette(const RGB &texture, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success);

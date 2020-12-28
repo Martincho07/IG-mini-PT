@@ -29,6 +29,8 @@ struct Shape {
 
     virtual float intersection(Point3 o, Vector3 d) const = 0;
     virtual Vector3 normal(Point3 p) const = 0;
+    virtual float getU(Point3 p) const = 0;
+    virtual float getV(Point3 p) const = 0;
 };
 
 struct Sphere : public Shape {
@@ -42,6 +44,8 @@ struct Sphere : public Shape {
 
     float intersection(Point3 o, Vector3 d) const override;
     Vector3 normal(Point3 p) const override;
+    float getU(Point3 p) const override;
+    float getV(Point3 p) const override;
 };
 
 struct Plane : public Shape {
@@ -54,6 +58,8 @@ struct Plane : public Shape {
 
     float intersection(Point3 o, Vector3 d) const override;
     Vector3 normal(Point3 p) const override;
+    float getU(Point3 p) const override;
+    float getV(Point3 p) const override;
 };
 
 struct Triangle : public Shape {
@@ -65,11 +71,14 @@ struct Triangle : public Shape {
 
     float intersection(Point3 o, Vector3 d) const override;
     Vector3 normal(Point3 p) const override;
+    float getU(Point3 p) const override;
+    float getV(Point3 p) const override;
 };
 
 struct Quadrilateral : public Shape {
     Triangle t1;
     Triangle t2;
+    Point3 l_left, l_right, u_left, u_right;
 
     // El cuadrilatero recibe como parametros u_c (upper corner) que es la esquina superior derecha
     // y l_c(lower corner) que es la esquina inferior izquierda
@@ -77,13 +86,20 @@ struct Quadrilateral : public Shape {
     Quadrilateral(Point3 u_c, Point3 l_c, std::shared_ptr<MaterialProperty> _material) : Shape(_material) {
         // t1 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, l_c.z), Point3(u_c.x, u_c.y, u_c.z), _brdf);
         // t2 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(u_c.x, l_c.y, u_c.z), Point3(u_c.x, u_c.y, u_c.z), _brdf);
-        t1 = Triangle(Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, u_c.z), Point3(u_c.x, l_c.y, l_c.z), _material);
-        t2 = Triangle(Point3(u_c.x, u_c.y, u_c.z), Point3(l_c.x, u_c.y, u_c.z), Point3(u_c.x, l_c.y, l_c.z), _material);
+        t1 = Triangle(Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, l_c.y, u_c.z), Point3(u_c.x, u_c.y, u_c.z), _material);
+        t2 = Triangle(Point3(u_c.x, u_c.y, u_c.z), Point3(u_c.x, u_c.y, l_c.z), Point3(l_c.x, l_c.y, l_c.z), _material);
+
+        l_left = l_c;
+        l_right = Point3(l_c.x, l_c.y, u_c.z);
+        u_left = Point3(u_c.x, u_c.y, l_c.z);
+        u_right = u_c;
     };
     ~Quadrilateral(){};
 
     float intersection(Point3 o, Vector3 d) const override;
     Vector3 normal(Point3 p) const override;
+    float getU(Point3 p) const override;
+    float getV(Point3 p) const override;
 };
 
 struct TriangleMesh : public Shape {
@@ -117,5 +133,7 @@ struct TriangleMesh : public Shape {
     float intersection(Point3 o, Vector3 d) const override;
     void recalculateNormals();
     Vector3 normal(Point3 p) const override;
+    float getU(Point3 p) const override;
+    float getV(Point3 p) const override;
     Point3 centroid() const;
 };

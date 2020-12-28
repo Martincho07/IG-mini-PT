@@ -11,6 +11,7 @@ add_library(lib geometry.cpp
                 camera.cpp
                 BRDF.cpp
                 random.cpp
-                event.cpp)
+                event.cpp
+                parallelization.cpp)
 
 target_include_directories(lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

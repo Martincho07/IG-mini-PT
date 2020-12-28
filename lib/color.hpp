@@ -36,6 +36,10 @@ struct RGB {
         return RGB(r + c.r, g + c.g, b + c.b);
     };
 
+    RGB operator+(const float f) const {
+        return RGB(r + f, g + f, b + f);
+    };
+
     RGB operator-(const RGB c) const {
         return RGB(r - c.r, g - c.g, b - c.b);
     };

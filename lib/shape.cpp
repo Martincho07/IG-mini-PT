@@ -12,9 +12,9 @@
 #include "geometry.hpp"
 
 #include <cfloat>
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
-
 float Sphere::intersection(Point3 o, Vector3 d) const {
     float a = pow(modulus(d), 2.0f);
     float b = dot(d, o - center) * 2.0f;
@@ -90,12 +90,15 @@ float Quadrilateral::intersection(Point3 o, Vector3 d) const {
     t_tri_1 = t1.intersection(o, d);
     t_tri_2 = t2.intersection(o, d);
 
-    if (t_tri_1 > 0)
+    if (t_tri_1 > 0) {
+        //std::cout << "inersector" << std::endl;
         return t_tri_1;
+    }
 
-    if (t_tri_2 > 0)
+    if (t_tri_2 > 0) {
+        //std::cout << "inersector" << std::endl;
         return t_tri_2;
-
+    }
     return -1.0f;
 }
 
@@ -171,3 +174,59 @@ void TriangleMesh::recalculateNormals() {
         // Si el triángulo apunta dentro de la figura, A C B
     }
 }
+
+float Sphere::getU(Point3 p) const {
+
+    Vector3 n = normalize(p - center);
+
+    return 1.0f - (0.5 - asin(n.y) / M_PI);
+};
+
+float Plane::getU(Point3 p) const {
+
+    if (p.y < 0.0)
+        return 1.0f - abs(p.y - (int)p.y);
+
+    return abs(p.y - (int)p.y);
+};
+
+float Triangle::getU(Point3 p) const {
+    return -1.0f;
+};
+
+float Quadrilateral::getU(Point3 p) const {
+    Vector3 r = p - l_right;
+    Vector3 q = u_right - l_right;
+    float cos = dot(q, r) / (modulus(r) * modulus(q));
+    return (modulus(r) * cos) / modulus(q);
+};
+float TriangleMesh::getU(Point3 p) const {
+    return -1.0f;
+};
+
+float Sphere::getV(Point3 p) const {
+
+    Vector3 n = normalize(p - center);
+    return 0.5 + atan2(n.z, n.x) / (2 * M_PI);
+};
+
+float Plane::getV(Point3 p) const {
+    if (p.x > 0.0f)
+        return 1.0f - abs(p.x - (int)p.x);
+    return abs(p.x - (int)p.x);
+};
+
+float Triangle::getV(Point3 p) const {
+    return -1.0f;
+};
+
+float Quadrilateral::getV(Point3 p) const {
+
+    Vector3 r = p - l_right;
+    Vector3 q = l_left - l_right;
+    float cos = dot(q, r) / (modulus(r) * modulus(q));
+    return (modulus(r) * cos) / modulus(q);
+};
+float TriangleMesh::getV(Point3 p) const {
+    return -1.0f;
+};

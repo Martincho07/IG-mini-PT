@@ -33,9 +33,30 @@ struct Image {
     Image(const std::vector<RGB> _v, int _width, int _height)
         : v(_v), width(_width), height(_height){};
 
+    Image(int _width, int _height) : width(_width), height(_height) {
+
+        v = std::vector<RGB>(width * height, RGB(0.0f, 0.0f, 0.0f));
+    };
+
     void applyToneMappingOperator(const ToneMappingOperator &op);
 
     void fillPixel(int f, int c, const RGB r);
+    RGB getPixel(float u_coord, float v_coord);
+};
+
+struct TextureMappingUV {
+
+    Image img;
+    TextureMappingUV(){};
+    TextureMappingUV(Image _img) {
+
+        this->img = _img;
+    };
+
+    RGB getUV_color(float u, float v) {
+
+        return img.getPixel(u, v);
+    };
 };
 
 float maxLum(const Image &img);

@@ -12,7 +12,10 @@
 
 #include "BRDF.hpp"
 #include "camera.hpp"
+#include "file.hpp"
+#include "image.hpp"
 #include "shape.hpp"
+#include <iostream>
 
 /*
 void carita(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
@@ -241,10 +244,12 @@ void escenaDielectrico(int &width, int &height, Camera &c, std::vector<std::shar
     // Camera l u f
     width = 1920;
     height = 1080;
+    Image texture = readPPM("Texture.ppm");
+    Image texture2 = readPPM("unai_arronategui.ppm");
 
     c = Camera(30.0f, Point3(0, 0, 0), -15.0f, (float)width / (float)height);
 
-    scene.push_back(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.65f, 0.65f, 0.8)))));
+    scene.push_back(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<Texture>(Texture(TextureMappingUV(texture)))));
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, 1), 5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
     scene.push_back(std::make_shared<Plane>(Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.7f, 0.45f, 0.65f)))));
     scene.push_back(std::make_shared<Plane>(Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.44f, 0.86f, 0.86f)))));
@@ -255,6 +260,7 @@ void escenaDielectrico(int &width, int &height, Camera &c, std::vector<std::shar
     // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 255), Vector3(0, -1, 0), 3, std::make_shared<LightEmission>(LightEmission(RGB(10000, 10000, 10000)))));
     // scene.push_back(std::make_shared<Quadrilateral>(RGB(255, 0, 255), Point3(-1, 2.995, -1), Point3(1, 2.995, 1), std::make_shared<LightEmission>(LightEmission(RGB(1000, 1000, 1000)))));
     scene.push_back(std::make_shared<Quadrilateral>(Point3(-2, 2.995, -5), Point3(2, 2.995, 5), std::make_shared<LightPower>(LightPower(RGB(1.0f, 1.0f, 1.0f)))));
+    scene.push_back(std::make_shared<Quadrilateral>(Point3(2.8, 2.5, 1), Point3(2.8, -1, -7), std::make_shared<Texture>(Texture(TextureMappingUV(texture2)))));
 
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, 0), 1.5, std::make_shared<Phong>(Phong(RGB(0.5, 0.5, 0.5), RGB(0.4, 0.4, 0.4)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, 0), 1.5, std::make_shared<Phong>(Phong(RGB(0.5, 0.5, 0.5), RGB(0.2, 0.2, 0.2)))));
@@ -267,7 +273,7 @@ void escenaDielectrico(int &width, int &height, Camera &c, std::vector<std::shar
     // Dielectric(1.31f) hielo
     // Dielectric(2.42f) diamante
     // Dielectric(1.47) aceite
-    scene.push_back(std::make_shared<Sphere>(Point3(0, -1.5, 0), 1.5, std::make_shared<Dielectric>(Dielectric(1.52))));
+    scene.push_back(std::make_shared<Sphere>(Point3(0, -1.5, 0), 1.5, std::make_shared<Texture>(Texture(TextureMappingUV(texture)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, -1.5, 0), 1.5, std::make_shared<Dielectric>(Dielectric(RGB(0.0, 0.0, 0.0), RGB(0.9, 0.9, 0.9)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, 0, 0), 1.5, std::make_shared<Dielectric>(Dielectric(RGB(0.0, 0.0, 0.0), RGB(0.5, 0.5, 0.5)))));
     // scene.push_back(std::make_shared<Sphere>(RGB(255, 255, 0), Point3(0, 0.5, 0), 1, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.9, 0.9, 0.9)))));

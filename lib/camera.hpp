@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include "BRDF.hpp"
+#include "Semaphore_V2.hpp"
 #include "color.hpp"
 #include "geometry.hpp"
 #include "shape.hpp"
@@ -35,6 +37,7 @@ struct Camera {
     };
 
     Camera(float fov, const Point3 &target, float distance, float aspect_ratio) {
+
         // grados a radianes
         fov = (fov * M_PI) / 180.0f;
 
@@ -55,9 +58,7 @@ struct Camera {
                                            0.0f, 0.0f, 0.0f, 1.0f));
     };
 
-    RGB generateRay(Vector3 d, const std::vector<std::shared_ptr<Shape>> &shapes) const;
-
-    RGB generateRay2(float u, float v, const std::vector<std::shared_ptr<Shape>> &shapes) const;
+    RGB trace_path(float x, float y, const std::vector<std::shared_ptr<Shape>> &scene) const;
 };
 
 float intersection(const std::vector<std::shared_ptr<Shape>> &scene, std::shared_ptr<Shape> &shape, const Point3 &ray_orig, const Vector3 &direction);
