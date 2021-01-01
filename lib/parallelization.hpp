@@ -23,7 +23,7 @@
 #define CAMERA_PLANE_SIZE 1.0f
 
 // Define el comportamiento del producer, que divide
-// la imagen en rectandglos y los coloca en una cola
+// la imagen en rectángulos y los coloca en una cola
 // FIFO
 void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector3 &u, const Vector3 &r, int width, int height);
 

@@ -174,7 +174,7 @@ bool writeHDR(const Image &img, const std::string file) {
     return true;
 }
 
-std::vector<Triangle> readPLY(const std::string file) {
+std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Material> brdf) {
     if (!checkFileExtension(file, "ply")) {
         ErrorExit("Input file must have .ply extension");
     }
@@ -289,7 +289,7 @@ std::vector<Triangle> readPLY(const std::string file) {
         // These are the indexes of the vertices in the previous vector
         float a, b, c;
         is >> a >> b >> c;
-        faces.push_back(Triangle(vertices[a], vertices[b], vertices[c], std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0, 0, 0.8)))));
+        faces.push_back(Triangle(vertices[a], vertices[b], vertices[c], brdf));
         // std::cout << a << " " << b << " " << c << " " << std::endl;
     }
 

@@ -132,6 +132,9 @@ struct ConcurrentBoundedQueue {
         // NUEVO
         bq->dequeue();
         complet_tasks++;
+
+        progreso();
+
         AVISAR();
     };
 
@@ -156,6 +159,7 @@ struct ConcurrentBoundedQueue {
     void size(int &s) {
         s = bq->size();
     };
+
     //-----------------------------------------------------
     //Pre:
     //Post:
@@ -164,6 +168,17 @@ struct ConcurrentBoundedQueue {
         mutex.wait();
         bq->print();
         mutex.signal();
+    };
+
+    //-----------------------------------------------------
+    //Pre:
+    //Post:
+    //Com:  muestra el progreso de tareas completadas
+    void progreso() {
+        std::cout << "Completado " << complet_tasks << std::endl;
+        // std::cout
+        //     << "\r\033[F[" << std::fixed << std::setprecision(2) << 100 * (float)complet_tasks / N << "%]\n"
+        //     << std::flush;
     };
 
     //-----------------------------------------------------

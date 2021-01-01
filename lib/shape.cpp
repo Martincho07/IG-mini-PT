@@ -9,45 +9,48 @@
  **********************************************************************************/
 
 #include "shape.hpp"
-#include "geometry.hpp"
 
 #include <cfloat>
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
-float Sphere::intersection(Point3 o, Vector3 d) const {
-    float a = pow(modulus(d), 2.0f);
-    float b = dot(d, o - center) * 2.0f;
-    float c = pow(modulus(o - center), 2.0f) - pow(r, 2.0f);
-    float delta = pow(b, 2) - 4.0f * a * c;
-
-    if (delta < 0) {
-        return -1.0f;
-    } else if (delta == 0) {
-        return (-b + sqrt(delta)) / (2 * b);
-    } else {
-
-        float min = std::min((-b + sqrt(delta)) / (2 * a),
-                             (-b - sqrt(delta)) / (2 * a));
-
-        //if (min == 0.0f)
-        //std::cout << "FFFFFFF" << std::endl;
-        return min;
-    }
-}
 
 float Plane::intersection(Point3 o, Vector3 d) const {
     float dot_d_n = dot(d, n);
-    if (dot_d_n == 0) {
-        return -1.0f;
+
+    // Check if the ray is perpendicular to the plane normal
+    if (fabs(dot_d_n) < EPSILON) {
+        return -1.0;
     } else {
         return -((dot((Vector3)o, n) + c) / dot_d_n);
     }
 };
 
+float Sphere::intersection(Point3 o, Vector3 d) const {
+    float mod = modulus(d);
+    float a = mod * mod;
+
+    float b = dot(d, o - center) * 2;
+
+    mod = modulus(o - center);
+    float c = mod * mod - r * r;
+
+    float delta = b * b - 4 * a * c;
+
+    if (delta < 0) {
+        return -1.0;
+    } else if (delta == 0) {
+        return (-b + sqrt(delta)) / (2 * b);
+    } else {
+        float min = std::min((-b + sqrt(delta)) / (2 * a),
+                             (-b - sqrt(delta)) / (2 * a));
+        return min;
+    }
+}
+
 float Triangle::intersection(Point3 o, Vector3 d) const {
 
-    // Codigo copiado de: https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+    // Codigo adaptado de: https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
 
     Vector3 edge1, edge2, h, s, q;
     float a, f, u, v, t;
@@ -58,29 +61,27 @@ float Triangle::intersection(Point3 o, Vector3 d) const {
     a = dot(edge1, h);
 
     if ((a > -EPSILON) && (a < EPSILON))
-        return -1.0f;
+        return -1.0;
 
     f = 1.0 / a;
     s = o - v1;
     u = f * dot(s, h);
 
     if (u < 0.0 || u > 1.0)
-        return -1.0f;
+        return -1.0;
 
     q = cross(s, edge1);
     v = f * dot(d, q);
 
     if (v < 0.0 || u + v > 1.0)
-        return -1.0f;
+        return -1.0;
 
     t = f * dot(edge2, q);
 
     if (t > EPSILON)
-
         return t;
-
     else
-        return -1.0f;
+        return -1.0;
 };
 
 float Quadrilateral::intersection(Point3 o, Vector3 d) const {
@@ -91,42 +92,22 @@ float Quadrilateral::intersection(Point3 o, Vector3 d) const {
     t_tri_2 = t2.intersection(o, d);
 
     if (t_tri_1 > 0) {
-        //std::cout << "inersector" << std::endl;
         return t_tri_1;
     }
 
     if (t_tri_2 > 0) {
-        //std::cout << "inersector" << std::endl;
         return t_tri_2;
     }
-    return -1.0f;
+    return -1;
 }
 
 float TriangleMesh::intersection(Point3 o, Vector3 d) const {
-    float t_min, aux;
-    t_min = FLT_MAX;
-    int i = 0;
-    for (const Triangle &t : faces) {
-        aux = t.intersection(o, d);
-        if (aux >= 0 && aux < t_min) {
-            t_min = aux;
-
-            // Se modifica el valor de la clase aunque el método sea constante
-            int *ptr;
-            ptr = (int *)(&last_intersection);
-            *ptr = i;
-        }
-        i++;
-    }
-    if (t_min == FLT_MAX) {
-        t_min = -1;
-    }
-    return t_min;
+    throw("No intersection");
 }
 
 Vector3 Sphere::normal(Point3 p) const {
 
-    return p - center;
+    return normalize(p - center);
 };
 
 Vector3 Plane::normal(Point3 p) const {
@@ -135,8 +116,7 @@ Vector3 Plane::normal(Point3 p) const {
 };
 
 Vector3 Triangle::normal(Point3 p) const {
-
-    return cross(v2 - v1, v3 - v1);
+    return n;
 };
 
 Vector3 Quadrilateral::normal(Point3 p) const {
@@ -145,8 +125,7 @@ Vector3 Quadrilateral::normal(Point3 p) const {
 };
 
 Vector3 TriangleMesh::normal(Point3 p) const {
-
-    return faces[last_intersection].normal(p);
+    throw("No normals here");
 };
 
 Point3 TriangleMesh::centroid() const {
@@ -169,9 +148,17 @@ Point3 TriangleMesh::centroid() const {
     return centroid / area_sum;
 };
 
-void TriangleMesh::recalculateNormals() {
+void TriangleMesh::reposition(const Point3 &center, float scale) {
+
+    // Buscar el centro de la malla
+    Point3 c = centroid();
+
+    // Recolocar el objeto y ajustar la escala
+    Vector3 offset = center - c * scale;
     for (Triangle &f : faces) {
-        // Si el triángulo apunta dentro de la figura, A C B
+        f.v1 = (f.v1 * scale) + offset;
+        f.v2 = (f.v2 * scale) + offset;
+        f.v3 = (f.v3 * scale) + offset;
     }
 }
 

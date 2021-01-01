@@ -25,7 +25,7 @@ enum OBJECT_TYPE { DIFFUSE,
                    DIELECTRIC,
                    EMISSOR,
                    PLASTIC };
-struct MaterialProperty {
+struct Material {
 
     OBJECT_TYPE type;
     // Coeficiente difuso
@@ -44,9 +44,9 @@ struct MaterialProperty {
     // Máximo valor de cada tupla
     float max_kd, max_ks, max_kt, n;
 
-    MaterialProperty(OBJECT_TYPE _type) : type(_type) {}
-    MaterialProperty(){};
-    virtual ~MaterialProperty() {}
+    Material(OBJECT_TYPE _type) : type(_type) {}
+    Material(){};
+    virtual ~Material() {}
 
     RGB get_light_power() {
 
@@ -84,25 +84,25 @@ struct MaterialProperty {
     };
 };
 
-struct LightPower : MaterialProperty {
+struct LightPower : Material {
 
-    LightPower(RGB _light_power) : MaterialProperty(EMISSOR) {
+    LightPower(RGB _light_power) : Material(EMISSOR) {
 
         light_power = _light_power;
     }
 };
 
-struct PuntualLight : MaterialProperty {
+struct PuntualLight : Material {
 
     Point3 coordenates;
 
-    PuntualLight(Point3 _coordenates, RGB _light_power) : coordenates(_coordenates), MaterialProperty(EMISSOR) {
+    PuntualLight(Point3 _coordenates, RGB _light_power) : coordenates(_coordenates), Material(EMISSOR) {
         light_power = _light_power;
     }
 };
 
-struct LambertianDiffuse : public MaterialProperty {
-    LambertianDiffuse(RGB _kd) : MaterialProperty(DIFFUSE) {
+struct LambertianDiffuse : public Material {
+    LambertianDiffuse(RGB _kd) : Material(DIFFUSE) {
         kd = _kd;
         max_kd = max(kd);
         max_ks = 0.0f;
@@ -111,9 +111,9 @@ struct LambertianDiffuse : public MaterialProperty {
     ~LambertianDiffuse() {}
 };
 
-struct Texture : public MaterialProperty {
+struct Texture : public Material {
 
-    Texture(TextureMappingUV _texture) : MaterialProperty(TEXTURE) {
+    Texture(TextureMappingUV _texture) : Material(TEXTURE) {
         kd = RGB(0.0f, 0.0f, 0.0f);
         max_kd = 0.0f;
         max_ks = 0.0f;
@@ -124,8 +124,8 @@ struct Texture : public MaterialProperty {
     ~Texture() {}
 };
 
-struct PerfectSpecular : public MaterialProperty {
-    PerfectSpecular(float _ks) : MaterialProperty(PERFECT_SPECULAR) {
+struct PerfectSpecular : public Material {
+    PerfectSpecular(float _ks) : Material(PERFECT_SPECULAR) {
         ks = RGB(_ks, _ks, _ks);
         max_kd = 0.0f;
         max_ks = _ks;
@@ -134,9 +134,9 @@ struct PerfectSpecular : public MaterialProperty {
     ~PerfectSpecular() {}
 };
 
-struct Plastic : public MaterialProperty {
+struct Plastic : public Material {
     // The specular RGB components should be equal (gray-white reflection)
-    Plastic(RGB _kd, float _ks) : MaterialProperty(PLASTIC) {
+    Plastic(RGB _kd, float _ks) : Material(PLASTIC) {
         kd = _kd;
         ks = RGB(_ks, _ks, _ks);
         max_kd = max(kd);
@@ -146,9 +146,9 @@ struct Plastic : public MaterialProperty {
     ~Plastic() {}
 };
 
-struct Phong : public MaterialProperty {
+struct Phong : public Material {
     // The specular RGB components should be equal (gray-white reflection)
-    Phong(RGB _kd, float _ks, float _alpha) : MaterialProperty(PHONG) {
+    Phong(RGB _kd, float _ks, float _alpha) : Material(PHONG) {
 
         alpha = _alpha;
         kd = _kd;
@@ -160,9 +160,9 @@ struct Phong : public MaterialProperty {
     ~Phong() {}
 };
 
-struct Dielectric : public MaterialProperty {
+struct Dielectric : public Material {
 
-    Dielectric(float _n) : MaterialProperty(DIELECTRIC) {
+    Dielectric(float _n) : Material(DIELECTRIC) {
         n = _n;
         max_kd = 0.0f;
     }
@@ -179,6 +179,6 @@ Vector3 reflection(const Vector3 &wi, const Vector3 &normal);
 
 Vector3 refraction(const Vector3 &wi, const Vector3 &normal, float n1, float n2, bool &suscesfull);
 
-float Fresnel_ks(Vector3 const &wi, const Vector3 &normal, float n1, float n2);
+float fresnel_ks(Vector3 const &wi, const Vector3 &normal, float n1, float n2);
 
-void set_dielectric_properties(MaterialProperty &material, const Vector3 direccion, const Vector3 normal);
+void set_dielectric_properties(Material &material, const Vector3 direccion, const Vector3 normal);

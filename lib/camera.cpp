@@ -46,11 +46,13 @@ RGB Camera::trace_path(float x, float y, const std::vector<std::shared_ptr<Shape
             interc_point = ray_orig + direction * distance;
             normal = shape->normal(interc_point);
 
+            normal = dot(direction, normal) ? normal : -normal;
+
             // Si es emisor se calcula la perdida de lus en el camino
             // y se retorna la intensidad de la luz
             if (shape->material->type == EMISSOR) {
+                // std::cout << "emito :) " << std::endl;
                 return alpha * shape->material->get_light_power();
-                std::cout << "emito :) " << std::endl;
                 // En caso contrario se usa la ruleta rusa para determinar si
                 // se sigue o no
             } else {
@@ -60,13 +62,13 @@ RGB Camera::trace_path(float x, float y, const std::vector<std::shared_ptr<Shape
                     coord_u = shape->getU(interc_point);
                     coord_v = shape->getV(interc_point);
                     texture_color = shape->material->getKd(coord_u, coord_v);
-                    RussianRoulette(texture_color, normal, interc_point, direction, alpha, success);
+                    russianRoulette(texture_color, normal, interc_point, direction, alpha, success);
 
                 } else {
 
                     if (shape->material->type == DIELECTRIC)
                         set_dielectric_properties(*shape->material, direction, normal);
-                    RussianRoulette(*shape->material, normal, interc_point, direction, alpha, success);
+                    russianRoulette(*shape->material, normal, interc_point, direction, alpha, success);
                 }
 
                 ray_orig = interc_point;

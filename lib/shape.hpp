@@ -12,6 +12,7 @@
 
 #include "BRDF.hpp"
 #include "color.hpp"
+#include "file.hpp"
 #include "geometry.hpp"
 
 #include <memory>
@@ -21,10 +22,10 @@
 
 struct Shape {
 
-    std::shared_ptr<MaterialProperty> material;
+    std::shared_ptr<Material> material;
 
     Shape(){};
-    Shape(std::shared_ptr<MaterialProperty> _material) : material(_material){};
+    Shape(std::shared_ptr<Material> _material) : material(_material){};
     virtual ~Shape(){};
 
     virtual float intersection(Point3 o, Vector3 d) const = 0;
@@ -39,7 +40,7 @@ struct Sphere : public Shape {
     Point3 center;
 
     Sphere(){};
-    Sphere(Point3 _center, float _r, std::shared_ptr<MaterialProperty> _material) : center(_center), r(_r), Shape(_material){};
+    Sphere(Point3 _center, float _r, std::shared_ptr<Material> _material) : center(_center), r(_r), Shape(_material){};
     ~Sphere(){};
 
     float intersection(Point3 o, Vector3 d) const override;
@@ -53,7 +54,7 @@ struct Plane : public Shape {
     float c;
 
     Plane(){};
-    Plane(Vector3 _n, float _c, std::shared_ptr<MaterialProperty> _material) : n(_n), c(_c), Shape(_material){};
+    Plane(Vector3 _n, float _c, std::shared_ptr<Material> _material) : n(_n), c(_c), Shape(_material){};
     ~Plane(){};
 
     float intersection(Point3 o, Vector3 d) const override;
@@ -64,9 +65,11 @@ struct Plane : public Shape {
 
 struct Triangle : public Shape {
     Point3 v1, v2, v3;
+    Vector3 n;
 
     Triangle(){};
-    Triangle(Point3 _v1, Point3 _v2, Point3 _v3, std::shared_ptr<MaterialProperty> _material) : v1(_v1), v2(_v2), v3(_v3), Shape(_material){};
+    Triangle(Point3 _v1, Point3 _v2, Point3 _v3, std::shared_ptr<Material> _material)
+        : v1(_v1), v2(_v2), v3(_v3), n(normalize(cross(_v2 - _v1, _v3 - _v1))), Shape(_material){};
     ~Triangle(){};
 
     float intersection(Point3 o, Vector3 d) const override;
@@ -83,11 +86,16 @@ struct Quadrilateral : public Shape {
     // El cuadrilatero recibe como parametros u_c (upper corner) que es la esquina superior derecha
     // y l_c(lower corner) que es la esquina inferior izquierda
     Quadrilateral(){};
-    Quadrilateral(Point3 u_c, Point3 l_c, std::shared_ptr<MaterialProperty> _material) : Shape(_material) {
+    Quadrilateral(Point3 u_c, Point3 l_c, std::shared_ptr<Material> _material) : Shape(_material) {
         // t1 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, l_c.z), Point3(u_c.x, u_c.y, u_c.z), _brdf);
         // t2 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(u_c.x, l_c.y, u_c.z), Point3(u_c.x, u_c.y, u_c.z), _brdf);
+
         t1 = Triangle(Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, l_c.y, u_c.z), Point3(u_c.x, u_c.y, u_c.z), _material);
         t2 = Triangle(Point3(u_c.x, u_c.y, u_c.z), Point3(u_c.x, u_c.y, l_c.z), Point3(l_c.x, l_c.y, l_c.z), _material);
+
+        // // Corregido
+        // t1 = Triangle(Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, u_c.z), Point3(u_c.x, l_c.y, l_c.z), _material);
+        // t2 = Triangle(Point3(l_c.x, u_c.y, u_c.z), Point3(u_c.x, u_c.y, u_c.z), Point3(u_c.x, l_c.y, l_c.z), _material);
 
         l_left = l_c;
         l_right = Point3(l_c.x, l_c.y, u_c.z);
@@ -102,38 +110,32 @@ struct Quadrilateral : public Shape {
     float getV(Point3 p) const override;
 };
 
+std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Material> brdf);
+
 struct TriangleMesh : public Shape {
     // Faces
     std::vector<Triangle> faces;
 
-    int last_intersection;
-
     TriangleMesh(){};
-    TriangleMesh(std::vector<Triangle> _faces, std::shared_ptr<MaterialProperty> _brdf, Point3 center, float scale) : Shape(_brdf), faces(_faces) {
-        int last_intersection = 0;
 
-        // Buscar el centro de la malla
-        Point3 c = centroid();
-
-        std::cout << "centroid: " << c << std::endl;
-
-        // Recolocar el objeto y ajustar la escala
-        Vector3 offset = center - c * scale;
-        for (Triangle &f : faces) {
-            f.v1 = (f.v1 * scale) + offset;
-            f.v2 = (f.v2 * scale) + offset;
-            f.v3 = (f.v3 * scale) + offset;
-
-            // Copiar brdf en los triángulos
-            f.material = _brdf;
+    TriangleMesh(const std::vector<Triangle> &_faces, std::shared_ptr<Material> _brdf, Point3 center, float scale) : Shape(_brdf), faces(_faces) {
+        for (Triangle &face : faces) {
+            face.material = _brdf;
         }
+        reposition(center, scale);
     };
+
+    TriangleMesh(const std::string file, std::shared_ptr<Material> _brdf, const Point3 center, float scale) : Shape(_brdf) {
+        faces = readPLY(file, _brdf);
+        reposition(center, scale);
+    };
+
     ~TriangleMesh(){};
 
     float intersection(Point3 o, Vector3 d) const override;
-    void recalculateNormals();
     Vector3 normal(Point3 p) const override;
     float getU(Point3 p) const override;
     float getV(Point3 p) const override;
     Point3 centroid() const;
+    void reposition(const Point3 &center, float scale);
 };
