@@ -10,10 +10,12 @@
 
 #pragma once
 
+#include "AABB.hpp"
 #include "BRDF.hpp"
 #include "color.hpp"
 #include "file.hpp"
 #include "geometry.hpp"
+#include "surface_interaction.hpp"
 
 #include <memory>
 #include <vector>
@@ -28,11 +30,21 @@ struct Shape {
     Shape(std::shared_ptr<Material> _material) : material(_material){};
     virtual ~Shape(){};
 
-    virtual float intersection(Point3 o, Vector3 d) const = 0;
-    virtual Vector3 normal(Point3 p) const = 0;
-    virtual float getU(Point3 p) const = 0;
-    virtual float getV(Point3 p) const = 0;
+    // Calculate intersection of ray with shape
+    virtual float intersect(const Ray &ray) const = 0;
+
+    // Returns normalized normal
+    virtual Vector3 normal(const Point3 &p) const = 0;
+
+    // Returns UV parametrization
+    virtual float getU(const Point3 &p) const = 0;
+    virtual float getV(const Point3 &p) const = 0;
+
+    // Returns the AABB that surrounds the shape
+    virtual AABB bounding_box() const = 0;
 };
+
+bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, const Ray &ray, SurfaceInteraction &si);
 
 struct Sphere : public Shape {
 
@@ -43,10 +55,11 @@ struct Sphere : public Shape {
     Sphere(Point3 _center, float _r, std::shared_ptr<Material> _material) : center(_center), r(_r), Shape(_material){};
     ~Sphere(){};
 
-    float intersection(Point3 o, Vector3 d) const override;
-    Vector3 normal(Point3 p) const override;
-    float getU(Point3 p) const override;
-    float getV(Point3 p) const override;
+    float intersect(const Ray &ray) const override;
+    Vector3 normal(const Point3 &p) const override;
+    float getU(const Point3 &p) const override;
+    float getV(const Point3 &p) const override;
+    AABB bounding_box() const override;
 };
 
 struct Plane : public Shape {
@@ -57,10 +70,11 @@ struct Plane : public Shape {
     Plane(Vector3 _n, float _c, std::shared_ptr<Material> _material) : n(_n), c(_c), Shape(_material){};
     ~Plane(){};
 
-    float intersection(Point3 o, Vector3 d) const override;
-    Vector3 normal(Point3 p) const override;
-    float getU(Point3 p) const override;
-    float getV(Point3 p) const override;
+    float intersect(const Ray &ray) const override;
+    Vector3 normal(const Point3 &p) const override;
+    float getU(const Point3 &p) const override;
+    float getV(const Point3 &p) const override;
+    AABB bounding_box() const override;
 };
 
 struct Triangle : public Shape {
@@ -72,10 +86,11 @@ struct Triangle : public Shape {
         : v1(_v1), v2(_v2), v3(_v3), n(normalize(cross(_v2 - _v1, _v3 - _v1))), Shape(_material){};
     ~Triangle(){};
 
-    float intersection(Point3 o, Vector3 d) const override;
-    Vector3 normal(Point3 p) const override;
-    float getU(Point3 p) const override;
-    float getV(Point3 p) const override;
+    float intersect(const Ray &ray) const override;
+    Vector3 normal(const Point3 &p) const override;
+    float getU(const Point3 &p) const override;
+    float getV(const Point3 &p) const override;
+    AABB bounding_box() const override;
 };
 
 struct Quadrilateral : public Shape {
@@ -104,10 +119,11 @@ struct Quadrilateral : public Shape {
     };
     ~Quadrilateral(){};
 
-    float intersection(Point3 o, Vector3 d) const override;
-    Vector3 normal(Point3 p) const override;
-    float getU(Point3 p) const override;
-    float getV(Point3 p) const override;
+    float intersect(const Ray &ray) const override;
+    Vector3 normal(const Point3 &p) const override;
+    float getU(const Point3 &p) const override;
+    float getV(const Point3 &p) const override;
+    AABB bounding_box() const override;
 };
 
 std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Material> brdf);
@@ -132,10 +148,11 @@ struct TriangleMesh : public Shape {
 
     ~TriangleMesh(){};
 
-    float intersection(Point3 o, Vector3 d) const override;
-    Vector3 normal(Point3 p) const override;
-    float getU(Point3 p) const override;
-    float getV(Point3 p) const override;
+    float intersect(const Ray &ray) const override;
+    Vector3 normal(const Point3 &p) const override;
+    float getU(const Point3 &p) const override;
+    float getV(const Point3 &p) const override;
+    AABB bounding_box() const override;
     Point3 centroid() const;
     void reposition(const Point3 &center, float scale);
 };

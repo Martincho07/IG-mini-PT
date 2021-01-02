@@ -12,6 +12,7 @@
 #include "file.hpp"
 #include "parallelization.hpp"
 #include "sample_scenes.hpp"
+#include "scene.hpp"
 #include "shape.hpp"
 
 #include <cassert>
@@ -31,7 +32,7 @@ void help() {
                  "Options:\n"
                  "  -p, --pixel_rays     Number of points per pixel\n"
                  "  -t, --threads        Number of hardware concurrent threads\n"
-                 "  -s, --scene          Scene to rendered\n"
+                 "  -s, --scene          Scene to render\n"
                  "  -h, --help           Show this help message and quit"
               << std::endl;
 }
@@ -84,7 +85,7 @@ int main(int argc, char **argv) {
     }
 
     // Select scene
-    std::vector<std::shared_ptr<Shape>> scene;
+    Scene scene;
     Camera camera;
 
     switch (selected_scene) {
@@ -93,6 +94,9 @@ int main(int argc, char **argv) {
         break;
     case 2:
         escena4(width, height, camera, scene);
+        break;
+    case 3:
+        escenaBVH(width, height, camera, scene);
         break;
     default:
         escena4(width, height, camera, scene);
@@ -126,11 +130,12 @@ int main(int argc, char **argv) {
     std::chrono::duration<double> diff = end - init;
 
     std::cout << "Tiempo de renderizado: " << diff.count() << std::endl;
-    std::cout << "Numero de geometrias: " << scene.size() << std::endl;
+    std::cout << "Numero de geometrias: " << scene.get_num_shapes() << std::endl;
     std::cout << "Numero de pixeles: " << height * width << std::endl;
     std::cout << "Maximo: " << max(image) << std::endl;
 
     writeHDR(image, "texture.hdr");
+
     clampAndGammaCurve(image, 300, 1);
     writePPM(image, "texture.ppm", max(image), 255);
 };

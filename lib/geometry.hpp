@@ -33,6 +33,15 @@ struct Vector3 {
 
     // Operators
 
+    float operator[](int i) const {
+        assert(i >= 0 && i <= 2);
+        if (i == 0)
+            return x;
+        if (i == 1)
+            return y;
+        return z;
+    }
+
     // Sum of two vectors
     Vector3 operator+(const Vector3 &v) const {
         return Vector3(x + v.x, y + v.y, z + v.z);
@@ -127,6 +136,15 @@ struct Point3 {
 
     // Operators
 
+    float operator[](int i) const {
+        assert(i >= 0 && i <= 2);
+        if (i == 0)
+            return x;
+        if (i == 1)
+            return y;
+        return z;
+    }
+
     // Add a vector to the point
     Point3 operator+(const Vector3 &v) const {
         return Point3(x + v.x, y + v.y, z + v.z);
@@ -204,3 +222,22 @@ Vector3 abs(const Vector3 &v);
 
 // Return the distance between two points
 float distance(const Point3 &p1, const Point3 &p2);
+
+struct Ray {
+    // Origin of the ray
+    Point3 o;
+
+    // Normalized direction of the ray
+    Vector3 d;
+
+    // // Current traversed distance along the ray (can be negative)
+    // float t;
+
+    Ray(const Point3 &_o, const Vector3 &_d) : o(_o), d(_d) {}
+    // Ray(const Point3 &_o, const Vector3 &_d, float _t) : o(_o), d(_d), t(_t) {}
+
+    // Get point across ray
+    Point3 get_point(float t) const { return o + d * t; }
+
+    // Point3 get_current_point() { return o + d * t; }
+};

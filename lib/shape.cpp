@@ -9,30 +9,31 @@
  **********************************************************************************/
 
 #include "shape.hpp"
+#include "error.hpp"
 
 #include <cfloat>
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
 
-float Plane::intersection(Point3 o, Vector3 d) const {
-    float dot_d_n = dot(d, n);
+float Plane::intersect(const Ray &ray) const {
+    float dot_d_n = dot(ray.d, n);
 
     // Check if the ray is perpendicular to the plane normal
     if (fabs(dot_d_n) < EPSILON) {
         return -1.0;
     } else {
-        return -((dot((Vector3)o, n) + c) / dot_d_n);
+        return -((dot((Vector3)ray.o, n) + c) / dot_d_n);
     }
 };
 
-float Sphere::intersection(Point3 o, Vector3 d) const {
-    float mod = modulus(d);
+float Sphere::intersect(const Ray &ray) const {
+    float mod = modulus(ray.d);
     float a = mod * mod;
 
-    float b = dot(d, o - center) * 2;
+    float b = dot(ray.d, ray.o - center) * 2;
 
-    mod = modulus(o - center);
+    mod = modulus(ray.o - center);
     float c = mod * mod - r * r;
 
     float delta = b * b - 4 * a * c;
@@ -48,7 +49,7 @@ float Sphere::intersection(Point3 o, Vector3 d) const {
     }
 }
 
-float Triangle::intersection(Point3 o, Vector3 d) const {
+float Triangle::intersect(const Ray &ray) const {
 
     // Codigo adaptado de: https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
 
@@ -57,21 +58,21 @@ float Triangle::intersection(Point3 o, Vector3 d) const {
     edge1 = v2 - v1;
     edge2 = v3 - v1;
 
-    h = cross(d, edge2);
+    h = cross(ray.d, edge2);
     a = dot(edge1, h);
 
     if ((a > -EPSILON) && (a < EPSILON))
         return -1.0;
 
     f = 1.0 / a;
-    s = o - v1;
+    s = ray.o - v1;
     u = f * dot(s, h);
 
     if (u < 0.0 || u > 1.0)
         return -1.0;
 
     q = cross(s, edge1);
-    v = f * dot(d, q);
+    v = f * dot(ray.d, q);
 
     if (v < 0.0 || u + v > 1.0)
         return -1.0;
@@ -84,12 +85,12 @@ float Triangle::intersection(Point3 o, Vector3 d) const {
         return -1.0;
 };
 
-float Quadrilateral::intersection(Point3 o, Vector3 d) const {
+float Quadrilateral::intersect(const Ray &ray) const {
 
     float t_tri_1, t_tri_2;
 
-    t_tri_1 = t1.intersection(o, d);
-    t_tri_2 = t2.intersection(o, d);
+    t_tri_1 = t1.intersect(ray);
+    t_tri_2 = t2.intersect(ray);
 
     if (t_tri_1 > 0) {
         return t_tri_1;
@@ -101,31 +102,31 @@ float Quadrilateral::intersection(Point3 o, Vector3 d) const {
     return -1;
 }
 
-float TriangleMesh::intersection(Point3 o, Vector3 d) const {
-    throw("No intersection");
+float TriangleMesh::intersect(const Ray &ray) const {
+    ErrorExit("No intersection");
 }
 
-Vector3 Sphere::normal(Point3 p) const {
+Vector3 Sphere::normal(const Point3 &p) const {
 
     return normalize(p - center);
 };
 
-Vector3 Plane::normal(Point3 p) const {
+Vector3 Plane::normal(const Point3 &p) const {
 
     return n;
 };
 
-Vector3 Triangle::normal(Point3 p) const {
+Vector3 Triangle::normal(const Point3 &p) const {
     return n;
 };
 
-Vector3 Quadrilateral::normal(Point3 p) const {
+Vector3 Quadrilateral::normal(const Point3 &p) const {
 
     return t1.normal(p);
 };
 
-Vector3 TriangleMesh::normal(Point3 p) const {
-    throw("No normals here");
+Vector3 TriangleMesh::normal(const Point3 &p) const {
+    ErrorExit("No normals here");
 };
 
 Point3 TriangleMesh::centroid() const {
@@ -162,14 +163,14 @@ void TriangleMesh::reposition(const Point3 &center, float scale) {
     }
 }
 
-float Sphere::getU(Point3 p) const {
+float Sphere::getU(const Point3 &p) const {
 
     Vector3 n = normalize(p - center);
 
     return 1.0f - (0.5 - asin(n.y) / M_PI);
 };
 
-float Plane::getU(Point3 p) const {
+float Plane::getU(const Point3 &p) const {
 
     if (p.y < 0.0)
         return 1.0f - abs(p.y - (int)p.y);
@@ -177,43 +178,98 @@ float Plane::getU(Point3 p) const {
     return abs(p.y - (int)p.y);
 };
 
-float Triangle::getU(Point3 p) const {
+float Triangle::getU(const Point3 &p) const {
     return -1.0f;
 };
 
-float Quadrilateral::getU(Point3 p) const {
+float Quadrilateral::getU(const Point3 &p) const {
     Vector3 r = p - l_right;
     Vector3 q = u_right - l_right;
     float cos = dot(q, r) / (modulus(r) * modulus(q));
     return (modulus(r) * cos) / modulus(q);
 };
-float TriangleMesh::getU(Point3 p) const {
+float TriangleMesh::getU(const Point3 &p) const {
     return -1.0f;
 };
 
-float Sphere::getV(Point3 p) const {
-
+float Sphere::getV(const Point3 &p) const {
     Vector3 n = normalize(p - center);
     return 0.5 + atan2(n.z, n.x) / (2 * M_PI);
 };
 
-float Plane::getV(Point3 p) const {
+float Plane::getV(const Point3 &p) const {
     if (p.x > 0.0f)
         return 1.0f - abs(p.x - (int)p.x);
     return abs(p.x - (int)p.x);
 };
 
-float Triangle::getV(Point3 p) const {
+float Triangle::getV(const Point3 &p) const {
     return -1.0f;
 };
 
-float Quadrilateral::getV(Point3 p) const {
-
+float Quadrilateral::getV(const Point3 &p) const {
     Vector3 r = p - l_right;
     Vector3 q = l_left - l_right;
     float cos = dot(q, r) / (modulus(r) * modulus(q));
     return (modulus(r) * cos) / modulus(q);
 };
-float TriangleMesh::getV(Point3 p) const {
+float TriangleMesh::getV(const Point3 &p) const {
     return -1.0f;
 };
+
+AABB Plane::bounding_box() const {
+    /// TODO: No se si hay que poner todas las componentes infinitas
+    // return AABB(Point3(-FLT_MAX, 0, -FLT_MAX), Point3(FLT_MAX, 0, FLT_MAX));
+    return AABB(Point3(-FLT_MAX, -FLT_MAX, -FLT_MAX), Point3(FLT_MAX, FLT_MAX, FLT_MAX));
+    ErrorExit("No bounding box for infinite planes");
+}
+
+AABB Sphere::bounding_box() const {
+    return AABB(center - Vector3(r, r, r),
+                center + Vector3(r, r, r));
+}
+
+AABB Triangle::bounding_box() const {
+    return union_box(AABB(v1, v2), AABB(v3));
+}
+
+AABB Quadrilateral::bounding_box() const {
+    return union_box(t1.bounding_box(), t2.bounding_box());
+}
+
+AABB TriangleMesh::bounding_box() const {
+    AABB bb;
+    for (const Triangle &t : faces) {
+        bb = union_box(bb, t.bounding_box());
+    }
+    return bb;
+}
+
+bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, const Ray &ray, SurfaceInteraction &si) {
+    float t_min = FLT_MAX;
+    float t = 0;
+    std::shared_ptr<Shape> shape;
+
+    for (const std::shared_ptr<Shape> &s : shapes) {
+        t = s->intersect(ray);
+
+        if (t < t_min && t > EPSILON) {
+            t_min = t;
+            shape = s;
+        }
+    }
+
+    if (t_min == FLT_MAX) {
+        return false;
+    } else {
+        // Surface interaction point
+        Point3 si_point = ray.get_point(t_min);
+
+        // Calculate propely oriented normal
+        Vector3 si_normal = shape->normal(si_point);
+        si_normal = dot(ray.d, si_normal) ? si_normal : -si_normal;
+
+        si = SurfaceInteraction(shape, t_min, si_point, si_normal);
+        return true;
+    }
+}

@@ -17,6 +17,8 @@
 #include "image.hpp"
 #include "pixel.hpp"
 #include "random.hpp"
+#include "scene.hpp"
+
 #include <iostream>
 
 #define NUM_REGIONS 8
@@ -30,4 +32,4 @@ void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector
 // Define el comportamiento de los consumers,
 // estos cogen porciones de la imagen original
 // y calculan el color de los pixels.
-void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const std::vector<std::shared_ptr<Shape>> &scene, Image *image, const Camera &c, int num_rays);
+void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const Scene &scene, Image *image, const Camera &c, int num_rays);
