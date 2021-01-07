@@ -163,18 +163,16 @@ bool PhotonMapping::trace_ray(const Ray &r, const Vector3 &p,
 void PhotonMapping::preprocess()
 {
 
-    std::cout << "holaasdkfjalkdfjñalkdjfñaksdjfñ kasjdñfklasd" << std::endl;
-    std::cout << "holaasdkfjalkdfjñalkdjfñaksdjfñ kasjdñfklasd" << std::endl;
-    if (dynamic_cast<BVH *>(world->object_list[1]) == nullptr)
+    /*if (dynamic_cast<BVH *>(world->object_list[1]) == nullptr)
     {
         std::cout << "no es" << std::endl;
     }
     else
     {
         std::cout << "es" << std::endl;
-    }
-    world->light_source_list
-        exit(1);
+    }*/
+    //world->light_source_list;
+    //exit(1);
 
     // Stores true if there are more photons to be shot
 
@@ -327,7 +325,7 @@ Vector3 PhotonMapping::shade(Intersection &it0) const
 
     std::vector<const KDTree<Photon, 3>::Node *> global_nodes;
     std::vector<const KDTree<Photon, 3>::Node *> caustic_nodes;
-    Real radius;
+    Real radius, alpha, beta, dp, wp;
 
     // Ahora buscamos los m_nb_photons (k) más cercanos, para obtener el radio
     m_global_map.find(vector3_to_vector(it_position), m_nb_photons, global_nodes, radius);
@@ -335,6 +333,8 @@ Vector3 PhotonMapping::shade(Intersection &it0) const
     {
         // No se si también hay que tener en cuenta el coseno entre el fotón y la normal de la intersección
         // Aquí habrá que hacer un kernel más complicado
+        //dp = length(it_position - node->data().);
+        wp = alpha * ();
         L += it_albedo * node->data().flux / (M_PI * radius * radius);
     }
 
