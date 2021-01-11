@@ -26,7 +26,7 @@ enum EVENT {
     DEAD_EVENT
 };
 
-EVENT randomEvent(const MaterialProperty &material);
-void RussianRoulette(const MaterialProperty &material, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success);
+EVENT randomEvent(const Material &material);
+void russianRoulette(const Material &material, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success);
 EVENT randomEvent(const RGB &texture);
-void RussianRoulette(const RGB &texture, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success);
+void russianRoulette(const RGB &texture, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success);

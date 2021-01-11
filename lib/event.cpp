@@ -13,7 +13,7 @@
 #include <cmath>
 #include <iostream>
 
-EVENT randomEvent(const MaterialProperty &material) {
+EVENT randomEvent(const Material &material) {
     // Russian roulette
 
     // Elegir número entre 0 - 1
@@ -47,7 +47,7 @@ EVENT randomEvent(const RGB &texture) {
     }
 }
 
-void RussianRoulette(const MaterialProperty &material, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success) {
+void russianRoulette(const Material &material, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success) {
 
     success = true;
     int event;
@@ -120,7 +120,7 @@ void RussianRoulette(const MaterialProperty &material, const Vector3 &normal, co
     }
 };
 
-void RussianRoulette(const RGB &texture, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success) {
+void russianRoulette(const RGB &texture, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success) {
 
     success = true;
     int event;

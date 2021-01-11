@@ -101,7 +101,7 @@ Vector3 refraction(const Vector3 &wi, const Vector3 &normal, float n1, float n2,
     return (wi * n) + (normal * (n * cosI - cosT));
 };
 
-float Fresnel_ks(Vector3 const &wi, const Vector3 &normal, float n1, float n2) {
+float fresnel_ks(Vector3 const &wi, const Vector3 &normal, float n1, float n2) {
 
     float n = n1 / n2;
     float cosI = -dot(normal, wi);
@@ -116,24 +116,22 @@ float Fresnel_ks(Vector3 const &wi, const Vector3 &normal, float n1, float n2) {
     return (r0rth * r0rth + rPar * rPar) / 2.0f;
 };
 
-void set_dielectric_properties(MaterialProperty &material, const Vector3 direccion, const Vector3 normal) {
+void set_dielectric_properties(Material &material, const Vector3 direccion, const Vector3 normal) {
 
-    float fresnel_ks, fresnel_kt;
+    float ks, kt;
 
     if (dot(direccion, normal) < 0.0f)
-
-        fresnel_ks = Fresnel_ks(direccion, normal, AIR_N, material.n);
+        ks = fresnel_ks(direccion, normal, AIR_N, material.n);
     else
+        ks = fresnel_ks(direccion, -normal, material.n, AIR_N);
 
-        fresnel_ks = Fresnel_ks(direccion, -normal, material.n, AIR_N);
+    kt = 1.0f - ks;
+    ks = 0.95f * ks;
+    kt = 0.95f * kt;
 
-    fresnel_kt = 1.0f - fresnel_ks;
-    fresnel_ks = 0.95f * fresnel_ks;
-    fresnel_kt = 0.95f * fresnel_kt;
+    material.set_max_ks(ks);
+    material.set_max_kt(kt);
 
-    material.set_max_ks(fresnel_ks);
-    material.set_max_kt(fresnel_kt);
-
-    material.set_ks(RGB(fresnel_ks, fresnel_ks, fresnel_ks));
-    material.set_kt(RGB(fresnel_kt, fresnel_kt, fresnel_kt));
+    material.set_ks(RGB(ks, ks, ks));
+    material.set_kt(RGB(kt, kt, kt));
 }

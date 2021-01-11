@@ -31,8 +31,9 @@ RGB Image::getPixel(float u_coord, float v_coord) {
     int columna = (int)(v_coord * (width - 1.0f));
     //std::cout << "uuuuuuuu: " << u_coord << std::endl;
     //std::cout << "vvvvvvvv: " << v_coord << std::endl;
-    //std::cout << "elemento: " << (fila * width) + columna << std::endl;
+    //std::cout << "pos v: " << columna << std::endl;
     //std::cout << "sizeeeee: " << v.size() << std::endl;
+
     return v[(fila * width) + columna];
 };
 

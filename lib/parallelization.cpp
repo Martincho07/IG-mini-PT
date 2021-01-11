@@ -54,7 +54,7 @@ void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector
 // Define el comportamiento de los consumers,
 // estos cogen porciones de la imagen original
 // y calculan el color de los pixels.
-void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const std::vector<std::shared_ptr<Shape>> &scene, Image *image, const Camera &c, int num_rays) {
+void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const Scene &scene, Image *image, const Camera &c, int num_rays) {
 
     thread_local std::vector<Pixel> p;
     thread_local RGB color(0, 0, 0);
@@ -76,6 +76,7 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const std::v
 
                 x = random_float(pi.x_min, pi.x_max);
                 y = random_float(pi.y_min, pi.y_max);
+
                 color = color + c.trace_path(x, y, scene);
             }
             color = color / (float)num_rays;

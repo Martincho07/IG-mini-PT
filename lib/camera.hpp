@@ -14,8 +14,10 @@
 #include "Semaphore_V2.hpp"
 #include "color.hpp"
 #include "geometry.hpp"
+#include "scene.hpp"
 #include "shape.hpp"
 #include "transform.hpp"
+
 #include <math.h>
 #include <memory>
 #include <vector>
@@ -43,7 +45,7 @@ struct Camera {
 
         r = Vector3(1, 0, 0);
         u = Vector3(0, 1, 0);
-        f = Vector3(0, 0, 1);
+        f = Vector3(0, 0, -1);
 
         o = target - f + Vector3(0, 0, distance);
 
@@ -58,7 +60,7 @@ struct Camera {
                                            0.0f, 0.0f, 0.0f, 1.0f));
     };
 
-    RGB trace_path(float x, float y, const std::vector<std::shared_ptr<Shape>> &scene) const;
+    RGB trace_path(float x, float y, const Scene &scene) const;
 };
 
 float intersection(const std::vector<std::shared_ptr<Shape>> &scene, std::shared_ptr<Shape> &shape, const Point3 &ray_orig, const Vector3 &direction);

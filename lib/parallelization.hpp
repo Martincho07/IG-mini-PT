@@ -17,17 +17,19 @@
 #include "image.hpp"
 #include "pixel.hpp"
 #include "random.hpp"
+#include "scene.hpp"
+
 #include <iostream>
 
 #define NUM_REGIONS 8
 #define CAMERA_PLANE_SIZE 1.0f
 
 // Define el comportamiento del producer, que divide
-// la imagen en rectandglos y los coloca en una cola
+// la imagen en rectángulos y los coloca en una cola
 // FIFO
 void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector3 &u, const Vector3 &r, int width, int height);
 
 // Define el comportamiento de los consumers,
 // estos cogen porciones de la imagen original
 // y calculan el color de los pixels.
-void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const std::vector<std::shared_ptr<Shape>> &scene, Image *image, const Camera &c, int num_rays);
+void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const Scene &scene, Image *image, const Camera &c, int num_rays);
