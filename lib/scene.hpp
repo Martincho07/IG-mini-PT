@@ -14,10 +14,8 @@
 
 #include "BVH.hpp"
 
-// #include "intersection.hpp"
-// #include "light_source.hpp"
-
 #include "shape.hpp"
+#include "light_source.hpp"
 
 #define AIR_N 1.000293f
 
@@ -27,11 +25,13 @@ class Scene {
     // Objects in the scene
     std::vector<std::shared_ptr<Shape>> shapes;
 
+    // Light sources in the scene
+    std::vector<std::shared_ptr<LightSource>> lights;
+    // Sum of the power of all the light sources
+    float total_power;
+
     // BVH for fast intersection with the objects in the scene
     BVH bvh;
-
-    // Light sources in the scene
-    // std::vector<std::shared_ptr<LightSource>> light_sources;
 
     // Background
     RGB background;
@@ -54,12 +54,15 @@ class Scene {
 
     int get_num_shapes() const;
 
-    // // Add a light source
-    // void add_light(const std::shared_ptr<LightSource> light);
+    // Add a light source
+    void add_light(const std::shared_ptr<LightSource> light);
 
-    // // Get light
-    // int get_num_lights() const;
-    // std::shared_ptr<LightSource> get_light(int idx) const;
+    // Get light
+    int get_num_lights() const;
+    std::shared_ptr<LightSource> get_light(int idx) const;
+
+    // Sample a random light
+    std::shared_ptr<LightSource> sample_light() const;
 
     // Return first object that intersects a ray
     bool first_intersection(const Ray &ray, SurfaceInteraction &si) const;

@@ -136,6 +136,7 @@ int main(int argc, char **argv) {
 
     writeHDR(image, "texture.hdr");
 
-    clampAndGammaCurve(image, 300, 1);
+    // clampAndGammaCurve(image, 10, 2.2);
+    // clamping(image);
     writePPM(image, "texture.ppm", max(image), 255);
 };

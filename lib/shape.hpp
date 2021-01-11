@@ -20,7 +20,9 @@
 #include <memory>
 #include <vector>
 
-#define EPSILON 0.0000001f
+struct SurfaceInteraction;
+
+#define EPSILON 0.00001f
 
 struct Shape {
 
@@ -67,7 +69,7 @@ struct Plane : public Shape {
     float c;
 
     Plane(){};
-    Plane(Vector3 _n, float _c, std::shared_ptr<Material> _material) : n(_n), c(_c), Shape(_material){};
+    Plane(Vector3 _n, float _c, std::shared_ptr<Material> _material) : n(normalize(_n)), c(_c), Shape(_material){};
     ~Plane(){};
 
     float intersect(const Ray &ray) const override;
