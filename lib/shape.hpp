@@ -21,7 +21,9 @@
 #include <memory>
 #include <vector>
 
-#define EPSILON 0.0000001f
+struct SurfaceInteraction;
+
+#define EPSILON 0.00001f
 
 struct Shape {
 

@@ -29,7 +29,10 @@ RGB Camera::trace_path(float x, float y, const Scene &scene) const {
     float distance, coord_u, coord_v;
     RGB texture_color;
 
-    RGB alpha(1, 1, 1);
+    // Albedo after all the interactions
+    RGB total_albedo(1, 1, 1);
+
+    RGB point_light_contribution(0, 0, 0);
 
     // Calculate ray direction
     Vector3 xr = r * x;
@@ -38,44 +41,86 @@ RGB Camera::trace_path(float x, float y, const Scene &scene) const {
 
     SurfaceInteraction si;
 
-    Ray ray(o, normalize(direction));
+    /// TODO:
+    // Ray ray(o, normalize(direction));
+    Ray ray(o, direction);
+
+    // std::cout << "Inicio albedo " << total_albedo << std::endl;
 
     // Mientras que no se llegue a una luz o la ruleta diga evento DEAD
     while (success) {
 
         if (scene.first_intersection(ray, si)) {
 
+            // std::cout << si.position << std::endl;
+
             // Si es emisor se calcula la perdida de lus en el camino
             // y se retorna la intensidad de la luz
             if (si.shape->material->type == EMISSOR) {
                 // std::cout << "emito :) " << std::endl;
-                return alpha * si.shape->material->get_light_power();
+                return total_albedo * si.shape->material->get_light_power() + point_light_contribution;
                 // En caso contrario se usa la ruleta rusa para determinar si
                 // se sigue o no
             } else {
 
                 /// TODO: La dirección del rayo se modifica directamente en russianRoulette
+                RGB albedo(1, 1, 1);
 
                 if (si.shape->material->type == TEXTURE) {
                     coord_u = si.shape->getU(si.position);
                     coord_v = si.shape->getV(si.position);
                     texture_color = si.shape->material->getKd(coord_u, coord_v);
-                    russianRoulette(texture_color, si.normal, si.position, ray.d, alpha, success);
+                    russianRoulette(texture_color, si.normal, si.position, ray.d, albedo, success);
+                    total_albedo = total_albedo * albedo;
 
                 } else {
-                    if (si.shape->material->type == DIELECTRIC)
+                    if (si.shape->material->type == DIELECTRIC) {
                         set_dielectric_properties(*si.shape->material, ray.d, si.normal);
+                    }
 
-                    russianRoulette(*si.shape->material, si.normal, si.position, ray.d, alpha, success);
+                    russianRoulette(*si.shape->material, si.normal, si.position, ray.d, albedo, success);
+                    total_albedo = total_albedo * albedo;
+
+                    if (si.shape->material->type == DIFFUSE) {
+                        // std::cout << "albedo antes " << albedo << std::endl;
+                        // std::cout << "num lights " << scene.get_num_lights() << std::endl;
+                        // Calculate point light contribution
+                        for (int i = 0; i < scene.get_num_lights(); i++) {
+                            std::shared_ptr<LightSource> light = scene.get_light(i);
+                            if (light->is_visible(si.position)) {
+                                // std::cout << "albedo después " << albedo << std::endl;
+                                // std::cout << "albedo total después " << total_albedo << std::endl;
+                                // exit(1);
+                                point_light_contribution = point_light_contribution + total_albedo * light->get_incoming_light(si.position) * dot(si.normal, -light->get_incoming_direction(si.position));
+                            }
+                            // std::cout << point_light_contribution << std::endl;
+                        }
+                    }
                 }
 
+                // std::cout << "albedo encontrado " << albedo << std::endl;
+                // std::cout << "nuevo albedo total " << total_albedo << std::endl;
+
+                // return point_light_contribution;
+
+                // Normalizar la nueva dirección del rayo por si acaso
+                ray.d = normalize(ray.d);
+                // Actualizar la posición del rayo
                 ray.o = si.position;
             }
         } else {
-            return scene.get_background();
+            success = false;
         }
     }
-    return scene.get_background();
+
+    // std::cout << "salgo de la ruleta " << std::endl;
+
+    if (max(point_light_contribution) > 0) {
+        // std::cout << "Hay luz" << std::endl;
+        return point_light_contribution;
+    } else {
+        return scene.get_background();
+    }
 };
 
 #else

@@ -18,6 +18,8 @@
 #include <iostream>
 
 float Plane::intersect(const Ray &ray) const {
+    // Ray direction must be normalized
+
     float dot_d_n = dot(ray.d, n);
 
     // Check if the ray is perpendicular to the plane normal

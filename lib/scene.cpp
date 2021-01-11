@@ -10,13 +10,14 @@
 
 #include <cfloat>
 
+#include "random.hpp"
 #include "scene.hpp"
 #include "surface_interaction.hpp"
 
 Scene::Scene(RGB _background, float _ambient_ri) {
     background = _background;
     ambient_ri = _ambient_ri;
-    // Crear BVH inicial
+    total_power = 0;
 }
 
 void Scene::set_background(RGB _background) {
@@ -52,18 +53,32 @@ int Scene::get_num_shapes() const {
     return shapes.size();
 }
 
-// void Scene::add_light(const std::shared_ptr<LightSource> light) {
-//     // Añadir light a la lista
-//     light_sources.push_back(light);
-// }
+void Scene::add_light(const std::shared_ptr<LightSource> light) {
+    lights.push_back(light);
+    total_power += max(light->power);
+}
 
-// int Scene::get_num_lights() const {
-//     return light_sources.size();
-// }
+int Scene::get_num_lights() const {
+    return lights.size();
+}
 
-// std::shared_ptr<LightSource> Scene::get_light(int idx) const {
-//     return light_sources[idx];
-// }
+std::shared_ptr<LightSource> Scene::get_light(int idx) const {
+    return lights[idx];
+}
+
+std::shared_ptr<LightSource> Scene::sample_light() const {
+    // Recorrer todas las luces hasta que se llege a sumar el número aleatorio
+    float rand = random_float(0, total_power);
+
+    float acum = 0;
+    for (std::shared_ptr<LightSource> light : lights) {
+        if (acum > rand) {
+            return light;
+        } else {
+            acum += max(light->power);
+        }
+    }
+}
 
 bool Scene::first_intersection(const Ray &ray, SurfaceInteraction &si) const {
     return bvh.intersect(ray, si);

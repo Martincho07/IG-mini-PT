@@ -233,7 +233,8 @@ struct Ray {
     // // Current traversed distance along the ray (can be negative)
     // float t;
 
-    Ray(const Point3 &_o, const Vector3 &_d) : o(_o), d(_d) {}
+    // Ray(const Point3 &_o, const Vector3 &_d) : o(_o), d(_d) {}
+    Ray(const Point3 &_o, const Vector3 &_d) : o(_o), d(normalize(_d)) {}
     // Ray(const Point3 &_o, const Vector3 &_d, float _t) : o(_o), d(_d), t(_t) {}
 
     // Get point across ray

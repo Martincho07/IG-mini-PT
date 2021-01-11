@@ -15,6 +15,7 @@ add_library(lib geometry.cpp
                 parallelization.cpp
                 scene.cpp
                 AABB.cpp
-                BVH.cpp)
+                BVH.cpp
+                light_source.cpp)
 
 target_include_directories(lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

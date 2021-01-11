@@ -47,7 +47,7 @@ EVENT randomEvent(const RGB &texture) {
     }
 }
 
-void russianRoulette(const Material &material, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success) {
+void russianRoulette(const Material &material, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &albedo, bool &success) {
 
     success = true;
     int event;
@@ -59,7 +59,7 @@ void russianRoulette(const Material &material, const Vector3 &normal, const Poin
     case DIFFUSE_EVENT:
 
         direction = diffuse_reflection(direction, normal, point);
-        contribution = contribution * (material.kd / material.max_kd);
+        albedo = (material.kd / material.max_kd);
 
         break;
 
@@ -86,16 +86,15 @@ void russianRoulette(const Material &material, const Vector3 &normal, const Poin
             }
 
             float cosTh = dot(reflected_ray, direction);
-            RGB ant = contribution;
 
             float sin_r = modulus(cross(reflected_ray, normal)) / (modulus(reflected_ray) * modulus(normal));
             float sin_i = modulus(cross(inc, normal)) / (modulus(inc) * modulus(normal));
             float cos_i = -(dot(inc, normal) / (modulus(inc) * modulus(normal)));
-            contribution = contribution * ((material.ks / material.max_ks) * ((cos_i * sin_i) / sin_r) * ((alpha + 2.0f) / (alpha + 1.0f)));
+            albedo = ((material.ks / material.max_ks) * ((cos_i * sin_i) / sin_r) * ((alpha + 2.0f) / (alpha + 1.0f)));
 
         } else {
 
-            contribution = contribution * (material.ks / material.max_ks);
+            albedo = (material.ks / material.max_ks);
         }
 
         break;
@@ -110,7 +109,7 @@ void russianRoulette(const Material &material, const Vector3 &normal, const Poin
 
         if (!success)
             return;
-        contribution = contribution * (material.kt / material.max_kt);
+        albedo = (material.kt / material.max_kt);
 
         break;
 
@@ -120,7 +119,7 @@ void russianRoulette(const Material &material, const Vector3 &normal, const Poin
     }
 };
 
-void russianRoulette(const RGB &texture, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &contribution, bool &success) {
+void russianRoulette(const RGB &texture, const Vector3 &normal, const Point3 &point, Vector3 &direction, RGB &albedo, bool &success) {
 
     success = true;
     int event;
@@ -130,7 +129,7 @@ void russianRoulette(const RGB &texture, const Vector3 &normal, const Point3 &po
     case DIFFUSE_EVENT:
 
         direction = diffuse_reflection(direction, normal, point);
-        contribution = contribution * (texture / max(texture));
+        albedo = (texture / max(texture));
         break;
 
     default:
