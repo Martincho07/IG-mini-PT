@@ -91,11 +91,17 @@ struct Plane : public Shape {
 
 struct Triangle : public Shape {
     Point3 v1, v2, v3;
-    Vector3 n;
+    Vector3 n1, n2, n3;
+    bool smooth;
 
     Triangle(){};
+
     Triangle(Point3 _v1, Point3 _v2, Point3 _v3, std::shared_ptr<Material> _material)
-        : v1(_v1), v2(_v2), v3(_v3), n(normalize(cross(_v2 - _v1, _v3 - _v1))), Shape(_material){};
+        : v1(_v1), v2(_v2), v3(_v3), n1(normalize(cross(_v2 - _v1, _v3 - _v1))), smooth(false), Shape(_material){};
+
+    Triangle(Point3 _v1, Point3 _v2, Point3 _v3, Vector3 _n1, Vector3 _n2, Vector3 _n3, std::shared_ptr<Material> _material)
+        : v1(_v1), v2(_v2), v3(_v3), n1(_n1), n2(_n2), n3(_n3), smooth(true), Shape(_material){};
+
     ~Triangle(){};
 
     float intersect(const Ray &ray) const override;

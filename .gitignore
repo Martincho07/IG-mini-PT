@@ -43,4 +43,5 @@ build
 # Photos
 hdr_examples
 *.ppm
+!textures/*.ppm
 *.zip

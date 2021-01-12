@@ -121,7 +121,37 @@ Vector3 Plane::normal(const Point3 &p) const {
 };
 
 Vector3 Triangle::normal(const Point3 &p) const {
-    return n;
+    if (!smooth) {
+        return n1;
+    } else {
+        // Point3 p = v3;
+
+        Vector3 bary;
+        Vector3 e2_1 = v1 - v2;
+        Vector3 e2_3 = v3 - v2;
+        Vector3 e2_p = p - v2;
+
+        float d00 = dot(e2_1, e2_1);
+        float d01 = dot(e2_1, e2_3);
+        float d11 = dot(e2_3, e2_3);
+        float denom = d00 * d11 - d01 * d01;
+
+        float d20 = dot(e2_p, e2_1);
+        float d21 = dot(e2_p, e2_3);
+
+        bary.x = (d11 * d20 - d01 * d21) / denom;
+        bary.y = (d00 * d21 - d01 * d20) / denom;
+        bary.z = 1.0f - bary.x - bary.y;
+
+        // Error(v1, v2, v3);
+        // Error(p);
+        // Error(bary);
+        // exit(1);
+
+        return normalize(n1 * bary.x + n3 * bary.y + n2 * bary.z);
+        // return n1 * bary.x + n3 * bary.y + n2 * bary.z;
+        // return normalize(n1 * bary.x + n2 * bary.y + n3 * bary.z);
+    }
 };
 
 Vector3 Quadrilateral::normal(const Point3 &p) const {
@@ -210,7 +240,7 @@ float Plane::getV(const Point3 &p) const {
 };
 
 float Triangle::getV(const Point3 &p) const {
-    return -1.0f;
+    return -1;
 };
 
 float Quadrilateral::getV(const Point3 &p) const {

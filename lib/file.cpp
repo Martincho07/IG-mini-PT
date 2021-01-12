@@ -208,6 +208,7 @@ std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Mate
     // Read until 'end_header'
     std::string line;
     int numVerts, numFaces;
+    bool smooth = false;
     is >> keyword;
     while (!is.eof() && keyword != "end_header") {
         if (keyword == "comment") {
@@ -221,6 +222,7 @@ std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Mate
                 is >> numVerts;
                 std::cout << numVerts << std::endl;
                 is.ignore(256, '\n');
+
                 // Vertex information
                 std::string px, py, pz;
                 std::getline(is, px);
@@ -234,6 +236,24 @@ std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Mate
                     pz != "property float z") {
                     ErrorExit("Unsupported vertex properties");
                 }
+
+                // Check if the model has vertex normals
+                int position = is.tellg();
+                std::getline(is, px);
+                std::getline(is, py);
+                std::getline(is, pz);
+                std::cout << px << std::endl;
+                std::cout << py << std::endl;
+                std::cout << pz << std::endl;
+                if (px != "property float nx" ||
+                    py != "property float ny" ||
+                    pz != "property float nz") {
+                    is.seekg(position);
+                } else {
+                    std::cout << "smooth";
+                    smooth = true;
+                }
+
                 // TODO: Check for aditional UV mapping data
             } else if (elementType == "face") {
                 is >> numFaces;
@@ -241,7 +261,7 @@ std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Mate
                 is.ignore(256, '\n');
                 std::getline(is, pf);
                 std::cout << numFaces << " " << pf << std::endl;
-                if (pf != "property list uchar uint vertex_indices") {
+                if (pf != "property list uchar uint vertex_indices" && pf != "property list uchar int vertex_indices") {
                     std::cout << numFaces << " " << pf << std::endl;
                     ErrorExit("Unsupported face properties");
                 }
@@ -267,12 +287,23 @@ std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Mate
 
     // Read vertices info
     std::vector<Point3> vertices;
+    std::vector<Vector3> vertexNormals;
 
-    for (int i = 0; i < numVerts; i++) {
-        float x, y, z;
-        is >> x >> y >> z;
-        vertices.push_back(Point3(x, y, z));
-        std::cout << vertices[i] << std::endl;
+    if (!smooth) {
+        for (int i = 0; i < numVerts; i++) {
+            float x, y, z;
+            is >> x >> y >> z;
+            vertices.push_back(Point3(x, y, z));
+            // std::cout << vertices[i] << std::endl;
+        }
+    } else {
+        for (int i = 0; i < numVerts; i++) {
+            float x, y, z, nx, ny, nz;
+            is >> x >> y >> z >> nx >> ny >> nz;
+            vertices.push_back(Point3(x, y, z));
+            vertexNormals.push_back(Vector3(nx, ny, nz));
+            // std::cout << vertices[i] << std::endl;
+        }
     }
 
     // Read faces info
@@ -289,7 +320,12 @@ std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Mate
         // These are the indexes of the vertices in the previous vector
         float a, b, c;
         is >> a >> b >> c;
-        faces.push_back(Triangle(vertices[a], vertices[b], vertices[c], brdf));
+        if (!smooth) {
+            faces.push_back(Triangle(vertices[a], vertices[b], vertices[c], brdf));
+        } else {
+            faces.push_back(Triangle(vertices[a], vertices[b], vertices[c],
+                                     vertexNormals[a], vertexNormals[b], vertexNormals[c], brdf));
+        }
         // std::cout << a << " " << b << " " << c << " " << std::endl;
     }
 

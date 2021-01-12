@@ -25,7 +25,7 @@ Vector3 specular_reflection(const Vector3 &wi, const Vector3 &normal) {
     return wi + normal * 2.0f * cosI;
 };
 
-Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point) {
+Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 &intersection_point) {
     // wi rayo en coordenadas del mundo
     // Generar un rayo aleatorio dentro de la hemiesfera
     // Se devuelve en coordenadas del mundo
@@ -54,7 +54,7 @@ Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point
     return changeBasis(x, y, z, intersection_point)(out_dir);
 };
 
-Vector3 phong_reflection(const Vector3 &wr, const Vector3 &normal, const Point3 intersection_point, float alpha) {
+Vector3 phong_reflection(const Vector3 &wr, const Vector3 &normal, const Point3 &intersection_point, float alpha) {
     // wi rayo en coordenadas del mundo
     // Generar un rayo aleatorio dentro de la hemiesfera
     // Se devuelve en coordenadas del mundo
@@ -116,7 +116,7 @@ float fresnel_ks(Vector3 const &wi, const Vector3 &normal, float n1, float n2) {
     return (r0rth * r0rth + rPar * rPar) / 2.0f;
 };
 
-void set_dielectric_properties(Material &material, const Vector3 direccion, const Vector3 normal) {
+void set_dielectric_properties(Material &material, const Vector3 &direccion, const Vector3 &normal) {
 
     float ks, kt;
 

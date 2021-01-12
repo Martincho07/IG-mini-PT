@@ -171,9 +171,9 @@ struct Dielectric : public Material {
 
 Vector3 specular_reflection(const Vector3 &wi, const Vector3 &normal);
 
-Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 intersection_point);
+Vector3 diffuse_reflection(const Vector3 &wi, const Vector3 &normal, const Point3 &intersection_point);
 
-Vector3 phong_reflection(const Vector3 &wr, const Vector3 &normal, const Point3 intersection_point, float alpha);
+Vector3 phong_reflection(const Vector3 &wr, const Vector3 &normal, const Point3 &intersection_point, float alpha);
 
 Vector3 reflection(const Vector3 &wi, const Vector3 &normal);
 
@@ -181,4 +181,4 @@ Vector3 refraction(const Vector3 &wi, const Vector3 &normal, float n1, float n2,
 
 float fresnel_ks(Vector3 const &wi, const Vector3 &normal, float n1, float n2);
 
-void set_dielectric_properties(Material &material, const Vector3 direccion, const Vector3 normal);
+void set_dielectric_properties(Material &material, const Vector3 &direccion, const Vector3 &normal);

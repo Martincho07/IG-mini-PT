@@ -34,14 +34,14 @@ BVH::BVH(std::vector<std::shared_ptr<Shape>> &shapes, int start, int end, int ma
     std::vector<std::shared_ptr<Shape>> subv = std::vector<std::shared_ptr<Shape>>(shapes.begin() + start, shapes.begin() + end);
     build_bounding_box(subv);
 
-    Error("bounding box", bb.pmin, ", ", bb.pmax);
+    // Error("bounding box", bb.pmin, ", ", bb.pmax);
     // std::cout << "bounding box: " << bb.pmin << ", " << bb.pmax << std::endl;
 
     // Elegir el comparador dependiendo de la dimensión
     int axis = bb.max_axis();
-    auto comparator = (axis == 0)   ? x_compare_box
-                      : (axis == 1) ? y_compare_box
-                                    : z_compare_box;
+    auto comparator = (axis == 0) ? x_compare_box
+                                  : (axis == 1) ? y_compare_box
+                                                : z_compare_box;
 
     int size = end - start;
     int mid = start + (size + 1) / 2;
@@ -49,7 +49,7 @@ BVH::BVH(std::vector<std::shared_ptr<Shape>> &shapes, int start, int end, int ma
     // Si el vector de shapes ya tiene max_leaves elementos, estas son las hojas
     if (size <= max_leaves) {
         is_leaf = true;
-        std::cout << size << std::endl;
+        // std::cout << size << std::endl;
         leaves = subv;
     } else {
         is_leaf = false;

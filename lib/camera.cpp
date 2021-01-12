@@ -14,6 +14,7 @@
 #include "BRDF.hpp"
 #include "camera.hpp"
 #include "color.hpp"
+#include "error.hpp"
 #include "event.hpp"
 #include "geometry.hpp"
 #include "shape.hpp"
@@ -104,7 +105,12 @@ RGB Camera::trace_path(float x, float y, const Scene &scene) const {
                 // return point_light_contribution;
 
                 // Normalizar la nueva dirección del rayo por si acaso
+                // std::cout << std::this_thread::get_id() << " llegado antes" << std::endl;
                 ray.d = normalize(ray.d);
+                // if (modulus(ray.d) == 0) {
+                //     Error("Modulo!!!!");
+                // }
+                // std::cout << std::this_thread::get_id() << " llegado despues" << std::endl;
                 // Actualizar la posición del rayo
                 ray.o = si.position;
             }
