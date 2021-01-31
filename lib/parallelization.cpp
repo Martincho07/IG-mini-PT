@@ -9,6 +9,7 @@
  **********************************************************************************/
 
 #include "parallelization.hpp"
+#include "error.hpp"
 
 void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector3 &u, const Vector3 &r, int width, int height) {
 

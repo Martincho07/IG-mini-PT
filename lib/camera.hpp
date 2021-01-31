@@ -45,12 +45,16 @@ struct Camera {
 
         r = Vector3(1, 0, 0);
         u = Vector3(0, 1, 0);
-        f = Vector3(0, 0, -1);
+        f = Vector3(0, 0, 1);
 
-        o = target - f + Vector3(0, 0, distance);
+        o = target - f - Vector3(0, 0, distance);
 
         u = u * (tanf(fov / 2.0f));
         r = r * (aspect_ratio * modulus(u));
+
+        r = r * distance;
+        u = u * distance;
+        f = f * distance;
 
         std::cout << "o " << o << " r " << r << " u " << u << " f " << f << std::endl;
 
@@ -60,7 +64,13 @@ struct Camera {
                                            0.0f, 0.0f, 0.0f, 1.0f));
     };
 
-    RGB trace_path(float x, float y, const Scene &scene) const;
+    virtual RGB trace_path(float x, float y, const Scene &scene) const;
 };
 
-float intersection(const std::vector<std::shared_ptr<Shape>> &scene, std::shared_ptr<Shape> &shape, const Point3 &ray_orig, const Vector3 &direction);
+/*
+struct NormalsCamera : public Camera {
+    NormalsCamera(Point3 _o, Vector3 _r, Vector3 _u, Vector3 _f) : Camera(_o, _r, _u, _f) {}
+    NormalsCamera(float fov, const Point3 &target, float distance, float aspect_ratio) : Camera(fov, target, distance, aspect_ratio) {}
+    RGB trace_path(float x, float y, const Scene &scene) const;
+};
+*/

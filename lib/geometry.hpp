@@ -240,5 +240,8 @@ struct Ray {
     // Get point across ray
     Point3 get_point(float t) const { return o + d * t; }
 
+    // Shift the ray origin
+    // void shift(const float s = 1.e-5) { o = o + d * s; }
+
     // Point3 get_current_point() { return o + d * t; }
 };

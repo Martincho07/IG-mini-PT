@@ -22,8 +22,11 @@
 #include <vector>
 
 struct SurfaceInteraction;
+struct Material;
 
-#define EPSILON 0.00001f
+#define EPSILON 0.0001f
+#define EPSILON_TRIANGLES 0.0000001f
+// #define EPSILON 0.0000001f
 
 struct Shape {
 
@@ -47,7 +50,7 @@ struct Shape {
     virtual AABB bounding_box() const = 0;
 };
 
-bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, const Ray &ray, SurfaceInteraction &si);
+bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, Ray &ray, SurfaceInteraction &si);
 
 struct Sphere : public Shape {
 
@@ -137,6 +140,10 @@ struct Quadrilateral : public Shape {
         // // Corregido
         // t1 = Triangle(Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, u_c.z), Point3(u_c.x, l_c.y, l_c.z), _material);
         // t2 = Triangle(Point3(l_c.x, u_c.y, u_c.z), Point3(u_c.x, u_c.y, u_c.z), Point3(u_c.x, l_c.y, l_c.z), _material);
+    };
+    Quadrilateral(Point3 p10, Point3 p00, Point3 p01, Point3 p11, std::shared_ptr<Material> _material) : Shape(_material) {
+        t1 = Triangle(p10, p00, p01, _material);
+        t2 = Triangle(p01, p11, p10, _material);
     };
     ~Quadrilateral(){};
 

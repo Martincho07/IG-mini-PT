@@ -41,7 +41,7 @@ struct Image {
     void applyToneMappingOperator(const ToneMappingOperator &op);
 
     void fillPixel(int f, int c, const RGB r);
-    RGB getPixel(float u_coord, float v_coord);
+    RGB getPixel(float u_coord, float v_coord) const;
 };
 
 struct TextureMappingUV {
@@ -53,8 +53,7 @@ struct TextureMappingUV {
         this->img = _img;
     };
 
-    RGB getUV_color(float u, float v) {
-
+    RGB getUV_color(float u, float v) const {
         return img.getPixel(u, v);
     };
 };

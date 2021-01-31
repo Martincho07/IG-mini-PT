@@ -174,7 +174,11 @@ bool writeHDR(const Image &img, const std::string file) {
     return true;
 }
 
-std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Material> brdf) {
+std::vector<Triangle> readPLY(const std::string file) {
+    /// TODO: Mirar que hacer con esto
+
+    auto brdf = std::make_shared<LambertianDiffuse>(RGB(0.5, 0.5, 0.5));
+
     if (!checkFileExtension(file, "ply")) {
         ErrorExit("Input file must have .ply extension");
     }

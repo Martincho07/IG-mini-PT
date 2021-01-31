@@ -80,7 +80,7 @@ std::shared_ptr<LightSource> Scene::sample_light() const {
     }
 }
 
-bool Scene::first_intersection(const Ray &ray, SurfaceInteraction &si) const {
+bool Scene::first_intersection(Ray &ray, SurfaceInteraction &si) const {
     return bvh.intersect(ray, si);
     // return shapes_first_intersection(shapes, ray, si);
 }

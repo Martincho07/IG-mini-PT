@@ -14,8 +14,8 @@
 
 #include "BVH.hpp"
 
-#include "shape.hpp"
 #include "light_source.hpp"
+#include "shape.hpp"
 
 #define AIR_N 1.000293f
 
@@ -65,7 +65,7 @@ class Scene {
     std::shared_ptr<LightSource> sample_light() const;
 
     // Return first object that intersects a ray
-    bool first_intersection(const Ray &ray, SurfaceInteraction &si) const;
+    bool first_intersection(Ray &ray, SurfaceInteraction &si) const;
 
     // Create bounding boxes for the shapes and an array for light importance sampling
     void fix();

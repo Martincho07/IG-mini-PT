@@ -20,7 +20,7 @@ struct BVH {
 
     BVH(std::vector<std::shared_ptr<Shape>> &shapes, int start, int end, int max_leaves);
 
-    float intersect(const Ray &ray, SurfaceInteraction &si) const;
+    float intersect(Ray &ray, SurfaceInteraction &si) const;
 
     AABB bounding_box() const;
 

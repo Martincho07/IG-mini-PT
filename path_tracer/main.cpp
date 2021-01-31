@@ -52,6 +52,7 @@ int main(int argc, char **argv) {
         {"pixel_rays", required_argument, 0, 'p'},
         {"threads", required_argument, 0, 't'},
         {"help", no_argument, 0, 'h'},
+        {"file", no_argument, 0, 'o'},
         {NULL, 0, NULL, 0}};
 
     // default option values
@@ -59,9 +60,11 @@ int main(int argc, char **argv) {
     pixel_rays = 1;
     selected_scene = 1;
 
+    std::string output_file = "imagen";
+
     int ch;
     int index;
-    while ((ch = getopt_long(argc, argv, "p:t:hs:", longopts, &index)) != -1) {
+    while ((ch = getopt_long(argc, argv, "p:t:hs:o:", longopts, &index)) != -1) {
         switch (ch) {
         case 'p':
             pixel_rays = atoi(optarg);
@@ -78,6 +81,9 @@ int main(int argc, char **argv) {
         case 'h':
             help();
             return 0;
+        case 'o':
+            output_file = optarg;
+            break;
         default:
             help();
             return 1;
@@ -90,19 +96,43 @@ int main(int argc, char **argv) {
 
     switch (selected_scene) {
     case 1:
-        escenaDielectrico(width, height, camera, scene);
+        // escenaDielectrico(width, height, camera, scene);
+        dielectric_1(width, height, camera, scene);
         break;
     case 2:
-        escena4(width, height, camera, scene);
+        dielectric_2(width, height, camera, scene);
+        // escena4(width, height, camera, scene);
         break;
     case 3:
         escenaBVH(width, height, camera, scene);
         break;
     case 4:
-        escenaChula(width, height, camera, scene);
+        escena_conejos(width, height, camera, scene);
+        // escenaChula(width, height, camera, scene);
+        break;
+    case 5:
+        escena_dragon(width, height, camera, scene);
+        break;
+    case 6:
+        // cornellBox(width, height, camera, scene);
+        difusos_3(width, height, camera, scene);
+        break;
+    case 7:
+        phong_250(width, height, camera, scene);
+        break;
+    case 8:
+        // escenaDOF(width, height, camera, scene);
+        escena_dof(width, height, camera, scene);
+        break;
+    case 9:
+        dielectric_4(width, height, camera, scene);
+        break;
+    case 10:
+        texture_1(width, height, camera, scene);
+        // texture_2(width, height, camera, scene);
         break;
     default:
-        escena4(width, height, camera, scene);
+        // escena4(width, height, camera, scene);
         break;
     }
 
@@ -137,9 +167,11 @@ int main(int argc, char **argv) {
     std::cout << "Numero de pixeles: " << height * width << std::endl;
     std::cout << "Maximo: " << max(image) << std::endl;
 
-    writeHDR(image, "imgGuay.hdr");
+    writeHDR(image, output_file + ".hdr");
+
+    writePPM(image, output_file + "_hdr.ppm", max(image), 10000000);
 
     // clampAndGammaCurve(image, 10, 2.2);
     // clamping(image);
-    writePPM(image, "imgGuay.ppm", max(image), 255);
+    writePPM(image, output_file + ".ppm", max(image), 255);
 };

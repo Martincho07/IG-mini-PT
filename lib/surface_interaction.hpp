@@ -31,6 +31,10 @@ struct SurfaceInteraction {
     // *Properly oriented* normal at intersection point
     Vector3 normal;
 
+    // Tell wheter the ray is entering or exiting the surface (for glass rendering)
+    // true if the ray is entering the surface
+    bool into;
+
     // UV parametrization
     // float u, v;
 
@@ -39,6 +43,6 @@ struct SurfaceInteraction {
     // SurfaceInteraction(const std::shared_ptr<Shape> _shape, Point3 _position, const Vector3 _normal, const float _u, const float _v)
     // : shape(_shape), position(_position), normal(_normal), u(_u), v(_v) {}
 
-    SurfaceInteraction(const std::shared_ptr<Shape> _shape, float _t, Point3 _position, const Vector3 _normal)
-        : shape(_shape), t(_t), position(_position), normal(_normal) {}
+    SurfaceInteraction(const std::shared_ptr<Shape> _shape, float _t, Point3 _position, const Vector3 _normal, bool _into)
+        : shape(_shape), t(_t), position(_position), normal(_normal), into(_into) {}
 };

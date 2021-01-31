@@ -41,14 +41,19 @@ float Sphere::intersect(const Ray &ray) const {
 
     float delta = b * b - 4 * a * c;
 
-    if (delta < 0) {
+    if (delta < EPSILON) {
         return -1.0;
-    } else if (delta == 0) {
+    } else if (delta == EPSILON) {
         return (-b + sqrt(delta)) / (2 * b);
     } else {
-        float min = std::min((-b + sqrt(delta)) / (2 * a),
-                             (-b - sqrt(delta)) / (2 * a));
-        return min;
+        float first = (-b + sqrt(delta)) / (2 * a);
+        float second = (-b - sqrt(delta)) / (2 * a);
+        float min = std::min(first, second);
+        if (min < EPSILON) {
+            return std::max(first, second);
+        } else {
+            return min;
+        }
     }
 }
 
@@ -64,28 +69,30 @@ float Triangle::intersect(const Ray &ray) const {
     h = cross(ray.d, edge2);
     a = dot(edge1, h);
 
-    if ((a > -EPSILON) && (a < EPSILON))
-        return -1.0;
+    if ((a > -EPSILON_TRIANGLES) && (a < EPSILON_TRIANGLES))
+        return -1.0f;
 
-    f = 1.0 / a;
+    f = 1.0f / a;
     s = ray.o - v1;
     u = f * dot(s, h);
 
-    if (u < 0.0 || u > 1.0)
-        return -1.0;
+    // En los siguientes dos if no hay que poner EPSILON
+
+    if (u < 0.0f || u > 1.0f)
+        return -1.0f;
 
     q = cross(s, edge1);
     v = f * dot(ray.d, q);
 
-    if (v < 0.0 || u + v > 1.0)
-        return -1.0;
+    if (v < 0.0f || u + v > 1.0f)
+        return -1.0f;
 
     t = f * dot(edge2, q);
 
-    if (t > EPSILON)
+    if (t > EPSILON_TRIANGLES)
         return t;
     else
-        return -1.0;
+        return -1.0f;
 };
 
 float Quadrilateral::intersect(const Ray &ray) const {
@@ -282,10 +289,12 @@ AABB TriangleMesh::bounding_box() const {
     return bb;
 }
 
-bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, const Ray &ray, SurfaceInteraction &si) {
+bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, Ray &ray, SurfaceInteraction &si) {
     float t_min = FLT_MAX;
     float t = 0;
     std::shared_ptr<Shape> shape;
+
+    // ray.shift();
 
     for (const std::shared_ptr<Shape> &s : shapes) {
         t = s->intersect(ray);
@@ -304,9 +313,18 @@ bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes
 
         // Calculate propely oriented normal
         Vector3 si_normal = shape->normal(si_point);
-        si_normal = dot(ray.d, si_normal) < 0.0 ? si_normal : -si_normal;
 
-        si = SurfaceInteraction(shape, t_min, si_point, si_normal);
+        // Determine if ray is entering the shape
+        bool into = true;
+        if (dot(ray.d, si_normal) >= 0.0) {
+            // Error("into", shape->material->type);
+            into = false;
+            si_normal = -si_normal;
+        }
+
+        // si_normal = dot(ray.d, si_normal) < 0.0 ? si_normal : -si_normal;
+
+        si = SurfaceInteraction(shape, t_min, si_point, si_normal, into);
         return true;
     }
 }

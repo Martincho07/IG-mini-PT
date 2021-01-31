@@ -1,5 +1,6 @@
 #include "AABB.hpp"
 
+// Adapted from PBRT
 bool AABB::intersect(const Ray &ray) const {
     float tmin = (pmin.x - ray.o.x) / ray.d.x;
     float tmax = (pmax.x - ray.o.x) / ray.d.x;

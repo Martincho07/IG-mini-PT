@@ -39,9 +39,9 @@ BVH::BVH(std::vector<std::shared_ptr<Shape>> &shapes, int start, int end, int ma
 
     // Elegir el comparador dependiendo de la dimensión
     int axis = bb.max_axis();
-    auto comparator = (axis == 0) ? x_compare_box
-                                  : (axis == 1) ? y_compare_box
-                                                : z_compare_box;
+    auto comparator = (axis == 0)   ? x_compare_box
+                      : (axis == 1) ? y_compare_box
+                                    : z_compare_box;
 
     int size = end - start;
     int mid = start + (size + 1) / 2;
@@ -81,7 +81,7 @@ void BVH::build_bounding_box(const std::vector<std::shared_ptr<Shape>> &shapes) 
     // std::cout << "Bounding box al final" << bb.pmin << ", " << bb.pmax << std::endl;
 }
 
-float BVH::intersect(const Ray &ray, SurfaceInteraction &si) const {
+float BVH::intersect(Ray &ray, SurfaceInteraction &si) const {
     // Si no se interseca con la bounding box, no hay intersección
     if (!bb.intersect(ray)) {
         // ErrorExit("Entrado no interseca")

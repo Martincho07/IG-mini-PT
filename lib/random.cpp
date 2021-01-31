@@ -65,6 +65,7 @@ Vector3 uniform_hemisphere_sample() {
     Vector3 vector = (rotationY(azimuth) * rotationZ(inclination))(direction);
     return vector;
     // return Vector3(sinf(inclination) * cosf(azimuth), sinf(inclination) * sinf(azimuth), cosf(inclination));
+    // return Vector3(sinf(inclination) * cosf(azimuth), cos(inclination), sinf(inclination) * sinf(azimuth));
 }
 
 Vector3 phong_uniform_hemisphere_sample(float alpha) {

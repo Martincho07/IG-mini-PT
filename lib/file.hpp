@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include "BRDF.hpp"
 #include "image.hpp"
 #include "shape.hpp"
 
@@ -20,11 +21,14 @@
 #define OUT_ID "out_"
 #define LDR_LIMIT 255
 
+struct Material;
+
 /*
  * Return a new filename with the format:
  * <path of file>OUT_ID<name of file>.<extension of file>
  */
-std::string createOutFilename(const std::string &file);
+std::string
+createOutFilename(const std::string &file);
 
 /*
  * Return true if the file extension of <file> is equal to <ext>
@@ -93,4 +97,4 @@ struct Triangle;
  * Read a 3D object stored in a PLY file
  * Returns a list with the triangles that make up the object
  */
-std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Material> brdf = std::make_shared<LambertianDiffuse>(RGB(0.5, 0.5, 0.5)));
+std::vector<Triangle> readPLY(const std::string file);

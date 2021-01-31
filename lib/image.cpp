@@ -25,7 +25,7 @@ void Image::fillPixel(int f, int c, const RGB r) {
     v[(f * width) + c] = r;
 };
 
-RGB Image::getPixel(float u_coord, float v_coord) {
+RGB Image::getPixel(float u_coord, float v_coord) const {
 
     int fila = (int)((1.0f - u_coord) * (height - 1.0f));
     int columna = (int)(v_coord * (width - 1.0f));
