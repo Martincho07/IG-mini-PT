@@ -21,14 +21,11 @@
 #define OUT_ID "out_"
 #define LDR_LIMIT 255
 
-struct Material;
-
 /*
  * Return a new filename with the format:
  * <path of file>OUT_ID<name of file>.<extension of file>
  */
-std::string
-createOutFilename(const std::string &file);
+std::string createOutFilename(const std::string &file);
 
 /*
  * Return true if the file extension of <file> is equal to <ext>
@@ -91,10 +88,8 @@ bool writePPM(Image &img, const std::string file, float max, int colorResolution
  */
 bool writeHDR(const Image &img, const std::string file);
 
-struct Triangle;
-
 /*
  * Read a 3D object stored in a PLY file
  * Returns a list with the triangles that make up the object
  */
-std::vector<Triangle> readPLY(const std::string file);
+std::vector<Triangle> readPLY(const std::string file, std::shared_ptr<Material> brdf = std::make_shared<LambertianDiffuse>(RGB(0.5, 0.5, 0.5)));

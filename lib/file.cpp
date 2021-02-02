@@ -9,8 +9,8 @@
  **********************************************************************************/
 
 #include "file.hpp"
-#include "BRDF.hpp"
 #include "error.hpp"
+
 #include <cctype>
 #include <iomanip>
 #include <memory>
@@ -110,7 +110,7 @@ Image readPPM(std::string file) {
 
     Image img = Image(v, width, height);
 
-    std::cout << "[" << width << "px x " << height << "px], color res: " << colorResolution
+    std::cout << "Loaded PPM file: " << file << ", [" << width << "px x " << height << "px], color res: " << colorResolution
               << ", max value: " << MAX
               << ", range: [" << min(img) << ", " << max(img) << "]" << std::endl;
 
@@ -144,7 +144,8 @@ bool writePPM(Image &img, const std::string file, float max, int colorResolution
             n == img.width - 1 ? os << std::endl : os << "   ";
         }
     }
-    os.close();
+
+    std::cout << "Written PPM file: " << file << std::endl;
     return true;
 };
 
@@ -171,13 +172,12 @@ bool writeHDR(const Image &img, const std::string file) {
             os << rgbe[0] << rgbe[1] << rgbe[2] << rgbe[3];
         }
     }
+
+    std::cout << "Written HDR file: " << file << std::endl;
     return true;
 }
 
-std::vector<Triangle> readPLY(const std::string file) {
-    /// TODO: Mirar que hacer con esto
-
-    auto brdf = std::make_shared<LambertianDiffuse>(RGB(0.5, 0.5, 0.5));
+std::vector<Triangle> readPLY(const std::string file, std::shared_ptr<Material> brdf) {
 
     if (!checkFileExtension(file, "ply")) {
         ErrorExit("Input file must have .ply extension");
@@ -221,20 +221,20 @@ std::vector<Triangle> readPLY(const std::string file) {
         } else if (keyword == "element") {
             std::string elementType;
             is >> elementType;
-            std::cout << "elementType: " << elementType << std::endl;
+            // std::cout << "elementType: " << elementType << std::endl;
             if (elementType == "vertex") {
                 is >> numVerts;
-                std::cout << numVerts << std::endl;
+                // std::cout << numVerts << std::endl;
                 is.ignore(256, '\n');
 
                 // Vertex information
                 std::string px, py, pz;
                 std::getline(is, px);
-                std::cout << px << std::endl;
+                // std::cout << px << std::endl;
                 std::getline(is, py);
-                std::cout << py << std::endl;
+                // std::cout << py << std::endl;
                 std::getline(is, pz);
-                std::cout << pz << std::endl;
+                // std::cout << pz << std::endl;
                 if (px != "property float x" ||
                     py != "property float y" ||
                     pz != "property float z") {
@@ -246,15 +246,15 @@ std::vector<Triangle> readPLY(const std::string file) {
                 std::getline(is, px);
                 std::getline(is, py);
                 std::getline(is, pz);
-                std::cout << px << std::endl;
-                std::cout << py << std::endl;
-                std::cout << pz << std::endl;
+                // std::cout << px << std::endl;
+                // std::cout << py << std::endl;
+                // std::cout << pz << std::endl;
                 if (px != "property float nx" ||
                     py != "property float ny" ||
                     pz != "property float nz") {
                     is.seekg(position);
                 } else {
-                    std::cout << "smooth";
+                    // std::cout << "smooth";
                     smooth = true;
                 }
 
@@ -264,13 +264,13 @@ std::vector<Triangle> readPLY(const std::string file) {
                 std::string pf;
                 is.ignore(256, '\n');
                 std::getline(is, pf);
-                std::cout << numFaces << " " << pf << std::endl;
+                // std::cout << numFaces << " " << pf << std::endl;
                 if (pf != "property list uchar uint vertex_indices" && pf != "property list uchar int vertex_indices") {
-                    std::cout << numFaces << " " << pf << std::endl;
+                    // std::cout << numFaces << " " << pf << std::endl;
                     ErrorExit("Unsupported face properties");
                 }
             } else {
-                std::cout << numVerts << " " << numFaces << std::endl;
+                // std::cout << numVerts << " " << numFaces << std::endl;
                 ErrorExit("Unsupported element type in PLY file: ", elementType);
             }
         } else {
@@ -287,7 +287,9 @@ std::vector<Triangle> readPLY(const std::string file) {
         ErrorExit("Invalid PLY header");
     }
 
-    std::cout << numVerts << " " << numFaces << std::endl;
+    std::cout << "Loaded PLY file: " << file
+              << ", vertices: " << numVerts << ", faces: " << numFaces
+              << (smooth ? " (smooth)" : " (not smooth)") << std::endl;
 
     // Read vertices info
     std::vector<Point3> vertices;
@@ -336,8 +338,8 @@ std::vector<Triangle> readPLY(const std::string file) {
     // std::cout << faces[1522].v1 << " " << faces[1522].v2 << " " << faces[1522].v3 << std::endl;
     // std::cout << faces[755].v1 << " " << faces[755].v2 << " " << faces[755].v3 << std::endl;
 
-    std::cout << "Terminado de leer PLY" << std::endl;
-    std::cout << "Numero de triangulos: " << faces.size() << std::endl;
+    // std::cout << "Terminado de leer PLY" << std::endl;
+    // std::cout << "Numero de triangulos: " << faces.size() << std::endl;
 
     // TODO: Mirar cómo hacer lo del color
     return faces;
