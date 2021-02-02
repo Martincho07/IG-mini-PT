@@ -1,7 +1,7 @@
 /*********************************************************************************
- * Image
+ * Shape
  *
- * File: shape.hpp
+ * File: shape.cpp
  * Author: Fernando Peña (NIA: 756012)
  * Author: Jose Daniel Subias Sarrato (NIA: 759533)
  * Date: 6/10/2020
@@ -31,6 +31,8 @@ float Plane::intersect(const Ray &ray) const {
 };
 
 float Sphere::intersect(const Ray &ray) const {
+
+    /*
     float mod = modulus(ray.d);
     float a = mod * mod;
 
@@ -55,6 +57,64 @@ float Sphere::intersect(const Ray &ray) const {
             return min;
         }
     }
+    */
+
+    // La dirección del rayo está noramlizada así que a siempre vale 1
+    float b = dot(ray.d, ray.o - center) * 2;
+
+    float mod = modulus(ray.o - center);
+    float c = mod * mod - r * r;
+
+    float delta = b * b - 4 * c;
+
+    if (delta < 0.0f) {
+        return -1.0;
+        // } else if (delta == EPSILON) {
+        //     return (-b + sqrt(delta)) / (2 * b);
+    } else {
+        float first = (-b + sqrt(delta)) / 2;
+        float second = (-b - sqrt(delta)) / 2;
+        float min = std::min(first, second);
+        if (min < EPSILON) {
+            return std::max(first, second);
+        } else {
+            return min;
+        }
+    }
+
+    /*
+    // Solve t^2*d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
+    Vector3 op = center - ray.o; // p is the sphere center (C)
+    // float t, eps = 1e-4;                     // eps is a small fudge factor
+    float t;
+    float b = dot(op, ray.d);                // 1/2 b from quadratic eq. setup
+    float det = b * b - dot(op, op) + r * r; // (b^2-4ac)/4: a=1 because ray normalized
+    if (det < EPSILON)                       // ray misses sphere
+        return -1;
+    else {
+        det = sqrt(det);
+        if ((t = b - det) > EPSILON)
+            return t;
+        else if ((t = b + det) > EPSILON)
+            return t;
+        else
+            return -1;
+    }
+    */
+
+    /*
+    // Solve t^2*d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
+    Vector3 op = center - ray.o; // p is the sphere center (C)
+    // float t, eps = 1e-4;                     // eps is a small fudge factor
+    float t, eps = 1e-2;                     // eps is a small fudge factor
+    float b = dot(op, ray.d);                // 1/2 b from quadratic eq. setup
+    float det = b * b - dot(op, op) + r * r; // (b^2-4ac)/4: a=1 because ray normalized
+    if (det < 0)                             // ray misses sphere
+        return 0;
+    else
+        det = sqrt(det);
+    return (t = b - det) > eps ? t : ((t = b + det) > eps ? t : 0); // return smaller positive t
+    */
 }
 
 float Triangle::intersect(const Ray &ray) const {
@@ -89,7 +149,7 @@ float Triangle::intersect(const Ray &ray) const {
 
     t = f * dot(edge2, q);
 
-    if (t > EPSILON_TRIANGLES)
+    if (t > EPSILON)
         return t;
     else
         return -1.0f;
@@ -132,6 +192,7 @@ Vector3 Triangle::normal(const Point3 &p) const {
         return n1;
     } else {
         // Point3 p = v3;
+        // https://computergraphics.stackexchange.com/questions/5006/how-do-i-use-barycentric-coordinates-to-interpolate-vertex-normal
 
         Vector3 bary;
         Vector3 e2_1 = v1 - v2;
@@ -187,7 +248,7 @@ Point3 TriangleMesh::centroid() const {
         centroid += center * area;
         area_sum += area;
     }
-    std::cout << "area: " << area_sum << std::endl;
+
     return centroid / area_sum;
 };
 
@@ -289,11 +350,48 @@ AABB TriangleMesh::bounding_box() const {
     return bb;
 }
 
-bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, Ray &ray, SurfaceInteraction &si) {
+bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, const Ray &ray, SurfaceInteraction &si) {
+
+    /*
+    std::shared_ptr<Shape> shape;
+
+    double d;
+    double inf = 1e20;
+    double t = 1e20;
+
+    for (int i = 0; i < shapes.size(); i++) {
+        if ((d = shapes[i]->intersect(ray)) && d < t) {
+            t = d;
+            shape = shapes[i];
+        }
+    }
+
+    if (t < inf) {
+        Point3 si_point = ray.get_point(t);
+
+        // Calculate propely oriented normal
+        Vector3 si_normal = shape->normal(si_point);
+
+        // Determine if ray is entering the shape
+        bool into = true;
+        if (dot(ray.d, si_normal) >= 0.0) {
+            // Error("into", shape->material->type);
+            into = false;
+            si_normal = -si_normal;
+        }
+
+        // si_normal = dot(ray.d, si_normal) < 0.0 ? si_normal : -si_normal;
+
+        si = SurfaceInteraction(shape, t, si_point, si_normal, into);
+        return true;
+    } else {
+        return false;
+    }
+    */
+
     float t_min = FLT_MAX;
     float t = 0;
     std::shared_ptr<Shape> shape;
-
     // ray.shift();
 
     for (const std::shared_ptr<Shape> &s : shapes) {

@@ -1,5 +1,5 @@
 /*********************************************************************************
- * Image
+ * Shape
  *
  * File: shape.hpp
  * Author: Fernando Peña (NIA: 756012)
@@ -13,7 +13,6 @@
 #include "AABB.hpp"
 #include "BRDF.hpp"
 #include "color.hpp"
-#include "file.hpp"
 #include "geometry.hpp"
 #include "surface_interaction.hpp"
 #include "transform.hpp"
@@ -50,7 +49,7 @@ struct Shape {
     virtual AABB bounding_box() const = 0;
 };
 
-bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, Ray &ray, SurfaceInteraction &si);
+bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, const Ray &ray, SurfaceInteraction &si);
 
 struct Sphere : public Shape {
 
@@ -154,25 +153,31 @@ struct Quadrilateral : public Shape {
     AABB bounding_box() const override;
 };
 
-std::vector<Triangle> readPLY(const std::string file, const std::shared_ptr<Material> brdf);
-
 struct TriangleMesh : public Shape {
     // Faces
     std::vector<Triangle> faces;
 
     TriangleMesh(){};
 
-    TriangleMesh(const std::vector<Triangle> &_faces, std::shared_ptr<Material> _brdf, Point3 center, float scale) : Shape(_brdf), faces(_faces) {
+    TriangleMesh(const std::vector<Triangle> &_faces, std::shared_ptr<Material> _brdf, Point3 center, float scale, bool zflip = false) : Shape(_brdf), faces(_faces) {
         for (Triangle &face : faces) {
             face.material = _brdf;
+            if (zflip) {
+                face.v1.z = -face.v1.z;
+                face.v2.z = -face.v2.z;
+                face.v3.z = -face.v3.z;
+                face.n1.z = -face.n1.z;
+                face.n2.z = -face.n2.z;
+                face.n3.z = -face.n3.z;
+            }
         }
         reposition(center, scale);
     };
 
-    TriangleMesh(const std::string file, std::shared_ptr<Material> _brdf, const Point3 center, float scale) : Shape(_brdf) {
-        faces = readPLY(file, _brdf);
-        reposition(center, scale);
-    };
+    // TriangleMesh(const std::string file, std::shared_ptr<Material> _brdf, const Point3 center, float scale) : Shape(_brdf) {
+    //     faces = readPLY(file, _brdf);
+    //     reposition(center, scale);
+    // };
 
     ~TriangleMesh(){};
 
