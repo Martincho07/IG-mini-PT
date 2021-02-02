@@ -40,7 +40,7 @@ class Scene {
     float ambient_ri;
 
   public:
-    Scene() {}
+    Scene();
 
     Scene(RGB _background, float _ambient_ri = 1);
 
@@ -62,10 +62,10 @@ class Scene {
     std::shared_ptr<LightSource> get_light(int idx) const;
 
     // Sample a random light
-    std::shared_ptr<LightSource> sample_light() const;
+    float sample_light(std::shared_ptr<LightSource> &light) const;
 
     // Return first object that intersects a ray
-    bool first_intersection(Ray &ray, SurfaceInteraction &si) const;
+    bool first_intersection(const Ray &ray, SurfaceInteraction &si) const;
 
     // Create bounding boxes for the shapes and an array for light importance sampling
     void fix();

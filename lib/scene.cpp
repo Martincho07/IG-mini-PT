@@ -14,6 +14,12 @@
 #include "scene.hpp"
 #include "surface_interaction.hpp"
 
+Scene::Scene() {
+    background = RGB(0, 0, 0);
+    ambient_ri = 1;
+    total_power = 0;
+}
+
 Scene::Scene(RGB _background, float _ambient_ri) {
     background = _background;
     ambient_ri = _ambient_ri;
@@ -66,21 +72,22 @@ std::shared_ptr<LightSource> Scene::get_light(int idx) const {
     return lights[idx];
 }
 
-std::shared_ptr<LightSource> Scene::sample_light() const {
+float Scene::sample_light(std::shared_ptr<LightSource> &light) const {
     // Recorrer todas las luces hasta que se llege a sumar el número aleatorio
     float rand = random_float(0, total_power);
-
     float acum = 0;
-    for (std::shared_ptr<LightSource> light : lights) {
+    for (std::shared_ptr<LightSource> l : lights) {
         if (acum > rand) {
-            return light;
+            light = l;
+            return max(l->power) / total_power;
         } else {
-            acum += max(light->power);
+            acum += max(l->power);
         }
     }
+    return 0;
 }
 
-bool Scene::first_intersection(Ray &ray, SurfaceInteraction &si) const {
+bool Scene::first_intersection(const Ray &ray, SurfaceInteraction &si) const {
     return bvh.intersect(ray, si);
     // return shapes_first_intersection(shapes, ray, si);
 }
