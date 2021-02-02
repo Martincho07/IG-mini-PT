@@ -26,7 +26,7 @@
 // #define REAL_NORMALS
 
 // dof
-#define DOF
+// #define DOF
 #define APERTURE_RADIUS 3
 
 inline Ray Camera::calculate_ray(float x, float y) const {

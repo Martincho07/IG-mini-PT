@@ -41,7 +41,7 @@ void help() {
                  "  -reinhard02 a l      Apply the Reinhard 2002 operator with a given 'a' key value\n"
                  "  -mantiuk08 a s      Apply the Mantiuk 2008 operator with a given 'a' key value and 's' value\n"
                  "  -h, -help           Show this help message and quit\n"
-                 "\nUse the character 'D' to indicate the default value\n"
+                 "\nUse the string 'default' to indicate the default value\n"
                  "Default values:\n"
                  "  step = 0\n"
                  "  value = 1\n"
@@ -57,7 +57,7 @@ float getArgValue(int argc, char **argv, int i, float defaultValue) {
     if (i + 1 >= argc || argv[i + 1][0] == '-') {
         ErrorExit("Missing value after ", argv[i], " argument");
     }
-    if (!(std::string(argv[i + 1]) == "D")) {
+    if (!(std::string(argv[i + 1]) == "default")) {
         try {
             value = std::stof(argv[i + 1]);
         } catch (std::invalid_argument e) {
@@ -152,6 +152,9 @@ int main(int argc, char **argv) {
         } else {
             // file name
             outFile = arg;
+            if (checkFileExtension(outFile, "")) {
+                outFile += ".ppm";
+            }
             if (checkFileExtension(outFile, "ppm")) {
                 outFileFormat = PPM;
             } else if (checkFileExtension(outFile, "hdr")) {

@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
             height = atoi(optarg);
             break;
         case 'c':
-            output_file = atoi(optarg);
+            color_res = atoi(optarg);
             break;
         default:
             help();
@@ -193,10 +193,10 @@ int main(int argc, char **argv) {
     std::cout << "Maximum: " << max(image) << std::endl;
     std::cout << std::endl;
 
-    writeHDR(image, output_file + ".hdr");
-    writePPM(image, output_file + "_hdr.ppm", max(image), color_res);
+    // writeHDR(image, output_file + ".hdr");
+    writePPM(image, output_file + ".ppm", max(image), color_res);
 
     // clampAndGammaCurve(image, 10, 2.2);
     // clamping(image);
-    writePPM(image, output_file + ".ppm", max(image), 255);
+    // writePPM(image, output_file + ".ppm", max(image), 255);
 };
