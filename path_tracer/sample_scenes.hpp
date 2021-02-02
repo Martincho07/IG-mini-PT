@@ -407,22 +407,32 @@ void escenaBVH(int &width, int &height, Camera &c, Scene &scene) {
     RGB white(0.85, 0.85, 0.85);
     RGB red(0.85, 0.2, 0.2);
     RGB green(0.2, 0.85, 0.2);
+    RGB blue(0.2, 0.2, 0.85);
 
 // #define INFINITOS
 #ifdef INFINITOS
-    scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, 1), 3, std::make_shared<LambertianDiffuse>(RGB(0.8f, 0.1f, 0.1f))));
-    // scene.push_back(std::make_shared<Plane>(RGB(255, 0, 0), Vector3(0, 0, 1), 5, std::make_shared<LambertianDiffuse>(LambertianDiffuse(RGB(0.8f, 0.5f, 0.0f)))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(RGB(0.8f, 0.1f, 0.1f))));
+    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, 1), 3, std::make_shared<LambertianDiffuse>(RGB(0.8f, 0.5f, 0.0f))));
     scene.add_shape(std::make_shared<Plane>(Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.8f, 0.5f, 0.1f))));
     scene.add_shape(std::make_shared<Plane>(Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.1f, 0.1f, 0.8f))));
     scene.add_shape(std::make_shared<Plane>(Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.1f, 0.8f, 0.8f))));
     scene.add_shape(std::make_shared<Plane>(Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(8.0f, 0.4, 0.2))));
 
 #else
-    // Image texture = readPPM("../textures/world.ppm");
+    Image texture = readPPM("../textures/world.ppm");
+    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, 1), 3, std::make_shared<Texture>(Texture(TextureMappingUV(texture))), Vector3(0, 1, 0), Vector3(1, 0, 0), Point3(8, -6, 3)));
     // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, 1), 3, std::make_shared<Texture>(Texture(TextureMappingUV(texture))), Vector3(0, 9, 0), Vector3(16, 0, 0), Point3(8, -6, 3)));
-    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, 1), 3, std::make_shared<Texture>(Texture(TextureMappingUV(texture))), Vector3(0, 9, 0), Vector3(16, 0, 0), Point3(8, -6, 3)));
+    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, 1), 3, std::make_shared<Texture>(Texture(TextureMappingUV(texture))), Vector3(0, 1, 0), Vector3(1, 0, 0), Point3(3, 3, 3)));
 
-    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(white)));
+    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<Texture>(Texture(TextureMappingUV(texture))), Vector3(0, 1, 0), Vector3(1, 0, 0), Point3(3, -3, 3)));
+    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, 1), 3, std::make_shared<Texture>(Texture(TextureMappingUV(texture))), Vector3(0, 1, 0), Vector3(1, 0, 0), Point3(3, -3, -3)));
+    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, 1), 3, std::make_shared<Texture>(Texture(TextureMappingUV(texture))), Vector3(0, 1, 0), Vector3(1, 0, 0), Point3(-3, -3, 3)));
+    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<Texture>(Texture(TextureMappingUV(texture))), Vector3(0, 1, 0), Vector3(1, 0, 0), Point3(3, -3, 3)));
+
+    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<Texture>(Texture(TextureMappingUV(texture))), Vector3(0, 1, 0), Vector3(1, 0, 0), Point3(3, -3, 3)));
+
+    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, 1), 3, std::make_shared<LambertianDiffuse>(blue)));
+    // scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(blue)));
 
     /*
     // techo
@@ -435,9 +445,9 @@ void escenaBVH(int &width, int &height, Camera &c, Scene &scene) {
     scene.add_shape(std::make_shared<Triangle>(Point3(-3, -3, -3), Point3(-3, -3, 5), Point3(3, -3, 5), std::make_shared<LambertianDiffuse>(white)));
     scene.add_shape(std::make_shared<Triangle>(Point3(3, -3, 5), Point3(3, -3, -3), Point3(-3, -3, -3), std::make_shared<LambertianDiffuse>(white)));
 
-    // // pared fondo
-    scene.add_shape(std::make_shared<Triangle>(Point3(-3, -3, -3), Point3(-3, 3, -3), Point3(3, 3, -3), std::make_shared<LambertianDiffuse>(white)));
-    scene.add_shape(std::make_shared<Triangle>(Point3(3, 3, -3), Point3(3, -3, -3), Point3(-3, -3, -3), std::make_shared<LambertianDiffuse>(white)));
+    // pared fondo
+    // scene.add_shape(std::make_shared<Triangle>(Point3(-3, -3, -3), Point3(-3, 3, -3), Point3(3, 3, -3), std::make_shared<LambertianDiffuse>(white)));
+    // scene.add_shape(std::make_shared<Triangle>(Point3(3, 3, -3), Point3(3, -3, -3), Point3(-3, -3, -3), std::make_shared<LambertianDiffuse>(white)));
 
     // scene.add_shape(std::make_shared<Triangle>(Point3(-3, -3, 3), Point3(-3, 3, 3), Point3(3, 3, 3), std::make_shared<LambertianDiffuse>(white)));
     // scene.add_shape(std::make_shared<Triangle>(Point3(3, 3, 3), Point3(3, -3, 3), Point3(-3, -3, 3), std::make_shared<LambertianDiffuse>(white)));
@@ -463,7 +473,7 @@ void escenaBVH(int &width, int &height, Camera &c, Scene &scene) {
     scene.add_shape(std::make_shared<Triangle>(Point3(-3, -3, -3), Point3(-3, -3, 3), Point3(3, -3, 3), std::make_shared<LambertianDiffuse>(white)));
     scene.add_shape(std::make_shared<Triangle>(Point3(3, -3, 3), Point3(3, -3, -3), Point3(-3, -3, -3), std::make_shared<LambertianDiffuse>(white)));
 
-    // // // pared fondo
+    // // pared fondo
     // scene.add_shape(std::make_shared<Triangle>(Point3(-3, -3, -3), Point3(-3, 3, -3), Point3(3, 3, -3), std::make_shared<LambertianDiffuse>(white)));
     // scene.add_shape(std::make_shared<Triangle>(Point3(3, 3, -3), Point3(3, -3, -3), Point3(-3, -3, -3), std::make_shared<LambertianDiffuse>(white)));
 
@@ -491,9 +501,17 @@ void escenaBVH(int &width, int &height, Camera &c, Scene &scene) {
     // Luz cuadrilatero
     // scene.add_shape(std::make_shared<Quadrilateral>(Point3(-2, 2.995, -2), Point3(2, 2.995, 3), std::make_shared<LightPower>(RGB(1, 1, 1))));
 
+    // // Luz 4x4
+    // scene.add_shape(std::make_shared<Triangle>(Point3(-2, 2.995, 2), Point3(-2, 2.995, -2), Point3(2, 2.995, 2), std::make_shared<LightPower>(RGB(5, 5, 5))));
+    // scene.add_shape(std::make_shared<Triangle>(Point3(2, 2.995, -2), Point3(2, 2.995, 2), Point3(-2, 2.995, -2), std::make_shared<LightPower>(RGB(5, 5, 5))));
+
+    scene.add_shape(std::make_shared<Triangle>(Point3(3, 3, -3), Point3(3, -3, -3), Point3(3, 3, 3), std::make_shared<LambertianDiffuse>(green)));
+    // scene.add_shape(std::make_shared<Triangle>(Point3(3, 3, 3), Point3(3, -3, 3), Point3(3, -3, -3), std::make_shared<LambertianDiffuse>(RGB(0.1, 0.8, 0.2))));
+    scene.add_shape(std::make_shared<Triangle>(Point3(3, -3, 3), Point3(3, 3, 3), Point3(3, -3, -3), std::make_shared<LambertianDiffuse>(green)));
+
     // Luz 4x4
-    scene.add_shape(std::make_shared<Triangle>(Point3(-2, 2.995, 2), Point3(-2, 2.995, -2), Point3(2, 2.995, 2), std::make_shared<LightPower>(RGB(5, 5, 5))));
-    scene.add_shape(std::make_shared<Triangle>(Point3(2, 2.995, -2), Point3(2, 2.995, 2), Point3(-2, 2.995, -2), std::make_shared<LightPower>(RGB(5, 5, 5))));
+    scene.add_shape(std::make_shared<Triangle>(Point3(2.995, 2, -2), Point3(2.995, -2, -2), Point3(2.995, 2, 2), std::make_shared<LightPower>(RGB(5, 5, 5))));
+    scene.add_shape(std::make_shared<Triangle>(Point3(2.995, -2, 2), Point3(2.995, 2, 2), Point3(2.995, -2, -2), std::make_shared<LightPower>(RGB(5, 5, 5))));
 
     // // Luz 2x2
     // scene.add_shape(std::make_shared<Triangle>(Point3(-1, 2.995, 1), Point3(-1, 2.995, -1), Point3(1, 2.995, 1), std::make_shared<LightPower>(RGB(5, 5, 5))));
@@ -520,8 +538,8 @@ void escenaBVH(int &width, int &height, Camera &c, Scene &scene) {
 
     // std::vector<Triangle> triangle_mesh = readPLY("../models/bun_zipper_res3_smooth.ply");
     // std::vector<Triangle> triangle_mesh = readPLY("../models/bun_zipper_res3.ply");
-    // std::vector<Triangle> triangle_mesh = readPLY("../models/bun_zipper_smooth.ply");
-    std::vector<Triangle> triangle_mesh = readPLY("../models/bun_zipper.ply");
+    std::vector<Triangle> triangle_mesh = readPLY("../models/bun_zipper_smooth.ply");
+    // std::vector<Triangle> triangle_mesh = readPLY("../models/bun_zipper.ply");
 
     TriangleMesh tm = TriangleMesh(triangle_mesh, std::make_shared<Plastic>(RGB(0.5f, 0.2f, 0.4f), 0.2f), Point3(0, -1.5, 0), 25);
     // TriangleMesh tm = TriangleMesh(triangle_mesh, std::make_shared<PerfectSpecular>(0.8f), Point3(0, -1.5, 0), 25);
@@ -530,9 +548,10 @@ void escenaBVH(int &width, int &height, Camera &c, Scene &scene) {
 
     // std::vector<Triangle> teapot = readPLY("../models/teapot.ply");
     // std::vector<Triangle> teapot = readPLY("../models/teapot_smooth.ply");
+    // std::vector<Triangle> teapot = readPLY("../models/teapot_smooth-girada.ply");
 
     // TriangleMesh tm = TriangleMesh(teapot, std::make_shared<PerfectSpecular>(0.8), Point3(0, -1.5, 0), 1);
-    // TriangleMesh tm = TriangleMesh(teapot, std::make_shared<Dielectric>(0.8), Point3(0, -1.5, 0), 1);
+    // TriangleMesh tm = TriangleMesh(teapot, std::make_shared<Dielectric>(1.5), Point3(0, -1.5, 0), 0.8);
 
     // scene.add_shape(std::make_shared<TriangleMesh>(tm));
 
@@ -925,21 +944,27 @@ void difusos_3(int &width, int &height, Camera &c, Scene &scene) {
 
     scene.set_background(RGB(0, 0, 0));
 
-    scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(RGB(0.5, 0.5, 0.5))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, -1), 2, std::make_shared<LambertianDiffuse>(RGB(0.5, 0.5, 0.5))));
     scene.add_shape(std::make_shared<Plane>(Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.8, 0.1, 0.1))));
     scene.add_shape(std::make_shared<Plane>(Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.1, 0.1, 0.8))));
     scene.add_shape(std::make_shared<Plane>(Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.5, 0.5, 0.5))));
     scene.add_shape(std::make_shared<Plane>(Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.5, 0.5, 0.5))));
 
-    scene.add_light(std::make_shared<PointLight>(&scene, Point3(0, 2.5, 0), RGB(5, 5, 5)));
+    scene.add_light(std::make_shared<PointLight>(&scene, Point3(0, 1.5, 0), RGB(5, 5, 5)));
     // scene.add_shape(std::make_shared<Quadrilateral>(Point3(2, 2.995, -3), Point3(-2, 2.995, 0), Point3(-2, 2.995, -3), std::make_shared<LightPower>(RGB(5.0f, 5.0f, 5.0f))));
+    // scene.add_shape(std::make_shared<Sphere>(Point3(0, 2.5, 0), 0.5, std::make_shared<LightPower>(RGB(5.0f, 5.0f, 5.0f))));
 
     // scene.add_shape(std::make_shared<Sphere>(Point3(-1, -2, 1), 1, std::make_shared<LambertianDiffuse>(RGB(0.82f, 0.41f, 0.11f))));   // Chocolate
     // scene.add_shape(std::make_shared<Sphere>(Point3(1.5, -2, -1), 1, std::make_shared<LambertianDiffuse>(RGB(0.82f, 0.41f, 0.11f)))); // Chocolate
 
-    // scene.add_shape(std::make_shared<Sphere>(Point3(-1, -2, 1), 1, std::make_shared<PerfectSpecular>(0.5))); // Chocolate
-    scene.add_shape(std::make_shared<Sphere>(Point3(-1.5, -2, -1), 1, std::make_shared<Dielectric>(2.42))); // Chocolate
-    scene.add_shape(std::make_shared<Sphere>(Point3(1.75, -2, -2), 1, std::make_shared<Dielectric>(1.5)));  // Chocolate
+    scene.add_shape(std::make_shared<Sphere>(Point3(-1.5, -2, 0), 1, std::make_shared<Dielectric>(2.42))); // Chocolate
+    scene.add_shape(std::make_shared<Sphere>(Point3(1.75, -2, -1), 1, std::make_shared<Dielectric>(1.5))); // Chocolate
+
+    // scene.add_shape(std::make_shared<Sphere>(Point3(-1.5, -2, 0), 1, std::make_shared<Phong>(RGB(0.05, 0.6, 0.6), 0.3, 1000)));  // Chocolate
+    // scene.add_shape(std::make_shared<Sphere>(Point3(1.75, -2, -1), 1, std::make_shared<Phong>(RGB(0.2f, 0.7f, 0.2f), 0.2, 10))); // Chocolate
+
+    // scene.add_shape(std::make_shared<Sphere>(Point3(-1.5, -2, -1), 1, std::make_shared<PerfectSpecular>(0.5))); // Chocolate
+    // scene.add_shape(std::make_shared<Sphere>(Point3(1.75, -2, -2), 1, std::make_shared<PerfectSpecular>(0.8))); // Chocolate
 
     scene.fix();
 }
@@ -995,7 +1020,7 @@ void phong_250(int &width, int &height, Camera &c, Scene &scene) {
     scene.fix();
 }
 
-void box(Scene &scene, int h, int w, int d, RGB cceil, RGB cfloor, RGB cright, RGB cleft, RGB cback) {
+void box(bool zforward, Scene &scene, int h, int w, int d, RGB cceil, RGB cfloor, RGB cright, RGB cleft, RGB cback) {
     // ceil
     scene.add_shape(std::make_shared<Triangle>(Point3(-w, h, d), Point3(-w, h, -d), Point3(w, h, d), std::make_shared<LambertianDiffuse>(cceil)));
     scene.add_shape(std::make_shared<Triangle>(Point3(w, h, -d), Point3(w, h, d), Point3(-w, h, -d), std::make_shared<LambertianDiffuse>(cceil)));
@@ -1003,8 +1028,13 @@ void box(Scene &scene, int h, int w, int d, RGB cceil, RGB cfloor, RGB cright, R
     scene.add_shape(std::make_shared<Triangle>(Point3(-w, -h, -d), Point3(-w, -h, d), Point3(w, -h, d), std::make_shared<LambertianDiffuse>(cfloor)));
     scene.add_shape(std::make_shared<Triangle>(Point3(w, -h, d), Point3(w, -h, -d), Point3(-w, -h, -d), std::make_shared<LambertianDiffuse>(cfloor)));
     // back
-    scene.add_shape(std::make_shared<Triangle>(Point3(-w, -h, -d), Point3(-w, h, -d), Point3(w, h, -d), std::make_shared<LambertianDiffuse>(cback)));
-    scene.add_shape(std::make_shared<Triangle>(Point3(w, h, -d), Point3(w, -h, -d), Point3(-w, -h, -d), std::make_shared<LambertianDiffuse>(cback)));
+    if (zforward) {
+        scene.add_shape(std::make_shared<Triangle>(Point3(-w, -h, d), Point3(-w, h, d), Point3(w, h, d), std::make_shared<LambertianDiffuse>(cback)));
+        scene.add_shape(std::make_shared<Triangle>(Point3(w, h, d), Point3(w, -h, d), Point3(-w, -h, d), std::make_shared<LambertianDiffuse>(cback)));
+    } else {
+        scene.add_shape(std::make_shared<Triangle>(Point3(-w, -h, -d), Point3(-w, h, -d), Point3(w, h, -d), std::make_shared<LambertianDiffuse>(cback)));
+        scene.add_shape(std::make_shared<Triangle>(Point3(w, h, -d), Point3(w, -h, -d), Point3(-w, -h, -d), std::make_shared<LambertianDiffuse>(cback)));
+    }
     // right
     scene.add_shape(std::make_shared<Triangle>(Point3(w, h, -d), Point3(w, -h, -d), Point3(w, h, d), std::make_shared<LambertianDiffuse>(cright)));
     scene.add_shape(std::make_shared<Triangle>(Point3(w, -h, d), Point3(w, h, d), Point3(w, -h, -d), std::make_shared<LambertianDiffuse>(cright)));
@@ -1013,23 +1043,8 @@ void box(Scene &scene, int h, int w, int d, RGB cceil, RGB cfloor, RGB cright, R
     scene.add_shape(std::make_shared<Triangle>(Point3(-w, h, d), Point3(-w, -h, d), Point3(-w, -h, -d), std::make_shared<LambertianDiffuse>(cleft)));
 }
 
-void box(Scene &scene, int h, int w, int d, RGB cceil, RGB cfloor, RGB cright, RGB cleft, RGB cback, int lw, int ld, RGB lpower, int lz) {
-    // ceil
-    scene.add_shape(std::make_shared<Triangle>(Point3(-w, h, d), Point3(-w, h, -d), Point3(w, h, d), std::make_shared<LambertianDiffuse>(cceil)));
-    scene.add_shape(std::make_shared<Triangle>(Point3(w, h, -d), Point3(w, h, d), Point3(-w, h, -d), std::make_shared<LambertianDiffuse>(cceil)));
-    // floor
-    scene.add_shape(std::make_shared<Triangle>(Point3(-w, -h, -d), Point3(-w, -h, d), Point3(w, -h, d), std::make_shared<LambertianDiffuse>(cfloor)));
-    scene.add_shape(std::make_shared<Triangle>(Point3(w, -h, d), Point3(w, -h, -d), Point3(-w, -h, -d), std::make_shared<LambertianDiffuse>(cfloor)));
-    // back
-    scene.add_shape(std::make_shared<Triangle>(Point3(-w, -h, -d), Point3(-w, h, -d), Point3(w, h, -d), std::make_shared<LambertianDiffuse>(cback)));
-    scene.add_shape(std::make_shared<Triangle>(Point3(w, h, -d), Point3(w, -h, -d), Point3(-w, -h, -d), std::make_shared<LambertianDiffuse>(cback)));
-    // right
-    scene.add_shape(std::make_shared<Triangle>(Point3(w, h, -d), Point3(w, -h, -d), Point3(w, h, d), std::make_shared<LambertianDiffuse>(cright)));
-    scene.add_shape(std::make_shared<Triangle>(Point3(w, -h, d), Point3(w, h, d), Point3(w, -h, -d), std::make_shared<LambertianDiffuse>(cright)));
-    // left
-    scene.add_shape(std::make_shared<Triangle>(Point3(-w, -h, -d), Point3(-w, h, -d), Point3(-w, h, d), std::make_shared<LambertianDiffuse>(cleft)));
-    scene.add_shape(std::make_shared<Triangle>(Point3(-w, h, d), Point3(-w, -h, d), Point3(-w, -h, -d), std::make_shared<LambertianDiffuse>(cleft)));
-
+void box(bool zforward, Scene &scene, int h, int w, int d, RGB cceil, RGB cfloor, RGB cright, RGB cleft, RGB cback, int lw, int ld, RGB lpower, int lz) {
+    box(zforward, scene, h, w, d, cceil, cfloor, cright, cleft, cback);
     // // area light
     // scene.add_shape(std::make_shared<Triangle>(Point3(-lw, h - 0.05, ld + lz), Point3(-lw, h - 0.05, -ld + lz), Point3(lw, h - 0.05, ld + lz), std::make_shared<LightPower>(lpower)));
     // scene.add_shape(std::make_shared<Triangle>(Point3(lw, h - 0.05, -ld + lz), Point3(lw, h - 0.05, ld + lz), Point3(-lw, h - 0.05, -ld + lz), std::make_shared<LightPower>(lpower)));
@@ -1039,10 +1054,7 @@ void box(Scene &scene, int h, int w, int d, RGB cceil, RGB cfloor, RGB cright, R
     scene.add_shape(std::make_shared<Triangle>(Point3(lw, h - 0.05, ld + lz), Point3(lw, h - 0.05, -ld + lz), Point3(-lw, h - 0.05, -ld + lz), std::make_shared<LightPower>(lpower)));
 }
 
-void escena_conejos(int &width, int &height, Camera &c, Scene &scene) {
-    // Camera l u f
-    width = 1200;
-    height = 800;
+void escena_conejos(int width, int height, Camera &c, Scene &scene) {
 
     // c = Camera(orig, left, up, front);
     // c = Camera(Point3(0, 0, -10), Vector3(3, 0, 0), Vector3(0, 3, 0), Vector3(0, 0, 10));
@@ -1054,40 +1066,37 @@ void escena_conejos(int &width, int &height, Camera &c, Scene &scene) {
     RGB red(0.85, 0.2, 0.2);
     RGB green(0.2, 0.85, 0.2);
 
-    RGB power(20, 20, 20);
+    RGB power(5, 5, 5);
 
     float h = 6, w = 8, d = 10;
 
-    // box(scene, h, w, d, white, white, green, red, white, 5, 5, power);
-    box(scene, h, w, d, white, white, green, red, white);
+    // box(scene, h, w, d, white, white, green, red, white, 5, 5, power, 0);
+    box(true, scene, h, w, d, white, white, green, red, white);
 
-    scene.add_light(std::make_shared<PointLight>(&scene, Point3(0, 4, 0), RGB(10, 10, 10)));
+    scene.add_light(std::make_shared<PointLight>(&scene, Point3(0, 4, 0), RGB(20, 20, 20)));
 
     // std::vector<Triangle> triangle_mesh = readPLY("../models/bun_zipper_res3_smooth.ply");
     // std::vector<Triangle> triangle_mesh = readPLY("../models/bun_zipper_res3.ply");
     std::vector<Triangle> triangle_mesh = readPLY("../models/bun_zipper_smooth.ply");
     // std::vector<Triangle> triangle_mesh = readPLY("../models/bun_zipper.ply");
 
-    TriangleMesh tm1 = TriangleMesh(triangle_mesh, std::make_shared<Plastic>(RGB(0.5f, 0.1f, 0.3f), 0.4f), Point3(3.7, -4.25, -3), 30);
-    TriangleMesh tm2 = TriangleMesh(triangle_mesh, std::make_shared<PerfectSpecular>(0.8f), Point3(-3.7, -4.25, -3), 30);
-    TriangleMesh tm3 = TriangleMesh(triangle_mesh, std::make_shared<Dielectric>(1.5), Point3(0, -4.25, 2), 30);
+    // z backwards
+    // TriangleMesh tm1 = TriangleMesh(triangle_mesh, std::make_shared<Plastic>(RGB(0.7f, 0.4f, 0.5f), 0.1f), Point3(3.7, -4.25, -3), 30);
+    // TriangleMesh tm2 = TriangleMesh(triangle_mesh, std::make_shared<PerfectSpecular>(0.9f), Point3(-3.7, -4.25, -3), 30);
+    // TriangleMesh tm3 = TriangleMesh(triangle_mesh, std::make_shared<Dielectric>(1.5), Point3(0, -4.25, 2), 30);
+
+    TriangleMesh tm1 = TriangleMesh(triangle_mesh, std::make_shared<Plastic>(RGB(0.7f, 0.4f, 0.5f), 0.1f), Point3(3.7, -4.25, 3), 30, true);
+    TriangleMesh tm2 = TriangleMesh(triangle_mesh, std::make_shared<PerfectSpecular>(0.9f), Point3(-3.7, -4.25, 3), 30, true);
+    TriangleMesh tm3 = TriangleMesh(triangle_mesh, std::make_shared<Dielectric>(1.5), Point3(0, -4.25, 0), 30, true);
 
     scene.add_shape(std::make_shared<TriangleMesh>(tm1));
     scene.add_shape(std::make_shared<TriangleMesh>(tm2));
     scene.add_shape(std::make_shared<TriangleMesh>(tm3));
 
-    // std::vector<Triangle> dragon = readPLY("../models/dragon_vrip_res3.ply");
-    // TriangleMesh tm = TriangleMesh(dragon, std::make_shared<PerfectSpecular>(0.8), Point3(0, -1.5, 0), 25);
-    // TriangleMesh tm = TriangleMesh(dragon, std::make_shared<Dielectric>(1.5), Point3(0, -1.5, 0), 25);
-    // scene.add_shape(std::make_shared<TriangleMesh>(tm));
-
     scene.fix();
 }
 
-void escena_dragon(int &width, int &height, Camera &c, Scene &scene) {
-    // Camera l u f
-    width = 1200;
-    height = 1200;
+void escena_dragon(int width, int height, Camera &c, Scene &scene) {
 
     // c = Camera(orig, left, up, front);
     // c = Camera(Point3(0, 0, -10), Vector3(3, 0, 0), Vector3(0, 3, 0), Vector3(0, 0, 10));
@@ -1101,24 +1110,18 @@ void escena_dragon(int &width, int &height, Camera &c, Scene &scene) {
     RGB blue(0.2, 0.2, 0.85);
     RGB power(5, 5, 5);
 
-    box(scene, 3, 3, 3, white, white, green, red, blue, 2, 2, power, 0);
+    box(true, scene, 3, 3, 3, white, white, green, red, blue, 2, 2, power, 0);
 
     std::vector<Triangle> dragon = readPLY("../models/dragon_vrip_res3.ply");
-    // TriangleMesh tm = TriangleMesh(dragon, std::make_shared<PerfectSpecular>(0.8), Point3(0, -1.5, 0), 25);
-    TriangleMesh tm = TriangleMesh(dragon, std::make_shared<Dielectric>(1.5), Point3(0, -1.6, 0), 25);
+    TriangleMesh tm = TriangleMesh(dragon, std::make_shared<PerfectSpecular>(0.8), Point3(0, -1.5, 0), 25, true);
+    // TriangleMesh tm = TriangleMesh(dragon, std::make_shared<Dielectric>(1.5), Point3(0, -1.6, 0), 25);
     scene.add_shape(std::make_shared<TriangleMesh>(tm));
 
     scene.fix();
 }
 
-void escena_dof(int &width, int &height, Camera &c, Scene &scene) {
-    // Camera l u f
-    width = 800;
-    height = 800;
+void escena_dof(int width, int height, Camera &c, Scene &scene) {
 
-    // c = Camera(orig, left, up, front);
-    // c = Camera(Point3(0, 0, -18), Vector3(4, 0, 0), Vector3(0, 4, 0), Vector3(0, 0, 20));
-    // c = Camera(Point3(0, 0, -18), Vector3(0.2, 0, 0), Vector3(0, 0.2, 0), Vector3(0, 0, 1));
     c = Camera(25, Point3(0, 0, -1), 20, (float)width / height);
 
     scene.set_background(RGB(0, 0, 0));
@@ -1130,11 +1133,11 @@ void escena_dof(int &width, int &height, Camera &c, Scene &scene) {
     RGB blue(0.2, 0.2, 0.85);
     RGB power(5, 5, 5);
 
-    box(scene, 3, 3, 8, white, white, green, red, white, 2, 2, power, -1);
+    box(true, scene, 3, 3, 8, white, white, green, red, white, 2, 2, power, -1);
 
     scene.add_shape(std::make_shared<Sphere>(Point3(0, -2, -1), 1, std::make_shared<LambertianDiffuse>(RGB(0.2, 0.5, 0.3))));
-    scene.add_shape(std::make_shared<Sphere>(Point3(-1, -2, 1), 1, std::make_shared<LambertianDiffuse>(RGB(0.2, 0.5, 0.3))));
-    scene.add_shape(std::make_shared<Sphere>(Point3(1, -2, -3), 1, std::make_shared<LambertianDiffuse>(RGB(0.2, 0.5, 0.3))));
+    scene.add_shape(std::make_shared<Sphere>(Point3(-1, -2, -3), 1, std::make_shared<LambertianDiffuse>(RGB(0.2, 0.5, 0.3))));
+    scene.add_shape(std::make_shared<Sphere>(Point3(1, -2, 1), 1, std::make_shared<LambertianDiffuse>(RGB(0.2, 0.5, 0.3))));
 
     scene.fix();
 }
@@ -1193,6 +1196,146 @@ void texture_2(int &width, int &height, Camera &c, Scene &scene) {
     Image texture = readPPM("../textures/world.ppm");
     Image texture2 = readPPM("../textures/world.ppm");
     Image texture3 = readPPM("../textures/world.ppm");
+
+    c = Camera(30.0f, Point3(0, 0, 0), 15.0f, (float)width / (float)height);
+
+    scene.set_background(RGB(0, 0, 0));
+
+    scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(RGB(0.9f, 0.8f, 0.6f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.70f, 0.085f, 0.085f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.4f, 0.8f, 0.5f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.68f, 0.93f, 0.93f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.4f, 0.5f, 0.6))));
+    scene.add_shape(std::make_shared<Sphere>(Point3(0, 0, 0), 1.5, std::make_shared<Texture>(TextureMappingUV(texture))));
+
+    scene.add_shape(std::make_shared<Quadrilateral>(Point3(2.995, 1.5, 1), Point3(2.995, -1.5, -3), Point3(2.995, 1.5, -3), std::make_shared<Texture>(TextureMappingUV(texture3))));
+    scene.add_shape(std::make_shared<Quadrilateral>(Point3(-2.995, 1.5, -3), Point3(-2.995, -1.5, 1), Point3(-2.995, 1.5, 1), std::make_shared<Texture>(TextureMappingUV(texture2))));
+    scene.add_shape(std::make_shared<Quadrilateral>(Point3(2, 2.995, -3), Point3(-2, 2.995, 0), Point3(-2, 2.995, -3), std::make_shared<LightPower>(RGB(5.0f, 5.0f, 5.0f))));
+
+    scene.fix();
+}
+
+void esferas(int &width, int &height, Camera &c, Scene &scene) {
+    width = 800;
+    height = 800;
+
+    c = Camera(30.0f, Point3(50, 52, 295.6), 15.0f, (float)width / (float)height);
+    scene.set_background(RGB(0, 0, 0));
+
+    float scale = 1e4;
+    // Left
+    scene.add_shape(std::make_shared<Sphere>(Point3(scale + 1, 40.8, 81.6), scale, std::make_shared<LambertianDiffuse>(RGB(.75, .25, .25))));
+    // Right
+    scene.add_shape(std::make_shared<Sphere>(Point3(-scale + 99, 40.8, 81.6), scale, std::make_shared<LambertianDiffuse>(RGB(.25, .25, .75))));
+    // Back
+    scene.add_shape(std::make_shared<Sphere>(Point3(50, 40.8, scale), scale, std::make_shared<LambertianDiffuse>(RGB(.75, .75, .75))));
+    // Front
+    // scene.add_shape(std::make_shared<Sphere>(Point3(50, 40.8, -1e4 + 170), 1e4, std::make_shared<LambertianDiffuse>(RGB(0, 0, 0))));
+    // Botom
+    scene.add_shape(std::make_shared<Sphere>(Point3(50, scale, 81.6), scale, std::make_shared<LambertianDiffuse>(RGB(.75, .75, .75))));
+    // Top
+    scene.add_shape(std::make_shared<Sphere>(Point3(50, -scale + 81.6, 81.6), scale, std::make_shared<LambertianDiffuse>(RGB(.75, .75, .75))));
+    // Mirror
+    scene.add_shape(std::make_shared<Sphere>(Point3(27, 16.5, 47), 16.5, std::make_shared<PerfectSpecular>(0.9)));
+    // scene.add_shape(std::make_shared<Sphere>(Point3(27, 16.5, 47), 16.5, std::make_shared<LambertianDiffuse>(RGB(.75, .25, .25))));
+    // Glass
+    scene.add_shape(std::make_shared<Sphere>(Point3(73, 16.5, 78), 16.5, std::make_shared<Dielectric>(1.50)));
+    // Light
+    scene.add_shape(std::make_shared<Sphere>(Point3(50, 681.6 - .27, 81.6), 600, std::make_shared<LightPower>(RGB(12, 12, 12))));
+    // scene.add_shape(std::make_shared<Sphere>(Point3(50, 681.6 - .5, 81.6), 600, std::make_shared<LightPower>(RGB(12, 12, 12))));
+    // scene.add_shape(std::make_shared<Sphere>(Point3(50, 70, 50), 10, std::make_shared<LightPower>(RGB(12, 12, 12))));
+
+    // scene.add_light(std::make_shared<PointLight>(&scene, Point3(50, 40, 50), RGB(1000, 1000, 1000)));
+    // scene.add_light(std::make_shared<PointLight>(&scene, Point3(50, 40, 50), RGB(200, 1000, 1000)));
+    // scene.add_light(std::make_shared<PointLight>(&scene, Point3(50, 40, 50), RGB(1000, 1000, 1000)));
+
+    scene.fix();
+}
+
+void esferas2(int &width, int &height, Camera &c, Scene &scene) {
+    width = 800;
+    height = 800;
+
+    c = Camera(30.0f, Point3(0, 0, 0), 15.0f, (float)width / (float)height);
+
+    scene.set_background((RGB(0, 0, 0)));
+
+    RGB white(0.75, 0.75, 0.75);
+    RGB red(0.85, 0.2, 0.2);
+    RGB green(0.2, 0.85, 0.2);
+    RGB blue(0.2, 0.2, 0.85);
+    RGB power(5, 5, 5);
+
+    box(true, scene, 4, 4, 4, white, white, green, red, white);
+    // box(scene, 3, 3, 8, white, white, green, red, white, 2, 2, power, -1);
+
+    // Left
+    // scene.add_shape(std::make_shared<Sphere>(Point3(-2, 0, 0), 1, std::make_shared<LambertianDiffuse>(RGB(.75, .25, .25))));
+    // Right
+    // scene.add_shape(std::make_shared<Sphere>(Point3(2, 0, 0), 1, std::make_shared<LambertianDiffuse>(RGB(.25, .25, .75))));
+    // Back
+    // scene.add_shape(std::make_shared<Sphere>(Point3(0, 0, -2), 1, std::make_shared<LambertianDiffuse>(RGB(.75, .75, .75))));
+    // Botom
+    // scene.add_shape(std::make_shared<Sphere>(Point3(0, -2, 0), 1, std::make_shared<LambertianDiffuse>(RGB(.75, .75, .75))));
+    // Top
+    // scene.add_shape(std::make_shared<Sphere>(Point3(0, 2, 0), 1, std::make_shared<LambertianDiffuse>(RGB(.75, .75, .75))));
+    // Mirror
+    // scene.add_shape(std::make_shared<Sphere>(Point3(27, 16.5, 47), 16.5, std::make_shared<PerfectSpecular>(0.9)));
+    // scene.add_shape(std::make_shared<Sphere>(Point3(-1, 0, 0), 1, std::make_shared<LambertianDiffuse>(RGB(.75, .25, .25))));
+    // Glass
+    // scene.add_shape(std::make_shared<Sphere>(Point3(1, 0, 0), 1, std::make_shared<Dielectric>(1.50)));
+    // Light
+    // scene.add_shape(std::make_shared<Sphere>(Point3(0, 1.5, 0), 0.2, std::make_shared<LightPower>(RGB(12, 12, 12))));
+
+    scene.add_light(std::make_shared<PointLight>(&scene, Point3(0, 1.5, 0), RGB(5, 5, 5)));
+
+    scene.fix();
+}
+
+// Included scenes
+
+void default_scene(int width, int height, Camera &c, Scene &scene) {
+
+    c = Camera(30.0f, Point3(0, 0, 0), 15.0f, (float)width / (float)height);
+
+    scene.set_background(RGB(0, 0, 0));
+
+    scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(RGB(0.5f, 0.5f, 0.5f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.8f, 0.1f, 0.1f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.1f, 0.8f, 0.1f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.5f, 0.5f, 0.5f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.5f, 0.5f, 0.5f))));
+
+    scene.add_shape(std::make_shared<Sphere>(Point3(-1.25, -2, -1.5), 1, std::make_shared<Dielectric>(1.5f)));
+    scene.add_shape(std::make_shared<Sphere>(Point3(1.25, -2, 1), 1, std::make_shared<Plastic>(Plastic(RGB(0.7f, 0.0f, 0.6f), 0.1f))));
+    scene.add_shape(std::make_shared<Quadrilateral>(Point3(2, 2.995, -3), Point3(-2, 2.995, 0), Point3(-2, 2.995, -3), std::make_shared<LightPower>(RGB(5.0f, 5.0f, 5.0f))));
+    scene.fix();
+}
+
+void default_point_light(int width, int height, Camera &c, Scene &scene) {
+
+    c = Camera(30.0f, Point3(0, 0, 0), 15.0f, (float)width / (float)height);
+
+    scene.set_background(RGB(0, 0, 0));
+
+    scene.add_shape(std::make_shared<Plane>(Vector3(0, 0, -1), 3, std::make_shared<LambertianDiffuse>(RGB(0.5f, 0.5f, 0.5f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(1, 0, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.8f, 0.1f, 0.1f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(-1, 0, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.1f, 0.8f, 0.1f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(0, 1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.5f, 0.5f, 0.5f))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.5f, 0.5f, 0.5f))));
+
+    scene.add_shape(std::make_shared<Sphere>(Point3(-1.25, -2, -1.5), 1, std::make_shared<Dielectric>(1.5f)));
+    scene.add_shape(std::make_shared<Sphere>(Point3(1.25, -2, 1), 1, std::make_shared<Plastic>(Plastic(RGB(0.7f, 0.0f, 0.6f), 0.1f))));
+
+    scene.add_light(std::make_shared<PointLight>(&scene, Point3(0, 2, 0), RGB(5, 5, 5)));
+    scene.fix();
+}
+
+void textures(int width, int height, Camera &c, Scene &scene) {
+
+    Image texture = readPPM("../textures/fire.ppm");
+    Image texture2 = readPPM("../textures/grito_simpson.ppm");
+    Image texture3 = readPPM("../textures/programer.ppm");
 
     c = Camera(30.0f, Point3(0, 0, 0), 15.0f, (float)width / (float)height);
 
