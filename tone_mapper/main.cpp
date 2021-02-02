@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
     // Values
     float step, value, gamma, a, s, l;
 
-    if (argc <= 1) {
+    if (argc <= 1 || argc == 2 && (argv[1] == "-h" || argv[1] == "-help")) {
         help();
         return 0;
     }
@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
                 // img.applyToneMappingOperator(Exposure(step));
                 // std::cout << "Aplicando antes" << std::endl;
             } else if (arg == "-clamp") {
-                operators.push_back(std::make_shared<Clamp>());
+                operators.push_back(std::make_shared<Clamp>(1.0f));
             } else if (arg == "-equalize") {
                 operators.push_back(std::make_shared<Equalize>(maxValue));
             } else if (arg == "-clamp-and-equalize") {
@@ -120,6 +120,7 @@ int main(int argc, char **argv) {
                 i++;
                 operators.push_back(std::make_shared<ClampAndEqualize>(value));
             } else if (arg == "-gamma-curve") {
+
                 gamma = getArgValue(argc, argv, i, GAMMA);
                 i++;
                 operators.push_back(std::make_shared<GammaCurve>(maxValue, gamma));
@@ -169,6 +170,7 @@ int main(int argc, char **argv) {
 
     // Apply operators
     for (int i = 0; i < operators.size(); i++) {
+
         img.applyToneMappingOperator(*operators[i]);
     }
 
@@ -176,7 +178,7 @@ int main(int argc, char **argv) {
     std::cout << "Writing output file..." << std::endl;
     switch (outFileFormat) {
     case PPM:
-        writePPM(img, inFile, max(img), LDR_LIMIT);
+        writePPM(img, outFile, max(img), LDR_LIMIT);
         break;
     case HDR:
         writeHDR(img, outFile);

@@ -38,17 +38,16 @@ class Exposure : public ToneMappingOperator {
 
 class Clamp : public ToneMappingOperator {
   public:
-    Clamp(){};
+    float value;
+    Clamp(float _value) : value(_value){};
     ~Clamp(){};
     RGB operator()(const RGB &c) const override;
     std::ostream &format(std::ostream &op) const override;
 };
 
 class Equalize : public ToneMappingOperator {
-  private:
-    float value;
-
   public:
+    float value;
     Equalize(float _value) : value(_value){};
     ~Equalize(){};
     RGB operator()(const RGB &c) const override;
@@ -56,24 +55,22 @@ class Equalize : public ToneMappingOperator {
 };
 
 class ClampAndEqualize : public ToneMappingOperator {
-  private:
-    Clamp clamping;
-    Equalize equalization;
 
   public:
+    Clamp clamping;
+    Equalize equalization;
     ClampAndEqualize(float _value)
-        : clamping(), equalization(_value){};
+        : clamping(_value), equalization(_value){};
     ~ClampAndEqualize(){};
     RGB operator()(const RGB &c) const override;
     std::ostream &format(std::ostream &op) const override;
 };
 
 class GammaCurve : public ToneMappingOperator {
-  private:
-    Equalize equalization;
-    float gamma, inv_gamma;
 
   public:
+    Equalize equalization;
+    float gamma, inv_gamma;
     GammaCurve(float _value, float _gamma)
         : equalization(_value), gamma(_gamma), inv_gamma(1.0f / _gamma){};
     ~GammaCurve(){};
@@ -82,13 +79,12 @@ class GammaCurve : public ToneMappingOperator {
 };
 
 class ClampAndGammaCurve : public ToneMappingOperator {
-  private:
-    GammaCurve gamma_curve;
-    Clamp clamping;
 
   public:
+    GammaCurve gamma_curve;
+    Clamp clamping;
     ClampAndGammaCurve(float _value, float _gamma)
-        : clamping(), gamma_curve(_value, _gamma){};
+        : clamping(_value), gamma_curve(_value, _gamma){};
     ~ClampAndGammaCurve(){};
     RGB operator()(const RGB &c) const override;
     std::ostream &format(std::ostream &op) const override;
@@ -110,7 +106,7 @@ class Reinhard02 : public ToneMappingOperator {
 
   public:
     Reinhard02(float _a, float _avg_L_w, float _white_L)
-        : a(_a), avg_L_w(_avg_L_w), white_L(_white_L), clamping(){};
+        : a(_a), avg_L_w(_avg_L_w), white_L(_white_L), clamping(1.0f){};
     ~Reinhard02(){};
     RGB operator()(const RGB &c) const override;
     std::ostream &format(std::ostream &op) const override;

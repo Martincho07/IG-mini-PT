@@ -27,9 +27,9 @@ std::ostream &Exposure::format(std::ostream &os) const {
 }
 
 RGB Clamp::operator()(const RGB &c) const {
-    return RGB(c.r > 1.0 ? 1.0f : c.r,
-               c.g > 1.0 ? 1.0f : c.g,
-               c.b > 1.0 ? 1.0f : c.b);
+    return RGB(c.r > value ? value : c.r,
+               c.g > value ? value : c.g,
+               c.b > value ? value : c.b);
 };
 
 std::ostream &Clamp::format(std::ostream &os) const {
@@ -96,9 +96,8 @@ RGB Reinhard02::operator()(const RGB &c) const {
     float L_w = lab_c.l;
     // L_w no mayor al wite
 
-    if (L_w > white_L){
+    if (L_w > white_L) {
         L_w = white_L;
-        
     }
     // Scaled luminance for the pixel
     float L = (a / avg_L_w) * L_w;
@@ -144,7 +143,7 @@ RGB Mantiuk08::operator()(const RGB &c) const {
     // Tone mapped luminance preserving whites
     float L_d = L * (1 + L / pow(min_L, 2)) / (1.0f + L);
     // Apply the luminance transformation on the pixel
-    return Clamp()(c / L_w * L_d);
+    return Clamp(1.0f)(c / L_w * L_d);
     // pixel = pixel * (1.0f / 4.0f);
     // L_pixel = pixel.L();
     // L = (a / L_w) * pixel.r;
