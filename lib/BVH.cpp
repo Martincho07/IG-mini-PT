@@ -1,3 +1,13 @@
+/*********************************************************************************
+ * BVH
+ *
+ * File: BVH.cpp
+ * Author: Fernando Peña (NIA: 756012)
+ * Author: Jose Daniel Subias Sarrato (NIA: 759533)
+ * Date: 6/10/2020
+ * Coms: Informática Gráfica, 2020-2021
+ **********************************************************************************/
+
 #include "BVH.hpp"
 #include "error.hpp"
 
@@ -81,7 +91,7 @@ void BVH::build_bounding_box(const std::vector<std::shared_ptr<Shape>> &shapes) 
     // std::cout << "Bounding box al final" << bb.pmin << ", " << bb.pmax << std::endl;
 }
 
-float BVH::intersect(Ray &ray, SurfaceInteraction &si) const {
+float BVH::intersect(const Ray &ray, SurfaceInteraction &si) const {
     // Si no se interseca con la bounding box, no hay intersección
     if (!bb.intersect(ray)) {
         // ErrorExit("Entrado no interseca")

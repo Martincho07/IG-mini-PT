@@ -1,7 +1,7 @@
 /*********************************************************************************
- * Image
+ * BRDF
  *
- * File: BRDF.hpp
+ * File: BRDF.cpp
  * Author: Fernando Peña (NIA: 756012)
  * Author: Jose Daniel Subias Sarrato (NIA: 759533)
  * Date: 6/10/2020
@@ -144,6 +144,17 @@ EVENT LambertianDiffuse::russian_roulette(const SurfaceInteraction &si, const Ve
     switch (random_event(pd, 0, 0)) {
     case DIFFUSE_EVENT: {
         wi = diffuse_reflection(si.normal, si.position);
+
+        // float r1 = 2 * M_PI * random_float();
+        // float r2 = random_float();
+        // float r2s = sqrt(r2);
+        // Vector3 w = si.normal;
+        // Vector3 u = normalize(cross((fabs(w.x) > .1 ? Vector3(0, 1, 0) : Vector3(1, 0, 0)), w));
+        // Vector3 v = cross(w, u);
+        // Vector3 d = normalize(u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2));
+
+        // wi = d;
+
         albedo = kd / pd;
         return DIFFUSE_EVENT;
     }

@@ -1,7 +1,7 @@
 /*********************************************************************************
  * Color
  *
- * File: color.hpp
+ * File: color.cpp
  * Author: Fernando Peña (NIA: 756012)
  * Author: Jose Daniel Subias Sarrato (NIA: 759533)
  * Date: 6/10/2020
@@ -121,7 +121,7 @@ LAB xyz2lab(const XYZ &c) {
     if (var_X > pow(delta, 3.0f))
         var_X = pow(var_X, (1.0f / 3.0f));
     else
-        var_X = ( (1.0f / (3.0f * pow(delta, 2.0f))) * var_X) + (4.0f / 29.0f);
+        var_X = ((1.0f / (3.0f * pow(delta, 2.0f))) * var_X) + (4.0f / 29.0f);
 
     if (var_Y > pow(delta, 3.0f))
         var_Y = pow(var_Y, (1.0f / 3.0f));

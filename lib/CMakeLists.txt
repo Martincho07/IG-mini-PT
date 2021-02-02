@@ -4,12 +4,13 @@ add_library(lib geometry.cpp
                 transform.cpp
                 color.cpp
                 image.cpp
-                file.cpp
-                error.cpp
+                # error.cpp
                 tone_mapping.cpp
                 shape.cpp
                 camera.cpp
                 BRDF.cpp
+                # surface_interaction.cpp
+                file.cpp
                 random.cpp
                 event.cpp
                 parallelization.cpp

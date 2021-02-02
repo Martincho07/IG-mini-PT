@@ -1,7 +1,7 @@
 /*********************************************************************************
  * Geometry
  *
- * File: coordinate.hpp
+ * File: geometry.hpp
  * Author: Fernando Peña (NIA: 756012)
  * Author: Jose Daniel Subias Sarrato (NIA: 759533)
  * Date: 22/10/2020

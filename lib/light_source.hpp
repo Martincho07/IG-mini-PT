@@ -1,5 +1,5 @@
 /*********************************************************************************
- * Light sources
+ * Light Sources
  *
  * File: light_source.hpp
  * Author: Fernando Peña (NIA: 756012)

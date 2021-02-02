@@ -1,7 +1,7 @@
 /*********************************************************************************
- * BRDF
+ * Surface Interaction
  *
- * File: BRDF.hpp
+ * File: surface_interaction.hpp
  * Author: Fernando Peña (NIA: 756012)
  * Author: Jose Daniel Subias Sarrato (NIA: 759533)
  * Date: 6/10/2020
@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "BRDF.hpp"
+#include "geometry.hpp"
 #include "shape.hpp"
 
 #include <memory>

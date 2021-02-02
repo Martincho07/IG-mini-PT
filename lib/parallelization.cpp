@@ -1,7 +1,7 @@
 /*********************************************************************************
  * Parallelization functions
  *
- * File: sample_scenes.hpp
+ * File: parallelization.cpp
  * Author: Fernando Peña (NIA: 756012)
  * Author: Jose Daniel Subias Sarrato (NIA: 759533)
  * Date: 6/10/2020
@@ -82,7 +82,7 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const Scene 
             }
             color = color / (float)num_rays;
 
-            image->fillPixel(pi.fila, pi.columna, color);
+            image->fillPixel(pi.row, pi.column, color);
             color = RGB(0.0f, 0.0f, 0.0f);
         }
 
