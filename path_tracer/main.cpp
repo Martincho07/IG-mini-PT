@@ -30,19 +30,21 @@
 void help() {
     std::cout << "Usage: path_tracer [options ...]\n\n"
                  "Options:\n"
-                 "  -p, --pixel_rays     Number of points per pixel\n"
-                 "  -t, --threads        Number of hardware concurrent threads\n"
-                 "  -s, --scene          Scene to render\n"
-                 "  -h, --help           Show this help message and quit"
+                 "  Output file options:\n"
+                 "    -o, --out_file       Output file name\n"
+                 "    -w, --width          Output image width\n"
+                 "    -h, --height         Output image height\n"
+                 "    -c, --color_res      Output image color resolution\n"
+                 "  Rendering options:\n"
+                 "    -p, --pixel_rays     Number of points per pixel\n"
+                 "    -t, --threads        Number of hardware concurrent threads\n"
+                 "    -s, --scene          Scene to render\n"
+                 "  -?, --help             Show this help message and quit"
               << std::endl;
 }
 
 int main(int argc, char **argv) {
-    int width, height;
-    unsigned int num_threads, pixel_rays, selected_scene;
-
-    // pixel_rays (p)
-    // threads
+    unsigned int num_threads, pixel_rays, selected_scene, width, height, color_res;
 
     // options descriptor
     static struct option longopts[] = {
@@ -51,21 +53,29 @@ int main(int argc, char **argv) {
         {"scene", required_argument, 0, 's'},
         {"pixel_rays", required_argument, 0, 'p'},
         {"threads", required_argument, 0, 't'},
-        {"help", no_argument, 0, 'h'},
-        {"file", no_argument, 0, 'o'},
+        {"help", no_argument, 0, '?'},
+        {"out_file", no_argument, 0, 'o'},
+        {"width", no_argument, 0, 'w'},
+        {"height", no_argument, 0, 'h'},
+        {"color_res", no_argument, 0, 'c'},
         {NULL, 0, NULL, 0}};
 
     // default option values
     num_threads = std::thread::hardware_concurrency();
-    pixel_rays = 1;
-    selected_scene = 1;
-
-    std::string output_file = "imagen";
+    pixel_rays = 100;
+    selected_scene = 0;
+    width = 800;
+    height = 800;
+    color_res = 10000000;
+    std::string output_file = "image";
 
     int ch;
     int index;
-    while ((ch = getopt_long(argc, argv, "p:t:hs:o:", longopts, &index)) != -1) {
+    while ((ch = getopt_long(argc, argv, "?p:t:h:s:o:w:h:c:", longopts, &index)) != -1) {
         switch (ch) {
+        case '?':
+            help();
+            return 0;
         case 'p':
             pixel_rays = atoi(optarg);
             break;
@@ -78,11 +88,17 @@ int main(int argc, char **argv) {
         case 's':
             selected_scene = atoi(optarg);
             break;
-        case 'h':
-            help();
-            return 0;
         case 'o':
             output_file = optarg;
+            break;
+        case 'w':
+            width = atoi(optarg);
+            break;
+        case 'h':
+            height = atoi(optarg);
+            break;
+        case 'c':
+            output_file = atoi(optarg);
             break;
         default:
             help();
@@ -94,50 +110,59 @@ int main(int argc, char **argv) {
     Scene scene;
     Camera camera;
 
+    std::cout << "Output image: width: " << width << ", height: " << height << " color res: " << color_res << std::endl;
+
     switch (selected_scene) {
     case 1:
         // escenaDielectrico(width, height, camera, scene);
-        dielectric_1(width, height, camera, scene);
+        // dielectric_1(width, height, camera, scene);
+        // esferas(width, height, camera, scene);
+        // esferas2(width, height, camera, scene);
+        default_point_light(width, height, camera, scene);
         break;
     case 2:
-        dielectric_2(width, height, camera, scene);
+        // dielectric_2(width, height, camera, scene);
         // escena4(width, height, camera, scene);
+        textures(width, height, camera, scene);
         break;
     case 3:
-        escenaBVH(width, height, camera, scene);
+        // escenaBVH(width, height, camera, scene);
+        escena_conejos(width, height, camera, scene);
         break;
     case 4:
-        escena_conejos(width, height, camera, scene);
-        // escenaChula(width, height, camera, scene);
-        break;
-    case 5:
-        escena_dragon(width, height, camera, scene);
-        break;
-    case 6:
-        // cornellBox(width, height, camera, scene);
-        difusos_3(width, height, camera, scene);
-        break;
-    case 7:
-        phong_250(width, height, camera, scene);
-        break;
-    case 8:
-        // escenaDOF(width, height, camera, scene);
+        // escena_conejos(width, height, camera, scene);
+        // escena_dragon(width, height, camera, scene);
         escena_dof(width, height, camera, scene);
         break;
-    case 9:
-        dielectric_4(width, height, camera, scene);
-        break;
-    case 10:
-        texture_1(width, height, camera, scene);
-        // texture_2(width, height, camera, scene);
-        break;
+    // case 5:
+    //     escena_dragon(width, height, camera, scene);
+    //     break;
+    // case 6:
+    //     // cornellBox(width, height, camera, scene);
+    //     difusos_3(width, height, camera, scene);
+    //     break;
+    // case 7:
+    //     phong_250(width, height, camera, scene);
+    //     break;
+    // case 8:
+    //     // escenaDOF(width, height, camera, scene);
+    //     escena_dof(width, height, camera, scene);
+    //     break;
+    // case 9:
+    //     dielectric_4(width, height, camera, scene);
+    //     break;
+    // case 10:
+    //     texture_1(width, height, camera, scene);
+    //     // texture_2(width, height, camera, scene);
+    //     break;
     default:
-        // escena4(width, height, camera, scene);
+        default_scene(width, height, camera, scene);
         break;
     }
 
     // std::cout << "Numero de consumers: " << num_threads << std::endl;
-    std::cout << "Renderizando escena " << selected_scene << " (" << num_threads << " threads)..."
+    std::cout << "\nRendering scene " << selected_scene << " (" << pixel_rays << " ppp, " << num_threads << " threads)..."
+              << std::endl
               << std::endl;
 
     Image image(width, height);
@@ -162,14 +187,14 @@ int main(int argc, char **argv) {
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = end - init;
 
-    std::cout << "Tiempo de renderizado: " << diff.count() << std::endl;
-    std::cout << "Numero de geometrias: " << scene.get_num_shapes() << std::endl;
-    std::cout << "Numero de pixeles: " << height * width << std::endl;
-    std::cout << "Maximo: " << max(image) << std::endl;
+    std::cout << "\nRendering time: " << diff.count() << " s" << std::endl;
+    std::cout << "Number of geometric primitives: " << scene.get_num_shapes() << std::endl;
+    std::cout << "Number of pixels: " << height * width << std::endl;
+    std::cout << "Maximum: " << max(image) << std::endl;
+    std::cout << std::endl;
 
     writeHDR(image, output_file + ".hdr");
-
-    writePPM(image, output_file + "_hdr.ppm", max(image), 10000000);
+    writePPM(image, output_file + "_hdr.ppm", max(image), color_res);
 
     // clampAndGammaCurve(image, 10, 2.2);
     // clamping(image);

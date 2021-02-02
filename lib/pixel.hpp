@@ -11,8 +11,8 @@
 struct Pixel {
 
     float x_min, x_max, y_min, y_max;
-    int fila, columna;
+    int row, column;
 
-    Pixel(int _fila, int _columna, float _x_min, float _x_max, float _y_min, float _y_max) : fila(_fila), columna(_columna), x_min(_x_min), x_max(_x_max), y_min(_y_min), y_max(_y_min){};
+    Pixel(int _row, int _column, float _x_min, float _x_max, float _y_min, float _y_max) : row(_row), column(_column), x_min(_x_min), x_max(_x_max), y_min(_y_min), y_max(_y_min){};
     Pixel(){};
 };

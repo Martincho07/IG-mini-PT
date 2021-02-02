@@ -11,6 +11,7 @@
 #include "Logger.hpp"
 #include "Semaphore_V2.hpp"
 #include <cassert>
+#include <iomanip>
 #include <iostream>
 
 template <typename T>
@@ -175,10 +176,10 @@ struct ConcurrentBoundedQueue {
     //Post:
     //Com:  muestra el progreso de tareas completadas
     void progreso() {
-        std::cout << "Completado " << complet_tasks << std::endl;
-        // std::cout
-        //     << "\r\033[F[" << std::fixed << std::setprecision(2) << 100 * (float)complet_tasks / N << "%]\n"
-        //     << std::flush;
+        // std::cout << "Completado " << complet_tasks << std::endl;
+        std::cout
+            << "\r\033[FCompleted: [" << std::fixed << std::setprecision(2) << 100 * (float)complet_tasks / N << "%]\n"
+            << std::flush;
     };
 
     //-----------------------------------------------------

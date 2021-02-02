@@ -74,6 +74,6 @@ TEST_CASE("RGB-LAB image conversion") {
         pixel = lab2rgb(rgb2lab(pixel));
     }
 
-    img.applyToneMappingOperator(Clamp());
+    img.applyToneMappingOperator(Clamp(1));
     writePPM(img, "../tone_mapper/hdr_examples/procesadas2/lab2.ppm", max(img), 255);
 }
