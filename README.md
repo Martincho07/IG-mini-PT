@@ -5,11 +5,13 @@
 *Informática Gráfica - Universidad de Zaragoza, curso 2020-21*
 
 # Descripción
-Este repositorio contiene un Path Tracer y un Tone Mapper capaz de convertir
-las imágenes HDR PPM que genera el Path Tracer a LDR PPM.
+Este repositorio contiene un Path Tracer, que resuelve la ecuación de render
+mediante Monte Carlo y Muestreo por Importancia, y un Tone Mapper, capaz de
+convertir las imágenes en alto rango dinámico que genera el Path Tracer (con
+un formato PPM modificado) en imágenes PPM estándar que se puedan visualizar.
 
 # Compilación
-Se ha utilizado cmake como sistema de compilación. Para construir los
+Se ha utilizado CMake como sistema de compilación. Para construir los
 Makefiles del proyecto ir al directorio raíz y ejecutar
 
     cmake -B build
@@ -42,23 +44,21 @@ El Path Tracer se puede ejecutar con los siguientes argumentos:
         -s, --scene          Scene to render
     -?, --help             Show this help message and quit
 
-El Tone Mapper permite guardar imágenes con formato PPM o HDR (por defecto
-usa ppm). Se puede utilizar para convertir imágenes PPM HDR en HDR si no se
-indica ningún operador de tone mapping.
-Se ejecuta de la siguiente forma:
+El Tone Mapper permite guardar imágenes con formato .ppm o .hdr (Radiance
+HDR). Por defecto usa PPM. Se ejecuta de la siguiente forma:
 
     Usage: tone_mapper input-file.ppm [options ...] [output-file.{ppm|hdr}]
 
     Options:
     -exposure step      Multiply each pixel by 2^step to adjust the exposure
-    -clamp              Discard al values greater than 255 (1 in floating point precission)
+    -clamp              Discard all values greater than 255 (1 in floating point precision)
     -equalize           Linear transformation of all values from minimum to the maximum (normalization)
     -clamp-and-equalize value
                         Clamp all values greater than 'value' and equalize the rest of them
     -gamma-curve gamma  Apply a gamma curve to all the values
     -clamp-and-gamma-curve value gamma
                         Apply a gamma curve after clamping all the values greater than 'value'
-    -reinhard02 a l      Apply the Reinhard 2002 operator with a given 'a' key value
+    -reinhard02 a l      Apply the Reinhard 2002 operator with a given 'a' key value and 'l' value
     -mantiuk08 a s      Apply the Mantiuk 2008 operator with a given 'a' key value and 's' value
     -h, -help           Show this help message and quit
 
@@ -71,6 +71,9 @@ Se ejecuta de la siguiente forma:
     s = 0.6
 
     If no output-file is provided, the image is saved as: out_'input-file'.ppm
+
+El Tone Mapper se puede utilizar para convertir imágenes .ppm en .hdr si no
+se indica ningún operador de tone mapping.
 
 # Escenas
 El Path Tracer tiene 5 escenas ya configuradas. Se pueden seleccionar
@@ -86,15 +89,19 @@ puntual.
 plástico.
 3. Contiene un dragón con material especular.
 4. Tiene tres esferas, una detrás de otra, y se puede utilizar para probar la
-profundidad de campo. Para activarla la cámara *thin lens*, hace falta
-modificar descomentar la línea `#define DOF` en `camera.cpp` y volver a
+profundidad de campo. Para activar la cámara *thin lens*, hace falta
+descomentar la línea `#define DOF` en `camera.cpp` y volver a
 compilar.
 
-En el fichero `path_tracer/sample_scenes.hpp` hay muchos ejemplos de escenas, y pueden de guía para crear escenas nuevas.
+En el fichero `path_tracer/sample_scenes.hpp` hay muchos ejemplos de escenas,
+y pueden servir de guía para crear escenas nuevas.
 
-Las imágenes se generan con un formato PPM modificado para guardar imágenes HDR, que no se puede abrir con programas de visión de imágenes. Para poder ver los resultados, hace falta aplicar el Tone Mapper sobre la imagen.
+Las imágenes se generan con un formato PPM modificado para guardar imágenes
+HDR, que no se puede abrir con programas de visualización de imágenes. Para
+poder ver los resultados, hace falta aplicar Tone Mapping sobre la imagen.
 
-El siguiente es un ejemplo completo para poder generar y visualizar una imagen:
+El siguiente es un ejemplo completo para poder generar y visualizar una
+imagen:
 
     build/path_tracer -s 1 -p 40 -o imagen_hdr
     build/tone_mapper imagen_hdr.ppm -clamp-and-gamma-curve 1 2.2 imagen.ppm

@@ -75,7 +75,7 @@ RGB ClampAndGammaCurve::operator()(const RGB &c) const {
 };
 
 std::ostream &ClampAndGammaCurve::format(std::ostream &os) const {
-    os << "clamp and gamma curve";
+    os << "clamp and gamma curve [";
     clamping.format(os);
     os << ", ";
     gamma_curve.format(os);

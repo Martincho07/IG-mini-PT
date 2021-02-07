@@ -48,8 +48,6 @@ int main(int argc, char **argv) {
 
     // options descriptor
     static struct option longopts[] = {
-        // {"width", required_argument, 0, 'h'},
-        // {"height", required_argument, 0, 'w'},
         {"scene", required_argument, 0, 's'},
         {"pixel_rays", required_argument, 0, 'p'},
         {"threads", required_argument, 0, 't'},
@@ -119,15 +117,21 @@ int main(int argc, char **argv) {
         // esferas(width, height, camera, scene);
         // esferas2(width, height, camera, scene);
         default_point_light(width, height, camera, scene);
+        // sudor2(width, height, camera, scene);
+
         break;
     case 2:
         // dielectric_2(width, height, camera, scene);
         // escena4(width, height, camera, scene);
-        textures(width, height, camera, scene);
+        // sudor(width, height, camera, scene);
+        // textures(width, height, camera, scene);
+        // escena_concurso(width, height, camera, scene);
+        escena_conejos(width, height, camera, scene);
         break;
     case 3:
         // escenaBVH(width, height, camera, scene);
-        escena_conejos(width, height, camera, scene);
+        // escena_conejos(width, height, camera, scene);
+        escena_dragon(width, height, camera, scene);
         break;
     case 4:
         // escena_conejos(width, height, camera, scene);
