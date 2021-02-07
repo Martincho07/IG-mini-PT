@@ -277,10 +277,16 @@ float Plane::getU(const Point3 &p) const {
 
     Point3 p2plane = world2Plane(p);
 
-    return abs(p2plane.x) - abs((int)p2plane.x);
+    // return abs(p2plane.x) - abs((int)p2plane.x);
+    // return abs(p2plane.x) - abs((int)p2plane.x);
+    // return abs(p2plane.x) - abs((int)p2plane.x);
+
+    // return abs(p2plane.x - (int)p2plane.x);
+    return p2plane.x - (int)p2plane.x;
 };
 
 float Triangle::getU(const Point3 &p) const {
+    ErrorExit("Not implemented");
     return -1.0f;
 };
 
@@ -291,6 +297,7 @@ float Quadrilateral::getU(const Point3 &p) const {
     return (modulus(r) * cos) / modulus(q);
 };
 float TriangleMesh::getU(const Point3 &p) const {
+    ErrorExit("Not implemented");
     return -1.0f;
 };
 
@@ -304,10 +311,19 @@ float Plane::getV(const Point3 &p) const {
     Point3 p2plane = world2Plane(p);
     //std::cout << p2plane << std::endl;
     //exit(1);
+
+    // if (p2plane.z - (int)p2plane.z < 0) {
+    // std::cout << p2plane.z << ", " << (int)p2plane.z << std::endl;
+    // }
+
+    // return p2plane.z - (int)p2plane.z;
+    // return -(abs(p2plane.z) - abs((int)p2plane.z));
+    // return abs(p2plane.z - (int)p2plane.z);
     return p2plane.z - (int)p2plane.z;
 };
 
 float Triangle::getV(const Point3 &p) const {
+    ErrorExit("Not implemented");
     return -1;
 };
 
@@ -319,6 +335,7 @@ float Quadrilateral::getV(const Point3 &p) const {
     return (modulus(r) * cos) / modulus(q);
 };
 float TriangleMesh::getV(const Point3 &p) const {
+    ErrorExit("Not implemented");
     return -1.0f;
 };
 

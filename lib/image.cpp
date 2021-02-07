@@ -27,6 +27,72 @@ void Image::fillPixel(int f, int c, const RGB r) {
 
 RGB Image::getPixel(float u_coord, float v_coord) const {
 
+    // int row = (int)((1.0f - u_coord) * (height - 1.0f));
+    // // int column = (int)(v_coord * (width - 1.0f));
+    // int column = (int)((1.0f - v_coord) * (width - 1.0f));
+
+    // if (v_coord == 0) {
+    //     std::cout << v_coord << std::endl;
+    // }
+
+    // std::cout << "u_coord: " << u_coord << std::endl;
+    // std::cout << "v_coord: " << v_coord << std::endl;
+
+    if (u_coord < 0) {
+        u_coord = 1 + u_coord;
+    }
+
+    if (v_coord < 0) {
+        v_coord = 1 + v_coord;
+    }
+
+    u_coord = 1 - u_coord;
+    // v_coord = 1 - v_coord;
+
+    // if (u_coord < 0 || v_coord < 0) {
+    //     exit(1);
+    // }
+
+    // std::cout << "u_coord: " << u_coord << std::endl;
+    // std::cout << "v_coord: " << v_coord << std::endl;
+
+    int row = (int)(u_coord * (height - 1));
+    int column = (int)(v_coord * (width - 1));
+
+    // int row = (int)u_coord % height;
+    // if (row < 0)
+    //     row += height;
+
+    // int col = (int)v_coord % width;
+    // if (col < 0)
+    //     col += width;
+
+    //std::cout << "uuuuuuuu: " << u_coord << std::endl;
+    //std::cout << "vvvvvvvv: " << v_coord << std::endl;
+    //std::cout << "pos v: " << columna << std::endl;
+    //std::cout << "sizeeeee: " << v.size() << std::endl;
+
+    // assert(((fila * width) + columna) < v.size());
+
+    // if ((row * width) + column >= v.size()) {
+    //     std::cout << "row: " << row << ", column: " << column << ", width: " << width << std::endl;
+    //     exit(1);
+    //     // return RGB(0, 0, 0);
+    // }
+
+    // int indice = (row * width) + column;
+
+    int indice = (row * width) + column;
+    assert(indice >= 0);
+
+
+    // return v[abs(indice)];
+    return v[indice];
+};
+
+/*
+RGB Image::getPixel(float u_coord, float v_coord) const {
+
     int fila = (int)((1.0f - u_coord) * (height - 1.0f));
     int columna = (int)(v_coord * (width - 1.0f));
     //std::cout << "uuuuuuuu: " << u_coord << std::endl;
@@ -34,8 +100,14 @@ RGB Image::getPixel(float u_coord, float v_coord) const {
     //std::cout << "pos v: " << columna << std::endl;
     //std::cout << "sizeeeee: " << v.size() << std::endl;
 
+    // assert(((fila * width) + columna) < v.size());
+    if ((fila * width) + columna >= v.size()) {
+        return RGB(0, 0, 0);
+    }
+
     return v[(fila * width) + columna];
 };
+*/
 
 float max(const Image &img) {
     float maxValue = FLT_MIN;
