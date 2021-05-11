@@ -8,10 +8,10 @@
  * Coms: Informática Gráfica, 2020-2021
  **********************************************************************************/
 
-#include "ConcurrentBoundedQueue.hpp"
-#include "Logger.hpp"
-#include "Semaphore_V2.hpp"
 #include "camera.hpp"
+#include "cbq/ConcurrentBoundedQueue.hpp"
+#include "cbq/Logger.hpp"
+#include "cbq/Semaphore_V2.hpp"
 #include "color.hpp"
 #include "error.hpp"
 #include "file.hpp"

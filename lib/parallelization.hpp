@@ -10,8 +10,8 @@
 
 #pragma once
 
-#include "ConcurrentBoundedQueue.hpp"
 #include "camera.hpp"
+#include "cbq/ConcurrentBoundedQueue.hpp"
 #include "color.hpp"
 #include "geometry.hpp"
 #include "image.hpp"

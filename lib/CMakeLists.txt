@@ -20,3 +20,4 @@ add_library(lib geometry.cpp
                 light_source.cpp)
 
 target_include_directories(lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(lib PUBLIC ${PROJECT_SOURCE_DIR}/external)

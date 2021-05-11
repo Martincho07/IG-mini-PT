@@ -11,7 +11,6 @@
 #pragma once
 
 #include "BRDF.hpp"
-#include "Semaphore_V2.hpp"
 #include "color.hpp"
 #include "geometry.hpp"
 #include "scene.hpp"
