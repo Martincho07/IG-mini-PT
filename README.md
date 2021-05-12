@@ -1,6 +1,6 @@
 # Path Tracer y Tone Mapper
-* Autor: Fernando Peña Bes (NIA: 756012)
-* Autor: Jose Daniel Subías Sarrato (NIA: 759533)
+* Autor: Fernando Peña Bes
+* Autor: Jose Daniel Subías Sarrato
 
 *Informática Gráfica - Universidad de Zaragoza, curso 2020-21*
 
@@ -9,6 +9,11 @@ Este repositorio contiene un Path Tracer, que resuelve la ecuación de render
 mediante Monte Carlo y Muestreo por Importancia, y un Tone Mapper, capaz de
 convertir las imágenes en alto rango dinámico que genera el Path Tracer (con
 un formato PPM modificado) en imágenes PPM estándar que se puedan visualizar.
+
+En el [informe](doc/pathtracer_report.pdf) se explica en detalle la implementación de los programas.
+
+
+![Contest image](doc/rendercontest.jpg)
 
 # Compilación
 Se ha utilizado CMake como sistema de compilación. Para construir los
@@ -30,50 +35,71 @@ encontrarán los binarios de los dos programas.
 
 El Path Tracer se puede ejecutar con los siguientes argumentos:
 
-    Usage: path_tracer [options ...]
+```
+Usage: path_tracer [options ...]
 
-    Options:
-    Output file options:
-        -o, --out_file       Output file name
-        -w, --width          Output image width
-        -h, --height         Output image height
-        -c, --color_res      Output image color resolution
-    Rendering options:
-        -p, --pixel_rays     Number of points per pixel
-        -t, --threads        Number of hardware concurrent threads
-        -s, --scene          Scene to render
-    -?, --help             Show this help message and quit
+Options:
+  Output file options:
+    -o, --out_file FILE     Output file name (default image_hdr.ppm)
+    -w, --width WIDTH       Output image width (default 800)
+    -h, --height HEIGHT     Output image height (default 800)
+    -c, --color_res RES     Output image color resolution (default 10000000) 
+  Rendering options:
+    -p, --pixel_rays PPP    Number of points per pixel (default 100)
+    -t, --threads N         Number of hardware concurrent threads (default max. threads)
+    -s, --scene N           Scene to render
+                              [0-10] (default 0)
+    -i, --integrator TYPE   Integrator to solve the rendering equation
+                              [pathtracing, raytracing, normals] (default pathtracing)
+  -?, --help                Show this help message and quit
+```
 
 El Tone Mapper permite guardar imágenes con formato .ppm o .hdr (Radiance
 HDR). Por defecto usa PPM. Se ejecuta de la siguiente forma:
 
-    Usage: tone_mapper input-file.ppm [options ...] [output-file.{ppm|hdr}]
+```
+Usage: tone_mapper input-file.ppm [options ...] [output-file.{ppm|hdr}]
 
-    Options:
-    -exposure step      Multiply each pixel by 2^step to adjust the exposure
-    -clamp              Discard all values greater than 255 (1 in floating point precision)
-    -equalize           Linear transformation of all values from minimum to the maximum (normalization)
-    -clamp-and-equalize value
-                        Clamp all values greater than 'value' and equalize the rest of them
-    -gamma-curve gamma  Apply a gamma curve to all the values
-    -clamp-and-gamma-curve value gamma
-                        Apply a gamma curve after clamping all the values greater than 'value'
-    -reinhard02 a l      Apply the Reinhard 2002 operator with a given 'a' key value and 'l' value
-    -mantiuk08 a s      Apply the Mantiuk 2008 operator with a given 'a' key value and 's' value
-    -h, -help           Show this help message and quit
+Options:
+  -exposure STEP        Multiply each pixel by 2^STEP to adjust the exposure
+  -clamp                Discard all values greater than 255 (1 in floating point precision)
+  -equalize             Linear transformation of all values from minimum to the maximum (normalization)
+  -clamp-and-equalize VALUE
+                        Clamp all values greater than VALUE and equalize the rest of them
+  -gamma-curve GAMMA    Apply a gamma curve to all the values
+  -clamp-and-gamma-curve VALUE GAMMA
+                        Apply a gamma curve after clamping all the values greater than VALUE
+  -reinhard02 A L       Apply the Reinhard 2002 operator with a given A key value and L value
+  -mantiuk08 A S        Apply the Mantiuk 2008 operator with a given A key value and S value
+  -?, -h, -help         Show this help message and quit
 
-    Use the string 'default' to indicate the default value
-    Default values:
-    step = 0
-    value = 1
-    gamma = 2.2
-    a = 0.16
-    s = 0.6
+Use the string 'default' as argument value to use the default value
+Default values:
+  STEP = 1
+  VALUE = 1
+  GAMMA = 2.2
+  A = 0.16
+  L = 0.7
+  S = 0.6
 
-    If no output-file is provided, the image is saved as: out_'input-file'.ppm
+If no output-file is provided, the image is saved as: out_'input-file'.ppm
+```
 
 El Tone Mapper se puede utilizar para convertir imágenes .ppm en .hdr si no
 se indica ningún operador de tone mapping.
+
+# Integradores
+El Path Tracer permite renderizar la imagen usando uno de los siguientes integradores,
+que se encargan de resolver la ecuación de render:
+
+- Path Tracing (`-i pathtracing`), por defecto
+- Ray Tracing (`-i raytracing`)
+  > Nota: Sólo permite renderizar la iluminación de luces puntuales
+- Mapa de normales (`-i normals`)
+
+|Path Tracing|Ray Tracing|Mapa de normales|
+|:---:|:---:|:---:|
+|![default point light pathtracing](doc/default_point_light-pathtracing.png)|![Contest image](doc/default_point_light-raytracing.png)|![Contest image](doc/default_point_light-normals.png)|
 
 # Escenas
 El Path Tracer tiene 5 escenas ya configuradas. Se pueden seleccionar
@@ -88,17 +114,28 @@ puntual.
 2. Contiene tres conejos, uno con material especular, otro dieléctrico y otro
 plástico.
 3. Contiene un dragón con material especular.
-4. Tiene tres esferas, una detrás de otra, y se puede utilizar para probar la
-profundidad de campo. Para activar la cámara *thin lens*, hace falta
-descomentar la línea `#define DOF` en `camera.cpp` y volver a
-compilar.
+4. Tiene tres esferas, una detrás de otra, y la cámara es de tipo *thin lens*.
+5. Está formada por varias esferas dielécticas y difusas
+6. Ejemplo de mapeo de texturas
+7. Escena de la sección de introducción
+
+Conejos, dragón, esferas, mapeo
+
+|Escena 2|Escena 3|
+|:---:|:---:|
+|![conejos](doc/conejos.png)|![dragon](doc/dragon.png)|
+
+|Escena 4|Escena 6|
+|:---:|:---:|
+|![dof](doc/dof.png)|![textura](doc/textura.png)|
 
 En el fichero `path_tracer/sample_scenes.hpp` hay muchos ejemplos de escenas,
 y pueden servir de guía para crear escenas nuevas.
 
+# Visualización de imágenes
 Las imágenes se generan con un formato PPM modificado para guardar imágenes
 HDR, que no se puede abrir con programas de visualización de imágenes. Para
-poder ver los resultados, hace falta aplicar Tone Mapping sobre la imagen.
+poder ver los resultados hace falta aplicar Tone Mapping sobre la imagen.
 
 El siguiente es un ejemplo completo para poder generar y visualizar una
 imagen:
