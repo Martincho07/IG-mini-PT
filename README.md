@@ -1,6 +1,6 @@
 # Path Tracer y Tone Mapper
 * Autor: Fernando Peña Bes
-* Autor: Jose Daniel Subías Sarrato
+* Autor: José Daniel Subías Sarrato
 
 *Informática Gráfica - Universidad de Zaragoza, curso 2020-21*
 
@@ -113,7 +113,7 @@ selecciona una que no existe.
 puntual.
 2. Contiene tres conejos, uno con material especular, otro dieléctrico y otro
 plástico.
-3. Contiene un dragón con material especular.
+3. Contiene un dragón con material dieléctrico.
 4. Tiene tres esferas, una detrás de otra, y la cámara es de tipo *thin lens*.
 5. Está formada por varias esferas dielécticas y difusas.
 6. Ejemplo de mapeo de texturas.
