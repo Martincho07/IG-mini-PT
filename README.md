@@ -102,7 +102,7 @@ que se encargan de resolver la ecuación de render:
 |![default point light pathtracing](doc/default_point_light-pathtracing.png)|![Contest image](doc/default_point_light-raytracing.png)|![Contest image](doc/default_point_light-normals.png)|
 
 # Escenas
-El Path Tracer tiene 5 escenas ya configuradas. Se pueden seleccionar
+El Path Tracer tiene varias escenas ya configuradas. Se pueden seleccionar
 utilizando la opción `-s` seguida de uno de los siguientes números.
 
 0. Contiene dos esferas, una dieléctrica con un índice de refracción de 1,5 y
