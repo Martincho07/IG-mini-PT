@@ -54,7 +54,7 @@ struct Vector3 {
         return *this;
     }
 
-    // Substraction of two vectors
+    // Subtraction of two vectors
     Vector3 operator-(const Vector3 &v) const {
         return Vector3(x - v.x, y - v.y, z - v.z);
     }
@@ -157,12 +157,12 @@ struct Point3 {
         return *this;
     }
 
-    // Substraction of two points to get a direction
+    // Subtraction of two points to get a direction
     Vector3 operator-(const Point3 &p) const {
         return Vector3(x - p.x, y - p.y, z - p.z);
     }
 
-    // Substract a vector from the point
+    // Subtract a vector from the point
     Point3 operator-(const Vector3 &v) const {
         return Point3(x - v.x, y - v.y, z - v.z);
     }
@@ -233,8 +233,8 @@ struct Ray {
     // // Current traversed distance along the ray (can be negative)
     // float t;
 
-    // Ray(const Point3 &_o, const Vector3 &_d) : o(_o), d(_d) {}
     Ray(const Point3 &_o, const Vector3 &_d) : o(_o), d(normalize(_d)) {}
+    // Ray(const Point3 &_o, const Vector3 &_d) : o(_o), d(_d) {}
     // Ray(const Point3 &_o, const Vector3 &_d, float _t) : o(_o), d(_d), t(_t) {}
 
     // Get point across ray

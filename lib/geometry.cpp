@@ -30,12 +30,12 @@ float modulus(const Vector3 &v) {
 }
 
 Vector3 normalize(const Vector3 &v) {
-    if (modulus(v) == 0) {
-        Backtrace();
-        // return v;
-        exit(1);
-    }
-    assert(modulus(v) != 0); // TODO
+    // if (modulus(v) == 0) {
+    //     Backtrace();
+    //     // return v;
+    //     exit(1);
+    // }
+    assert(modulus(v) != 0);
     return v / modulus(v);
 }
 

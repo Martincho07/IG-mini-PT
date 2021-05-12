@@ -33,8 +33,7 @@ void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector
             for (int j = i; j < i + height_submatrix; j++) {
 
                 for (int k = n; k < n + width_submatrix; k++) {
-                    // Calculo de los limites de las coordenadas x e y de
-                    // un pixel
+                    // Calculation of the limits of a pixel
                     x_min = init_width + (k * pixel_width);
                     x_max = init_width + ((k + 1) * pixel_width);
                     y_min = init_height - ((j + 1) * pixel_height);
@@ -44,16 +43,13 @@ void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector
                 }
             }
             pos = 0;
-            // Se encola la submatriz generada
+            // Queue the generated submatrix
             cbq.enqueue(submatrix);
             actual_submatrix++;
         }
     }
 }
 
-// Define el comportamiento de los consumers,
-// estos cogen porciones de la imagen original
-// y calculan el color de los pixels.
 void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Scene &scene, Image &image, std::shared_ptr<Integrator> integrator, int num_rays) {
 
     thread_local std::vector<Pixel> p;
@@ -66,10 +62,10 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Scene 
     cbq.num_complete(num_tasks);
     while (num_tasks < NUM_REGIONS * NUM_REGIONS) {
 
-        // Se saca de la cola FIFO el primer elemento
+        // Deque the first elemento of the FIFO queue
         cbq.first(p);
-        // Se calcula el color de los pixel de la submatriz
-        // desencolada.
+
+        // Calculate the color of the pixels of the dequeued submatrix
         for (const Pixel &pi : p) {
 
             for (int i = 0; i < num_rays; i++) {
@@ -85,7 +81,7 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Scene 
             color = RGB(0.0f, 0.0f, 0.0f);
         }
 
-        // Se actualiza el numero de tareas realizadas
+        // Update the number of completed tasks
         cbq.num_complete(num_tasks);
     }
 }

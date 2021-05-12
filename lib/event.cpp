@@ -14,9 +14,10 @@
 EVENT random_event(float max_kd, float max_ks, float max_kt) {
     // Russian roulette
 
-    // Elegir número entre 0 - 1
+    // Choose a number between 0 - 1
     float rand = random_float();
-    // Ver dónde ha caído el punto y devolver ese evento
+
+    // Return the event that corresponds to the random number
     if (rand < max_kd) {
         return DIFFUSE_EVENT;
     } else if (rand < max_kd + max_ks) {

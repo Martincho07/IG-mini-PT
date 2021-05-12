@@ -35,9 +35,9 @@ RGB Scene::get_background() const {
 }
 
 void Scene::add_shape(const std::shared_ptr<Shape> shape) {
-    // Añadir shape a la BVH
+    // Add a shape to the BVH
 
-    // Si es una malla de triángulos, añadirlos por separado
+    // If the shape is a triangle mesh, add each triangle separately
     std::shared_ptr<TriangleMesh> tm = std::dynamic_pointer_cast<TriangleMesh>(shape);
 
     if (!(tm == nullptr)) {
@@ -49,13 +49,7 @@ void Scene::add_shape(const std::shared_ptr<Shape> shape) {
     }
 }
 
-// void Scene::add_shape(const std::shared_ptr<TriangleMesh> mesh) {
-//     // Añadir todos los triángulos
-//     // shapes.emplace_back(mesh->faces);
-// }
-
 int Scene::get_num_shapes() const {
-    // Llamar también a las bounding box
     return shapes.size();
 }
 
@@ -73,7 +67,7 @@ std::shared_ptr<LightSource> Scene::get_light(int idx) const {
 }
 
 float Scene::sample_light(std::shared_ptr<LightSource> &light) const {
-    // Recorrer todas las luces hasta que se llege a sumar el número aleatorio
+    // Sample a random light using importance sampling based on its powers
     float rand = random_float(0, total_power);
     float acum = 0;
     for (std::shared_ptr<LightSource> l : lights) {
@@ -93,6 +87,6 @@ bool Scene::first_intersection(const Ray &ray, SurfaceInteraction &si) const {
 }
 
 void Scene::fix() {
-    // Construir la BVH con las shapes actuales
+    // Construct the BVH with the current shapes
     bvh = BVH(shapes, 0, shapes.size(), 10);
 }

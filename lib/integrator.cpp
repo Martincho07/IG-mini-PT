@@ -1,3 +1,13 @@
+/*********************************************************************************
+ * Integrator
+ *
+ * File: integrator.cpp
+ * Author: Fernando Peña (NIA: 756012)
+ * Author: Jose Daniel Subias Sarrato (NIA: 759533)
+ * Date: 6/10/2020
+ * Coms: Informática Gráfica, 2020-2021
+ **********************************************************************************/
+
 #include "integrator.hpp"
 
 #include "BRDF.hpp"
@@ -142,9 +152,9 @@ RGB NormalMapIntegrator::render(float x, float y, const Scene &scene) const {
 
         Vector3 n = si.normal;
 
-        // x -> más azul
-        // y -> más verde
-        // z -> más rojo
+        // x -> more blue
+        // y -> more green
+        // z -> more red
 
         n = n * 0.5f;
         return RGB(0.5f + n.z, 0.5f + n.y, 0.5f + n.x);

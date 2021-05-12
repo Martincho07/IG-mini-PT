@@ -23,12 +23,12 @@
 #define NUM_REGIONS 8
 #define CAMERA_PLANE_SIZE 1.0f
 
-// Define el comportamiento del producer, que divide
-// la imagen en rectángulos y los coloca en una cola
-// FIFO
+// Defines the behaviour of the producer
+// Divides the image in rectangles and pushes them
+// to the concurrent queue
 void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector3 &u, const Vector3 &r, int width, int height);
 
-// Define el comportamiento de los consumers,
-// estos cogen porciones de la imagen original
-// y calculan el color de los pixels.
+// Defines the behaviour of the consumers
+// They take rectangles from the queue and calculate
+// the color of the pixels inside them
 void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Scene &scene, Image &image, std::shared_ptr<Integrator> integrator, int num_rays);

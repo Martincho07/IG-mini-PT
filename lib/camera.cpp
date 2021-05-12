@@ -13,7 +13,7 @@
 
 Camera::Camera(float fov, const Point3 &target, float distance, float aspect_ratio) {
 
-    // grados a radianes
+    // degrees to radians
     fov = (fov * M_PI) / 180.0f;
 
     r = Vector3(1, 0, 0);

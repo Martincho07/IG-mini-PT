@@ -120,8 +120,9 @@ struct Quadrilateral : public Shape {
     Triangle t2;
     Point3 l_left, l_right, u_left, u_right;
 
-    // El cuadrilatero recibe como parametros u_c (upper corner) que es la esquina superior derecha
-    // y l_c(lower corner) que es la esquina inferior izquierda
+    // u_c (upper right corner)
+    // l_c (lower right corner)
+    // u_left (upper left corner)
     Quadrilateral(){};
     Quadrilateral(Point3 u_c, Point3 l_c, Point3 u_left, std::shared_ptr<Material> _material) : Shape(_material) {
         // t1 = Triangle(_color, Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, l_c.z), Point3(u_c.x, u_c.y, u_c.z), _brdf);
@@ -138,9 +139,6 @@ struct Quadrilateral : public Shape {
         t1 = Triangle(l_c, this->u_left, u_c, _material);
         t2 = Triangle(u_c, this->l_right, l_c, _material);
 
-        // // Corregido
-        // t1 = Triangle(Point3(l_c.x, l_c.y, l_c.z), Point3(l_c.x, u_c.y, u_c.z), Point3(u_c.x, l_c.y, l_c.z), _material);
-        // t2 = Triangle(Point3(l_c.x, u_c.y, u_c.z), Point3(u_c.x, u_c.y, u_c.z), Point3(u_c.x, l_c.y, l_c.z), _material);
     };
     Quadrilateral(Point3 p10, Point3 p00, Point3 p01, Point3 p11, std::shared_ptr<Material> _material) : Shape(_material) {
         t1 = Triangle(p10, p00, p01, _material);

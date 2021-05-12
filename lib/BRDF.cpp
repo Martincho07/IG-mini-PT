@@ -18,34 +18,18 @@
 #include <iostream>
 #include <memory>
 
+// wo ray direction in world coordinates
+// Calculates the outgoing ray direction using the reflection law
+// The returned the direction is in world coordinates
 Vector3 specular_reflection(const Vector3 &wo, const Vector3 &normal) {
-    // wi rayo en coordenadas del mundo
-    // Calcular el rayo de salida con la ley de la reflexión
-    // Se devuelve en coordenadas del mundo
-
-    /// TODO: Pensar si la normal está ya bien o puede hacer falta darle la vuelta
-    // if (dot(wi, normal) < 0.0f) {
-    //     return wi + normal * 2.0f * -dot(normal, wi);
-    // } else {
     return -wo + normal * 2.0f * dot(normal, wo);
-    // return -wo - normal * 2.0f * dot(normal, -wo);
-    // return -wo + 2 * Dot(wo, n) * n;
-    // Ray reflRay(position, ray.d - normal * 2 * dot(normal, ray.d));
-    // }
 };
 
+// Generates a random ray within the hemisphere
+// The returned the direction is in world coordinates
 Vector3 diffuse_reflection(const Vector3 &normal, const Point3 &intersection_point) {
-    // wi rayo en coordenadas del mundo
-    // Generar un rayo aleatorio dentro de la hemiesfera
-    // Se devuelve en coordenadas del mundo
-
-    // Hay que generar un espacio de coordenadas local al punto de intersección,
-    // sabiendo la normal en ese punto
-    // Generar una dirección aleatoria en la hemiesfera y cambiarla a coordendas del mundo
-
-    // float radius = modulus(normal);
-    //unsigned int seed = rand() % 100;
-
+    // Calculate coordinate system local to the intersection point in the direction
+    // of the normal
     Vector3 Nt, x, y, z;
 
     if (std::fabs(normal.x) > std::fabs(normal.y))
@@ -58,21 +42,15 @@ Vector3 diffuse_reflection(const Vector3 &normal, const Point3 &intersection_poi
     z = normalize(z);
     x = cross(y, z);
 
+    // Generate a random direction in the hemisphere
     Vector3 out_dir = uniform_hemisphere_sample();
 
+    // Transform the direction to world coordinates
     return changeBasis(x, y, z, intersection_point)(out_dir);
 };
 
 Vector3 phong_reflection(const Vector3 &wr, const Point3 &intersection_point, float alpha) {
-    // wi rayo en coordenadas del mundo
-    // Generar un rayo aleatorio dentro de la hemiesfera
-    // Se devuelve en coordenadas del mundo
-
-    // Hay que generar un espacio de coordenadas local al punto de intersección,
-    // sabiendo la normal en ese punto
-    // Generar una dirección aleatoria en la hemiesfera y cambiarla a coordendas del mundo
-
-    // float radius = modulus(normal);
+    // Generate a coordinate system in the direction of the reflected ray
 
     Vector3 Nt, x, y, z;
 
@@ -86,6 +64,7 @@ Vector3 phong_reflection(const Vector3 &wr, const Point3 &intersection_point, fl
     z = normalize(z);
     x = cross(y, z);
 
+    // Phong importance sampling
     Vector3 out_dir = phong_uniform_hemisphere_sample(alpha);
 
     return changeBasis(x, y, z, intersection_point)(out_dir);
@@ -102,9 +81,6 @@ Vector3 refraction(const Vector3 &wi, const Vector3 &normal, float n1, float n2)
 
     // Handle total internal reflection for transmission
     assert(sin2ThetaT < 1);
-    // if (sin2ThetaT >= 1)
-    //     throw("Internal reflection while calculating transmitted direction");
-    // return false;
 
     float cosThetaT = sqrt(1 - sin2ThetaT);
 
@@ -117,7 +93,7 @@ float fresnel_ks(const Vector3 &wi, const Vector3 &normal, float n1, float n2) {
 
     float cosThetaI = dot(normal, wi);
 
-    // Compute cosThetaT using Shell's law
+    // Compute cosThetaT using Snell's law
     float sinThetaI = sqrt(std::max(0.0f, 1 - cosThetaI * cosThetaI));
     float sinThetaT = n * sinThetaI;
 
@@ -144,22 +120,10 @@ EVENT LambertianDiffuse::russian_roulette(const SurfaceInteraction &si, const Ve
     switch (random_event(pd, 0, 0)) {
     case DIFFUSE_EVENT: {
         wi = diffuse_reflection(si.normal, si.position);
-
-        // float r1 = 2 * M_PI * random_float();
-        // float r2 = random_float();
-        // float r2s = sqrt(r2);
-        // Vector3 w = si.normal;
-        // Vector3 u = normalize(cross((fabs(w.x) > .1 ? Vector3(0, 1, 0) : Vector3(1, 0, 0)), w));
-        // Vector3 v = cross(w, u);
-        // Vector3 d = normalize(u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2));
-
-        // wi = d;
-
         albedo = kd / pd;
         return DIFFUSE_EVENT;
     }
     default:
-        // albedo = kd / pd;
         return DEAD_EVENT;
     }
 }
@@ -183,7 +147,6 @@ EVENT Texture::russian_roulette(const SurfaceInteraction &si, const Vector3 &wo,
 }
 
 EVENT PerfectSpecular::russian_roulette(const SurfaceInteraction &si, const Vector3 &wo, Vector3 &wi, RGB &albedo) const {
-    // std::cout << "Entrado" << std::endl;
     switch (random_event(0, ps, 0)) {
     case SPECULAR_EVENT: {
         wi = specular_reflection(wo, si.normal);
@@ -229,24 +192,9 @@ EVENT Phong::russian_roulette(const SurfaceInteraction &si, const Vector3 &wo, V
             return DEAD_EVENT;
         }
 
-        // if (dot(wi, si.normal) >= 0.0f) {
-        //     return DEAD_EVENT;
-        // }
-
-        // if (dot(wi, wr) < 0.0f) {
-        //     return DEAD_EVENT;
-        // }
-
-        // float cosTh = dot(wi, wo);
-
         float cos_i = dot(wo, si.normal);
         albedo = ((ks / ps) * (cos_i) * ((alpha + 2.0f) / (alpha + 1.0f)));
 
-        // float sin_r = modulus(cross(wr, si.normal)) / (modulus(wr) * modulus(si.normal));
-        // float sin_i = modulus(cross(wi, si.normal)) / (modulus(wi) * modulus(si.normal));
-        // float cos_i = dot(wi, si.normal) / (modulus(wi) * modulus(si.normal));
-
-        // albedo = ((ks / ps) * ((cos_i * sin_i) / sin_r) * ((alpha + 2.0f) / (alpha + 1.0f)));
         return SPECULAR_EVENT;
     }
     default:
@@ -255,7 +203,6 @@ EVENT Phong::russian_roulette(const SurfaceInteraction &si, const Vector3 &wo, V
 }
 
 EVENT Dielectric::russian_roulette(const SurfaceInteraction &si, const Vector3 &wo, Vector3 &wi, RGB &albedo) const {
-    // obtener ks y kt
 
     float coefks;
     if (si.into) {
@@ -276,20 +223,17 @@ EVENT Dielectric::russian_roulette(const SurfaceInteraction &si, const Vector3 &
 
     switch (random_event(0, ps, pt)) {
     case SPECULAR_EVENT: {
-        // Error("Specular");
         wi = specular_reflection(wo, si.normal);
         albedo = ks / ps;
         return SPECULAR_EVENT;
     }
     case REFRACTION_EVENT: {
-        // Error("Refraction");
         if (si.into) {
             wi = refraction(wo, si.normal, AIR_N, n);
         } else {
             wi = refraction(wo, si.normal, n, AIR_N);
         }
         albedo = kt / pt;
-        // albedo = RGB(1, 1, 1);
         return REFRACTION_EVENT;
     }
     default:

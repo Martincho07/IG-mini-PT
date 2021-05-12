@@ -118,7 +118,7 @@ void escena_dragon(int width, int height, std::shared_ptr<Camera> &c, Scene &sce
 
     std::vector<Triangle> dragon = readPLY("../models/dragon_vrip_res3.ply");
     // TriangleMesh tm = TriangleMesh(dragon, std::make_shared<PerfectSpecular>(0.8), Point3(0, -1.5, 0), 25, true);
-    TriangleMesh tm = TriangleMesh(dragon, std::make_shared<Dielectric>(1.5), Point3(0, -1.6, 0), 25, true);
+    TriangleMesh tm = TriangleMesh(dragon, std::make_shared<Dielectric>(1.5), Point3(0, -1.5, 0), 25, true);
     scene.add_shape(std::make_shared<TriangleMesh>(tm));
 
     scene.fix();

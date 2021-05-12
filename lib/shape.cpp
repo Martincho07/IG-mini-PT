@@ -119,7 +119,7 @@ float Sphere::intersect(const Ray &ray) const {
 
 float Triangle::intersect(const Ray &ray) const {
 
-    // Codigo adaptado de: https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+    // Code adapted from: https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
 
     Vector3 edge1, edge2, h, s, q;
     float a, f, u, v, t;
@@ -136,7 +136,7 @@ float Triangle::intersect(const Ray &ray) const {
     s = ray.o - v1;
     u = f * dot(s, h);
 
-    // En los siguientes dos if no hay que poner EPSILON
+    // In the following two if you don't have to compare with EPSILON
 
     if (u < 0.0f || u > 1.0f)
         return -1.0f;
@@ -191,7 +191,6 @@ Vector3 Triangle::normal(const Point3 &p) const {
     if (!smooth) {
         return n1;
     } else {
-        // Point3 p = v3;
         // https://computergraphics.stackexchange.com/questions/5006/how-do-i-use-barycentric-coordinates-to-interpolate-vertex-normal
 
         Vector3 bary;
@@ -211,14 +210,7 @@ Vector3 Triangle::normal(const Point3 &p) const {
         bary.y = (d00 * d21 - d01 * d20) / denom;
         bary.z = 1.0f - bary.x - bary.y;
 
-        // Error(v1, v2, v3);
-        // Error(p);
-        // Error(bary);
-        // exit(1);
-
         return normalize(n1 * bary.x + n3 * bary.y + n2 * bary.z);
-        // return n1 * bary.x + n3 * bary.y + n2 * bary.z;
-        // return normalize(n1 * bary.x + n2 * bary.y + n3 * bary.z);
     }
 };
 
@@ -254,10 +246,10 @@ Point3 TriangleMesh::centroid() const {
 
 void TriangleMesh::reposition(const Point3 &center, float scale) {
 
-    // Buscar el centro de la malla
+    // Find the centroid of the mesh
     Point3 c = centroid();
 
-    // Recolocar el objeto y ajustar la escala
+    // Reposition the object and adjust the scale
     Vector3 offset = center - c * scale;
     for (Triangle &f : faces) {
         f.v1 = (f.v1 * scale) + offset;
@@ -274,14 +266,7 @@ float Sphere::getU(const Point3 &p) const {
 };
 
 float Plane::getU(const Point3 &p) const {
-
     Point3 p2plane = world2Plane(p);
-
-    // return abs(p2plane.x) - abs((int)p2plane.x);
-    // return abs(p2plane.x) - abs((int)p2plane.x);
-    // return abs(p2plane.x) - abs((int)p2plane.x);
-
-    // return abs(p2plane.x - (int)p2plane.x);
     return p2plane.x - (int)p2plane.x;
 };
 
@@ -307,18 +292,7 @@ float Sphere::getV(const Point3 &p) const {
 };
 
 float Plane::getV(const Point3 &p) const {
-    //std::cout << p << std::endl;
     Point3 p2plane = world2Plane(p);
-    //std::cout << p2plane << std::endl;
-    //exit(1);
-
-    // if (p2plane.z - (int)p2plane.z < 0) {
-    // std::cout << p2plane.z << ", " << (int)p2plane.z << std::endl;
-    // }
-
-    // return p2plane.z - (int)p2plane.z;
-    // return -(abs(p2plane.z) - abs((int)p2plane.z));
-    // return abs(p2plane.z - (int)p2plane.z);
     return p2plane.z - (int)p2plane.z;
 };
 
@@ -340,8 +314,6 @@ float TriangleMesh::getV(const Point3 &p) const {
 };
 
 AABB Plane::bounding_box() const {
-    /// TODO: No se si hay que poner todas las componentes infinitas
-    // return AABB(Point3(-FLT_MAX, 0, -FLT_MAX), Point3(FLT_MAX, 0, FLT_MAX));
     return AABB(Point3(-FLT_MAX, -FLT_MAX, -FLT_MAX), Point3(FLT_MAX, FLT_MAX, FLT_MAX));
     ErrorExit("No bounding box for infinite planes");
 }
@@ -368,43 +340,6 @@ AABB TriangleMesh::bounding_box() const {
 }
 
 bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, const Ray &ray, SurfaceInteraction &si) {
-
-    /*
-    std::shared_ptr<Shape> shape;
-
-    double d;
-    double inf = 1e20;
-    double t = 1e20;
-
-    for (int i = 0; i < shapes.size(); i++) {
-        if ((d = shapes[i]->intersect(ray)) && d < t) {
-            t = d;
-            shape = shapes[i];
-        }
-    }
-
-    if (t < inf) {
-        Point3 si_point = ray.get_point(t);
-
-        // Calculate propely oriented normal
-        Vector3 si_normal = shape->normal(si_point);
-
-        // Determine if ray is entering the shape
-        bool into = true;
-        if (dot(ray.d, si_normal) >= 0.0) {
-            // Error("into", shape->material->type);
-            into = false;
-            si_normal = -si_normal;
-        }
-
-        // si_normal = dot(ray.d, si_normal) < 0.0 ? si_normal : -si_normal;
-
-        si = SurfaceInteraction(shape, t, si_point, si_normal, into);
-        return true;
-    } else {
-        return false;
-    }
-    */
 
     float t_min = FLT_MAX;
     float t = 0;

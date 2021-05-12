@@ -44,8 +44,7 @@ struct Material {
 };
 
 struct LightPower : public Material {
-
-    // Luz emitida
+    // Emited light power
     RGB light_power;
 
     LightPower(RGB _light_power) : Material(EMISSOR) {
@@ -58,7 +57,7 @@ struct LightPower : public Material {
 };
 
 struct LambertianDiffuse : public Material {
-    // Coeficiente difuso
+    // Diffuse coefficient
     RGB kd;
     float pd;
 
@@ -72,7 +71,7 @@ struct LambertianDiffuse : public Material {
 };
 
 struct Texture : public Material {
-    // Textura del material
+    // Material texture
     TextureMappingUV texture;
 
     Texture(TextureMappingUV _texture) : Material(TEXTURE) {
@@ -84,7 +83,7 @@ struct Texture : public Material {
 };
 
 struct PerfectSpecular : public Material {
-    // Coeficiente especular
+    // Specular coefficient
     RGB ks;
     float ps;
 
@@ -136,9 +135,9 @@ struct Phong : public Material {
 };
 
 struct Dielectric : public Material {
-    // ks y kt se calculan usando la ley de Fresnel
+    // ks and kt are calculated using Fresnel equations
 
-    // Coeficiente de refracción
+    // Refraction coefficient
     float n;
 
     Dielectric(float _n) : Material(DIELECTRIC) {

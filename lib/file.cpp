@@ -332,15 +332,10 @@ std::vector<Triangle> readPLY(const std::string file, std::shared_ptr<Material> 
             faces.push_back(Triangle(vertices[a], vertices[b], vertices[c],
                                      vertexNormals[a], vertexNormals[b], vertexNormals[c], brdf));
         }
-        // std::cout << a << " " << b << " " << c << " " << std::endl;
     }
 
-    // std::cout << faces[1522].v1 << " " << faces[1522].v2 << " " << faces[1522].v3 << std::endl;
-    // std::cout << faces[755].v1 << " " << faces[755].v2 << " " << faces[755].v3 << std::endl;
+    // std::cout << "Finished reading PLY file" << std::endl;
+    // std::cout << "Number of triangles: " << faces.size() << std::endl;
 
-    // std::cout << "Terminado de leer PLY" << std::endl;
-    // std::cout << "Numero de triangulos: " << faces.size() << std::endl;
-
-    // TODO: Mirar cómo hacer lo del color
     return faces;
 }

@@ -32,10 +32,6 @@ target_link_libraries(practica1 LINK_PUBLIC lib planet)
 add_executable(tone_mapper tone_mapper/main.cpp)
 target_link_libraries(tone_mapper LINK_PUBLIC lib)
 
-# Ray Tracer
-add_executable(ray_tracer ray_tracer/main.cpp)
-target_link_libraries(ray_tracer LINK_PUBLIC lib)
-
 # Path Tracer
 add_executable(path_tracer path_tracer/main.cpp)
 target_link_libraries(path_tracer LINK_PUBLIC lib)
