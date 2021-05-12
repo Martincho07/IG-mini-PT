@@ -94,7 +94,7 @@ que se encargan de resolver la ecuación de render:
 
 - Path Tracing (`-i pathtracing`), por defecto
 - Ray Tracing (`-i raytracing`)
-  > Nota: Sólo permite renderizar la iluminación de luces puntuales
+  > Nota: Sólo permite renderizar la iluminación de luces puntuales.
 - Mapa de normales (`-i normals`)
 
 |Path Tracing|Ray Tracing|Mapa de normales|
@@ -115,11 +115,9 @@ puntual.
 plástico.
 3. Contiene un dragón con material especular.
 4. Tiene tres esferas, una detrás de otra, y la cámara es de tipo *thin lens*.
-5. Está formada por varias esferas dielécticas y difusas
-6. Ejemplo de mapeo de texturas
-7. Escena de la sección de introducción
-
-Conejos, dragón, esferas, mapeo
+5. Está formada por varias esferas dielécticas y difusas.
+6. Ejemplo de mapeo de texturas.
+7. Escena de la sección de introducción.
 
 |Escena 2|Escena 3|
 |:---:|:---:|
@@ -130,7 +128,7 @@ Conejos, dragón, esferas, mapeo
 |![dof](doc/dof.png)|![textura](doc/textura.png)|
 
 En el fichero `path_tracer/sample_scenes.hpp` hay muchos ejemplos de escenas,
-y pueden servir de guía para crear escenas nuevas.
+y pueden servir como guía para crear escenas nuevas.
 
 # Visualización de imágenes
 Las imágenes se generan con un formato PPM modificado para guardar imágenes
