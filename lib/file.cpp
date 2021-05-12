@@ -93,9 +93,9 @@ Image readPPM(std::string file) {
 
     // Read last block of comments
     readPPMComment(is, MAX);
-    if (MAX < 1) {
-        ErrorExit("Unsupported max value: ", MAX);
-    }
+    // if (MAX < 1) {
+    //     ErrorExit("Unsupported max value: ", MAX);
+    // }
 
     // Read RGB tuples row by row
     // Each tuple is mutiplied by this factor to get the real RGB value

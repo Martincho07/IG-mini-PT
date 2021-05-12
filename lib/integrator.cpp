@@ -120,7 +120,7 @@ RGB RayTracingIntegrator::render(float x, float y, const Scene &scene) const {
                     }
                     return contribution;
                 } else {
-                    return albedo * 2;
+                    return albedo;
                 }
             }
         } else {
