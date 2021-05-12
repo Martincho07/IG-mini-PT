@@ -21,7 +21,6 @@ Camera::Camera(float fov, const Point3 &target, float distance, float aspect_rat
     f = Vector3(0, 0, 1);
 
     o = target - f * distance;
-    // o = target - f + Vector3(0, 0, -distance);
 
     u = u * (tanf(fov / 2.0f));
     r = r * (aspect_ratio * modulus(u));

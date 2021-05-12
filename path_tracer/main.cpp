@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
         escena_dof(width, height, camera, scene);
         break;
     case 5:
-        // dielectric(width, height, camera, scene);
+        dielectric(width, height, camera, scene);
         // texture_1(width, height, camera, scene);
         // texture_2(width, height, camera, scene);
         break;

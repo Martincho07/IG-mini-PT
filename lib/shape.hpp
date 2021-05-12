@@ -24,8 +24,10 @@ struct SurfaceInteraction;
 struct Material;
 
 #define EPSILON 0.0001f
-#define EPSILON_TRIANGLES 0.0000001f
+// #define EPSILON 0.01f
 // #define EPSILON 0.0000001f
+
+#define EPSILON_TRIANGLES 0.0000001f
 
 struct Shape {
 

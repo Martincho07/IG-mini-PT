@@ -59,7 +59,7 @@ float Sphere::intersect(const Ray &ray) const {
     }
     */
 
-    // La dirección del rayo está noramlizada así que a siempre vale 1
+    // La dirección del rayo está normalizada así que a siempre vale 1
     float b = dot(ray.d, ray.o - center) * 2;
 
     float mod = modulus(ray.o - center);
