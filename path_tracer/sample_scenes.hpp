@@ -20,24 +20,42 @@
 
 #include <iostream>
 
-/*
-void carita(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
-    std::shared_ptr<Plane> plane(new Plane(RGB(255, 0, 0), Vector3(-1.0f, 0.0f, 0.0f), 8.0f));
-    scene.push_back(plane);
-    std::shared_ptr<Plane> plane2(new Plane(RGB(50.0f, 70.0f, 255.0f), Vector3(-1.0f, 1.0f, 0.0f), 12.0f));
-    scene.push_back(plane2);
-    std::shared_ptr<Sphere> sphere(new Sphere(RGB(255.0f, 255.0f, 0.0f), Point3(3.0f, 0.0f, 0.0f), 2.0f));
-    scene.push_back(sphere);
-    std::shared_ptr<Sphere> sphere2(new Sphere(RGB(0.0f, 0.0f, 0.0f), Point3(1.2f, 0.25f, 0.25f), 0.2f));
-    scene.push_back(sphere2);
-    std::shared_ptr<Sphere> sphere3(new Sphere(RGB(0.0f, 0.0f, 0.0f), Point3(1.2f, 0.25f, -0.25f), 0.2f));
-    scene.push_back(sphere3);
-    std::shared_ptr<Sphere> sphere4(new Sphere(RGB(255.0f, 102.0f, 254.0f), Point3(1.4f, -0.40f, 0.0f), 0.2f));
-    scene.push_back(sphere4);
+// void default_scene(int width, int height, std::shared_ptr<Camera> &c, Scene &scene) {
+//     std::shared_ptr<Plane> plane(new Plane(RGB(255, 0, 0), Vector3(-1.0f, 0.0f, 0.0f), 8.0f));
+//     scene.push_back(plane);
+//     std::shared_ptr<Plane> plane2(new Plane(RGB(50.0f, 70.0f, 255.0f), Vector3(-1.0f, 1.0f, 0.0f), 12.0f));
+//     scene.push_back(plane2);
+//     std::shared_ptr<Sphere> sphere(new Sphere(RGB(255.0f, 255.0f, 0.0f), Point3(3.0f, 0.0f, 0.0f), 2.0f));
+//     scene.push_back(sphere);
+//     std::shared_ptr<Sphere> sphere2(new Sphere(RGB(0.0f, 0.0f, 0.0f), Point3(1.2f, 0.25f, 0.25f), 0.2f));
+//     scene.push_back(sphere2);
+//     std::shared_ptr<Sphere> sphere3(new Sphere(RGB(0.0f, 0.0f, 0.0f), Point3(1.2f, 0.25f, -0.25f), 0.2f));
+//     scene.push_back(sphere3);
+//     std::shared_ptr<Sphere> sphere4(new Sphere(RGB(255.0f, 102.0f, 254.0f), Point3(1.4f, -0.40f, 0.0f), 0.2f));
+//     scene.push_back(sphere4);
 
-    // Camera l u f
-    c = Camera(Point3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f));
+//     // Camera l u f
+//     c = Camera(Point3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f));
+// }
+
+void carita(int width, int height, std::shared_ptr<Camera> &c, Scene &scene) {
+    // Camera r u f
+    c = std::make_shared<PinholeCamera>(Point3(0, 0, 0), Vector3(0, 0, 1), Vector3(0, 1, 0), Vector3(1, 0, 0));
+    // c = std::make_shared<PinholeCamera>(30.0f, Point3(0, 0, -5), 15.0f, (float)width / (float)height);
+    // c = std::make_shared<PinholeCamera>(30.0f, Point3(0, 0, -5), 15.0f, (float)width / (float)height);
+    // c = std::make_shared<PinholeCamera>(30.0f, Point3(3, 0, 0), 15.0f, (float)width / (float)height);
+
+    scene.add_shape(std::make_shared<Plane>(Vector3(-1, 0, 0), 8, std::make_shared<LambertianDiffuse>(RGB(255, 0, 0))));
+    scene.add_shape(std::make_shared<Plane>(Vector3(-1, 1, 0), 12, std::make_shared<LambertianDiffuse>(RGB(50, 70, 255))));
+
+    scene.add_shape(std::make_shared<Sphere>(Point3(3, 0, 0), 2, std::make_shared<LambertianDiffuse>(RGB(255, 255, 0))));
+    scene.add_shape(std::make_shared<Sphere>(Point3(1.2, 0.25, 0.25), 0.2, std::make_shared<LambertianDiffuse>(RGB(0, 0, 0))));
+    scene.add_shape(std::make_shared<Sphere>(Point3(1.2, 0.25, -0.25), 0.2, std::make_shared<LambertianDiffuse>(RGB(0, 0, 0))));
+    scene.add_shape(std::make_shared<Sphere>(Point3(1.4, -0.4, 0), 0.2, std::make_shared<LambertianDiffuse>(RGB(255, 102, 254))));
+    scene.fix();
 }
+
+/*
 
 void escena1(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
     // Camera l u f
@@ -110,6 +128,7 @@ void escena3(Camera &c, std::vector<std::shared_ptr<Shape>> &scene) {
 }
 */
 
+/*
 void escena4(int &width, int &height, Camera &c, Scene &scene) {
     // Camera l u f
     width = 1920;
@@ -460,6 +479,7 @@ void escenaBVH(int width, int height, Camera &c, Scene &scene) {
     scene.add_shape(std::make_shared<Triangle>(Point3(-3, 3, 5), Point3(-3, -3, 5), Point3(-3, -3, -3), std::make_shared<LambertianDiffuse>(red)));
     */
 
+/*
     // techo
     // scene.add_shape(std::make_shared<Triangle>(Point3(-3, 3, -3), Point3(-3, 3, 3), Point3(3, 3, 3), std::make_shared<LambertianDiffuse>(RGB(0.1, 0.8, 0.2))));
     scene.add_shape(std::make_shared<Triangle>(Point3(-3, 3, 3), Point3(-3, 3, -3), Point3(3, 3, 3), std::make_shared<LambertianDiffuse>(white)));
@@ -835,6 +855,7 @@ void escenaCara(std::vector<std::shared_ptr<Shape>> &scene) {
 }
 */
 
+/*
 void dielectric_1(int &width, int &height, Camera &c, Scene &scene) {
 
     width = 800;
@@ -1288,12 +1309,13 @@ void esferas2(int &width, int &height, Camera &c, Scene &scene) {
 
     scene.fix();
 }
+*/
 
 // Included scenes
 
-void default_scene(int width, int height, Camera &c, Scene &scene) {
+void default_scene(int width, int height, std::shared_ptr<Camera> &c, Scene &scene) {
 
-    c = Camera(30.0f, Point3(0, 0, 0), 15.0f, (float)width / (float)height);
+    c = std::make_shared<PinholeCamera>(30.0f, Point3(0, 0, 0), 15.0f, (float)width / (float)height);
 
     scene.set_background(RGB(0, 0, 0));
 
@@ -1304,14 +1326,15 @@ void default_scene(int width, int height, Camera &c, Scene &scene) {
     scene.add_shape(std::make_shared<Plane>(Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.5f, 0.5f, 0.5f))));
 
     scene.add_shape(std::make_shared<Sphere>(Point3(-1.25, -2, -1.5), 1, std::make_shared<Dielectric>(1.5f)));
-    scene.add_shape(std::make_shared<Sphere>(Point3(1.25, -2, 1), 1, std::make_shared<Plastic>(Plastic(RGB(0.7f, 0.0f, 0.6f), 0.1f))));
+    scene.add_shape(std::make_shared<Sphere>(Point3(1.25, -2, 1), 1, std::make_shared<Plastic>(RGB(0.7f, 0.0f, 0.6f), 0.1f)));
     scene.add_shape(std::make_shared<Quadrilateral>(Point3(2, 2.995, -3), Point3(-2, 2.995, 0), Point3(-2, 2.995, -3), std::make_shared<LightPower>(RGB(5.0f, 5.0f, 5.0f))));
     scene.fix();
 }
 
-void default_point_light(int width, int height, Camera &c, Scene &scene) {
+void default_point_light(int width, int height, std::shared_ptr<Camera> &c, Scene &scene) {
 
-    c = Camera(30.0f, Point3(0, 0, 0), 15.0f, (float)width / (float)height);
+    c = std::make_shared<PinholeCamera>(30.0f, Point3(0, 0, 0), 15.0f, (float)width / (float)height);
+    // c = std::make_shared<ThinLensCamera>(30.0f, Point3(0, 0, -1.9), 13.0f, (float)width / (float)height, 2);
 
     scene.set_background(RGB(0, 0, 0));
 
@@ -1322,13 +1345,16 @@ void default_point_light(int width, int height, Camera &c, Scene &scene) {
     scene.add_shape(std::make_shared<Plane>(Vector3(0, -1, 0), 3, std::make_shared<LambertianDiffuse>(RGB(0.5f, 0.5f, 0.5f))));
 
     scene.add_shape(std::make_shared<Sphere>(Point3(-1.25, -2, -1.5), 1, std::make_shared<Dielectric>(1.5f)));
-    scene.add_shape(std::make_shared<Sphere>(Point3(1.25, -2, 1), 1, std::make_shared<Plastic>(Plastic(RGB(0.7f, 0.0f, 0.6f), 0.1f))));
+    scene.add_shape(std::make_shared<Sphere>(Point3(1.25, -2, 1), 1, std::make_shared<Plastic>(RGB(0.7f, 0.0f, 0.6f), 0.1f)));
+    // scene.add_shape(std::make_shared<Sphere>(Point3(1.25, -2, 1), 1, std::make_shared<LightPower>(RGB(0.5, 0.5, 0.5))));
 
     scene.add_light(std::make_shared<PointLight>(&scene, Point3(0, 2, 0), RGB(5, 5, 5)));
     scene.fix();
 }
 
-void textures(int width, int height, Camera &c, Scene &scene) {
+/*
+
+    void textures(int width, int height, Camera &c, Scene &scene) {
 
     Image texture = readPPM("../textures/fire.ppm");
     Image texture2 = readPPM("../textures/grito_simpson.ppm");
@@ -1534,8 +1560,6 @@ void escena_concurso(int width, int height, Camera &c, Scene &scene) {
 
     Image fire = readPPM("../textures/fire.ppm");
 
-
-
     scene.add_shape(std::make_shared<Sphere>(Point3(-6, -5, -1), 1, std::make_shared<Plastic>(RGB(0.7f, 0.0f, 0.6f), 0.1f)));
 
     scene.add_shape(std::make_shared<Sphere>(Point3(-5, 2, 3), 1, std::make_shared<Phong>(RGB(0.2, 0.6, 0.2), 0.1, 250)));
@@ -1552,6 +1576,6 @@ void escena_concurso(int width, int height, Camera &c, Scene &scene) {
 
     scene.add_shape(std::make_shared<Sphere>(Point3(6, -5, -3), 1, std::make_shared<PerfectSpecular>(0.95)));
 
-
     scene.fix();
 }
+*/

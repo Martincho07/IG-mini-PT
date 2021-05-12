@@ -22,7 +22,6 @@
 #include <vector>
 
 struct Camera {
-
     Point3 o;
     Vector3 r, u, f;
     Transform camera2world;
@@ -30,40 +29,31 @@ struct Camera {
     Camera(){};
 
     Camera(Point3 _o, Vector3 _r, Vector3 _u, Vector3 _f) : o(_o), r(_r), u(_u), f(_f) {
-
         camera2world = Transform(Matrix4x4(r.x, u.x, f.x, o.x,
                                            r.y, u.y, f.y, o.y,
                                            r.z, u.z, f.z, o.z,
                                            0.0f, 0.0f, 0.0f, 1.0f));
     };
 
-    Camera(float fov, const Point3 &target, float distance, float aspect_ratio) {
+    Camera(float fov, const Point3 &target, float distance, float aspect_ratio);
 
-        // grados a radianes
-        fov = (fov * M_PI) / 180.0f;
+    virtual Ray calculate_ray(float x, float y) const = 0;
+};
 
-        r = Vector3(1, 0, 0);
-        u = Vector3(0, 1, 0);
-        f = Vector3(0, 0, 1);
+struct PinholeCamera : public Camera {
+    PinholeCamera(Point3 _o, Vector3 _r, Vector3 _u, Vector3 _f) : Camera(_o, _r, _u, _f) {}
+    PinholeCamera(float fov, const Point3 &target, float distance, float aspect_ratio) : Camera(fov, target, distance, aspect_ratio) {}
 
-        o = target - f * distance;
-        // o = target - f + Vector3(0, 0, -distance);
+    Ray calculate_ray(float x, float y) const;
+};
 
-        u = u * (tanf(fov / 2.0f));
-        r = r * (aspect_ratio * modulus(u));
+struct ThinLensCamera : public Camera {
+    ThinLensCamera(Point3 _o, Vector3 _r, Vector3 _u, Vector3 _f, float _aperture_radius)
+        : Camera(_o, _r, _u, _f), aperture_radius(_aperture_radius) {}
+    ThinLensCamera(float fov, const Point3 &target, float distance, float aspect_ratio, float _aperture_radius)
+        : Camera(fov, target, distance, aspect_ratio), aperture_radius(_aperture_radius) {}
 
-        r = r * distance;
-        u = u * distance;
-        f = f * distance;
+    Ray calculate_ray(float x, float y) const;
 
-        std::cout << "Camera: o " << o << " r " << r << " u " << u << " f " << f << std::endl;
-
-        camera2world = Transform(Matrix4x4(r.x, u.x, f.x, o.x,
-                                           r.y, u.y, f.y, o.y,
-                                           r.z, u.z, f.z, o.z,
-                                           0.0f, 0.0f, 0.0f, 1.0f));
-    };
-
-    RGB trace_path(float x, float y, const Scene &scene) const;
-    inline Ray calculate_ray(float x, float y) const;
+    float aperture_radius;
 };

@@ -18,7 +18,7 @@
 #include <iostream>
 #include <memory>
 
-inline Vector3 specular_reflection(const Vector3 &wo, const Vector3 &normal) {
+Vector3 specular_reflection(const Vector3 &wo, const Vector3 &normal) {
     // wi rayo en coordenadas del mundo
     // Calcular el rayo de salida con la ley de la reflexión
     // Se devuelve en coordenadas del mundo
@@ -34,7 +34,7 @@ inline Vector3 specular_reflection(const Vector3 &wo, const Vector3 &normal) {
     // }
 };
 
-inline Vector3 diffuse_reflection(const Vector3 &normal, const Point3 &intersection_point) {
+Vector3 diffuse_reflection(const Vector3 &normal, const Point3 &intersection_point) {
     // wi rayo en coordenadas del mundo
     // Generar un rayo aleatorio dentro de la hemiesfera
     // Se devuelve en coordenadas del mundo
@@ -63,7 +63,7 @@ inline Vector3 diffuse_reflection(const Vector3 &normal, const Point3 &intersect
     return changeBasis(x, y, z, intersection_point)(out_dir);
 };
 
-inline Vector3 phong_reflection(const Vector3 &wr, const Point3 &intersection_point, float alpha) {
+Vector3 phong_reflection(const Vector3 &wr, const Point3 &intersection_point, float alpha) {
     // wi rayo en coordenadas del mundo
     // Generar un rayo aleatorio dentro de la hemiesfera
     // Se devuelve en coordenadas del mundo
@@ -91,7 +91,7 @@ inline Vector3 phong_reflection(const Vector3 &wr, const Point3 &intersection_po
     return changeBasis(x, y, z, intersection_point)(out_dir);
 };
 
-inline Vector3 refraction(const Vector3 &wi, const Vector3 &normal, float n1, float n2) {
+Vector3 refraction(const Vector3 &wi, const Vector3 &normal, float n1, float n2) {
 
     float n = n1 / n2;
 
@@ -111,7 +111,7 @@ inline Vector3 refraction(const Vector3 &wi, const Vector3 &normal, float n1, fl
     return -wi * n + normal * (n * cosThetaI - cosThetaT);
 };
 
-inline float fresnel_ks(const Vector3 &wi, const Vector3 &normal, float n1, float n2) {
+float fresnel_ks(const Vector3 &wi, const Vector3 &normal, float n1, float n2) {
 
     float n = n1 / n2;
 

@@ -10,11 +10,10 @@
 
 #pragma once
 
-#include "camera.hpp"
 #include "cbq/ConcurrentBoundedQueue.hpp"
 #include "color.hpp"
-#include "geometry.hpp"
 #include "image.hpp"
+#include "integrator.hpp"
 #include "pixel.hpp"
 #include "random.hpp"
 #include "scene.hpp"
@@ -32,4 +31,4 @@ void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector
 // Define el comportamiento de los consumers,
 // estos cogen porciones de la imagen original
 // y calculan el color de los pixels.
-void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const Scene &scene, Image *image, const Camera &c, int num_rays);
+void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Scene &scene, Image &image, std::shared_ptr<Integrator> integrator, int num_rays);

@@ -149,12 +149,12 @@ struct Dielectric : public Material {
     EVENT russian_roulette(const SurfaceInteraction &si, const Vector3 &wo, Vector3 &wi, RGB &albedo) const;
 };
 
-inline Vector3 specular_reflection(const Vector3 &wo, const Vector3 &normal);
+Vector3 specular_reflection(const Vector3 &wo, const Vector3 &normal);
 
-inline Vector3 diffuse_reflection(const Vector3 &normal, const Point3 &intersection_point);
+Vector3 diffuse_reflection(const Vector3 &normal, const Point3 &intersection_point);
 
-inline Vector3 phong_reflection(const Vector3 &wr, const Vector3 &normal, const Point3 &intersection_point, float alpha);
+Vector3 phong_reflection(const Vector3 &wr, const Vector3 &normal, const Point3 &intersection_point, float alpha);
 
-inline Vector3 refraction(const Vector3 &wi, const Vector3 &normal, float n1, float n2, bool &suscesfull);
+Vector3 refraction(const Vector3 &wi, const Vector3 &normal, float n1, float n2);
 
-inline float fresnel_ks(Vector3 const &wi, const Vector3 &normal, float n1, float n2);
+float fresnel_ks(Vector3 const &wi, const Vector3 &normal, float n1, float n2);

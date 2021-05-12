@@ -57,8 +57,10 @@ class Scene {
     // Add a light source
     void add_light(const std::shared_ptr<LightSource> light);
 
-    // Get light
+    // Number of lights
     int get_num_lights() const;
+
+    // Get light
     std::shared_ptr<LightSource> get_light(int idx) const;
 
     // Sample a random light

@@ -9,7 +9,6 @@
  **********************************************************************************/
 
 #include "parallelization.hpp"
-#include "error.hpp"
 
 void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector3 &u, const Vector3 &r, int width, int height) {
 
@@ -55,7 +54,7 @@ void producer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Vector
 // Define el comportamiento de los consumers,
 // estos cogen porciones de la imagen original
 // y calculan el color de los pixels.
-void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const Scene &scene, Image *image, const Camera &c, int num_rays) {
+void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> &cbq, const Scene &scene, Image &image, std::shared_ptr<Integrator> integrator, int num_rays) {
 
     thread_local std::vector<Pixel> p;
     thread_local RGB color(0, 0, 0);
@@ -64,11 +63,11 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const Scene 
     thread_local unsigned t_init, t_end;
     thread_local unsigned int seed = 0;
 
-    cbq->num_complete(num_tasks);
+    cbq.num_complete(num_tasks);
     while (num_tasks < NUM_REGIONS * NUM_REGIONS) {
 
         // Se saca de la cola FIFO el primer elemento
-        cbq->first(p);
+        cbq.first(p);
         // Se calcula el color de los pixel de la submatriz
         // desencolada.
         for (const Pixel &pi : p) {
@@ -78,15 +77,15 @@ void consumer_task(ConcurrentBoundedQueue<std::vector<Pixel>> *cbq, const Scene 
                 x = random_float(pi.x_min, pi.x_max);
                 y = random_float(pi.y_min, pi.y_max);
 
-                color = color + c.trace_path(x, y, scene);
+                color = color + integrator->render(x, y, scene);
             }
             color = color / (float)num_rays;
 
-            image->fillPixel(pi.row, pi.column, color);
+            image.fillPixel(pi.row, pi.column, color);
             color = RGB(0.0f, 0.0f, 0.0f);
         }
 
         // Se actualiza el numero de tareas realizadas
-        cbq->num_complete(num_tasks);
+        cbq.num_complete(num_tasks);
     }
 }

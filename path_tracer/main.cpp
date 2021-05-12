@@ -17,14 +17,10 @@
 
 #include <cassert>
 #include <chrono>
-#include <cmath>
-#include <ctime>
 #include <getopt.h>
-#include <iterator>
 #include <memory>
 #include <ostream>
 #include <thread>
-#include <utility>
 #include <vector>
 
 void help() {
@@ -39,6 +35,9 @@ void help() {
                  "    -p, --pixel_rays     Number of points per pixel\n"
                  "    -t, --threads        Number of hardware concurrent threads\n"
                  "    -s, --scene          Scene to render\n"
+                 "                           [0-10]\n"
+                 "    -i, --integrator     Integrator to solve the rendering equation\n"
+                 "                           [pathtracing, raytracing, normals]\n"
                  "  -?, --help             Show this help message and quit"
               << std::endl;
 }
@@ -56,6 +55,7 @@ int main(int argc, char **argv) {
         {"width", no_argument, 0, 'w'},
         {"height", no_argument, 0, 'h'},
         {"color_res", no_argument, 0, 'c'},
+        {"integrator", no_argument, 0, 'i'},
         {NULL, 0, NULL, 0}};
 
     // default option values
@@ -65,11 +65,12 @@ int main(int argc, char **argv) {
     width = 800;
     height = 800;
     color_res = 10000000;
-    std::string output_file = "image";
+    std::string output_file = "image.ppm";
+    std::string integrator_type = "pathtracing";
 
     int ch;
     int index;
-    while ((ch = getopt_long(argc, argv, "?p:t:h:s:o:w:h:c:", longopts, &index)) != -1) {
+    while ((ch = getopt_long(argc, argv, "?p:t:h:s:o:w:h:c:i:", longopts, &index)) != -1) {
         switch (ch) {
         case '?':
             help();
@@ -88,6 +89,9 @@ int main(int argc, char **argv) {
             break;
         case 'o':
             output_file = optarg;
+            if (output_file.substr(output_file.find_last_of(".") + 1) != "ppm") {
+                output_file += ".ppm";
+            }
             break;
         case 'w':
             width = atoi(optarg);
@@ -98,17 +102,20 @@ int main(int argc, char **argv) {
         case 'c':
             color_res = atoi(optarg);
             break;
+        case 'i':
+            integrator_type = optarg;
+            break;
         default:
             help();
             return 1;
         }
     }
 
+    std::cout << "Output image: width: " << width << ", height: " << height << ", color res: " << color_res << std::endl;
+
     // Select scene
     Scene scene;
-    Camera camera;
-
-    std::cout << "Output image: width: " << width << ", height: " << height << " color res: " << color_res << std::endl;
+    std::shared_ptr<Camera> camera;
 
     switch (selected_scene) {
     case 1:
@@ -117,27 +124,28 @@ int main(int argc, char **argv) {
         // esferas(width, height, camera, scene);
         // esferas2(width, height, camera, scene);
         default_point_light(width, height, camera, scene);
+        // carita(width, height, camera, scene);
         // sudor2(width, height, camera, scene);
-
         break;
     case 2:
+        carita(width, height, camera, scene);
         // dielectric_2(width, height, camera, scene);
         // escena4(width, height, camera, scene);
         // sudor(width, height, camera, scene);
         // textures(width, height, camera, scene);
         // escena_concurso(width, height, camera, scene);
-        escena_conejos(width, height, camera, scene);
-        break;
-    case 3:
-        // escenaBVH(width, height, camera, scene);
         // escena_conejos(width, height, camera, scene);
-        escena_dragon(width, height, camera, scene);
         break;
-    case 4:
-        // escena_conejos(width, height, camera, scene);
-        // escena_dragon(width, height, camera, scene);
-        escena_dof(width, height, camera, scene);
-        break;
+    // case 3:
+    //     // escenaBVH(width, height, camera, scene);
+    //     // escena_conejos(width, height, camera, scene);
+    //     escena_dragon(width, height, camera, scene);
+    //     break;
+    // case 4:
+    //     // escena_conejos(width, height, camera, scene);
+    //     // escena_dragon(width, height, camera, scene);
+    //     escena_dof(width, height, camera, scene);
+    //     break;
     // case 5:
     //     escena_dragon(width, height, camera, scene);
     //     break;
@@ -164,9 +172,28 @@ int main(int argc, char **argv) {
         break;
     }
 
+    std::shared_ptr<Integrator> integrator;
+
+    if (integrator_type == "pathtracing") {
+        integrator = std::make_shared<PathTracingIntegrator>(camera);
+    } else if (integrator_type == "raytracing") {
+        integrator = std::make_shared<RayTracingIntegrator>(camera);
+    } else if (integrator_type == "normals") {
+        integrator = std::make_shared<NormalMapIntegrator>(camera);
+    } else {
+        std::cerr << "Unknown integrator: " << integrator_type << std::endl;
+        return 1;
+    }
+
+    std::cout << "Camera: o " << camera->o << " r " << camera->r
+              << " u " << camera->u << " f " << camera->f << std::endl;
+
     // std::cout << "Numero de consumers: " << num_threads << std::endl;
-    std::cout << "\nRendering scene " << selected_scene << " (" << pixel_rays << " ppp, " << num_threads << " threads)..."
-              << std::endl
+    std::cout << "\nRendering scene " << selected_scene << " ("
+              << pixel_rays << " ppp, "
+              << num_threads << " threads, "
+              << integrator_type << " integrator"
+              << ")..." << std::endl
               << std::endl;
 
     Image image(width, height);
@@ -176,11 +203,11 @@ int main(int argc, char **argv) {
     std::vector<std::thread> consumers(num_threads);
 
     for (int m = 0; m < num_threads; m++)
-        consumers[m] = std::thread(&consumer_task, &cbq, scene, &image, camera, pixel_rays);
+        consumers[m] = std::thread(&consumer_task, std::ref(cbq), scene, std::ref(image), integrator, pixel_rays);
 
     // El productor llena la cola para que los consumers
     // cojan elementos y hagan el renderizado
-    producer_task(cbq, camera.u, camera.r, width, height);
+    producer_task(cbq, camera->u, camera->r, width, height);
 
     auto init = std::chrono::steady_clock::now();
 
@@ -194,13 +221,8 @@ int main(int argc, char **argv) {
     std::cout << "\nRendering time: " << diff.count() << " s" << std::endl;
     std::cout << "Number of geometric primitives: " << scene.get_num_shapes() << std::endl;
     std::cout << "Number of pixels: " << height * width << std::endl;
-    std::cout << "Maximum: " << max(image) << std::endl;
+    std::cout << "Image range: [" << min(image) << ", " << max(image) << "]" << std::endl;
     std::cout << std::endl;
 
-    // writeHDR(image, output_file + ".hdr");
-    writePPM(image, output_file + ".ppm", max(image), color_res);
-
-    // clampAndGammaCurve(image, 10, 2.2);
-    // clamping(image);
-    // writePPM(image, output_file + ".ppm", max(image), 255);
+    writePPM(image, output_file, max(image), color_res);
 };
