@@ -27,18 +27,18 @@ void help() {
     std::cout << "Usage: path_tracer [options ...]\n\n"
                  "Options:\n"
                  "  Output file options:\n"
-                 "    -o, --out_file       Output file name\n"
-                 "    -w, --width          Output image width\n"
-                 "    -h, --height         Output image height\n"
-                 "    -c, --color_res      Output image color resolution\n"
+                 "    -o, --out_file FILE     Output file name (default image_hdr.ppm)\n"
+                 "    -w, --width WIDTH       Output image width (default 800)\n"
+                 "    -h, --height HEIGHT     Output image height (default 800)\n"
+                 "    -c, --color_res RES     Output image color resolution (default 10000000) \n"
                  "  Rendering options:\n"
-                 "    -p, --pixel_rays     Number of points per pixel\n"
-                 "    -t, --threads        Number of hardware concurrent threads\n"
-                 "    -s, --scene          Scene to render\n"
-                 "                           [0-10]\n"
-                 "    -i, --integrator     Integrator to solve the rendering equation\n"
-                 "                           [pathtracing, raytracing, normals]\n"
-                 "  -?, --help             Show this help message and quit"
+                 "    -p, --pixel_rays PPP    Number of points per pixel (default 100)\n"
+                 "    -t, --threads N         Number of hardware concurrent threads (default max. threads)\n"
+                 "    -s, --scene N           Scene to render\n"
+                 "                              [0-10] (default 0)\n"
+                 "    -i, --integrator TYPE   Integrator to solve the rendering equation\n"
+                 "                              [pathtracing, raytracing, normals] (default pathtracing)\n"
+                 "  -?, --help                Show this help message and quit"
               << std::endl;
 }
 
@@ -119,56 +119,31 @@ int main(int argc, char **argv) {
 
     switch (selected_scene) {
     case 1:
-        // escenaDielectrico(width, height, camera, scene);
-        // dielectric_1(width, height, camera, scene);
-        // esferas(width, height, camera, scene);
-        // esferas2(width, height, camera, scene);
         default_point_light(width, height, camera, scene);
-        // carita(width, height, camera, scene);
-        // sudor2(width, height, camera, scene);
         break;
     case 2:
-        carita(width, height, camera, scene);
-        // dielectric_2(width, height, camera, scene);
-        // escena4(width, height, camera, scene);
-        // sudor(width, height, camera, scene);
-        // textures(width, height, camera, scene);
-        // escena_concurso(width, height, camera, scene);
-        // escena_conejos(width, height, camera, scene);
+        escena_conejos(width, height, camera, scene);
         break;
-    // case 3:
-    //     // escenaBVH(width, height, camera, scene);
-    //     // escena_conejos(width, height, camera, scene);
-    //     escena_dragon(width, height, camera, scene);
-    //     break;
-    // case 4:
-    //     // escena_conejos(width, height, camera, scene);
-    //     // escena_dragon(width, height, camera, scene);
-    //     escena_dof(width, height, camera, scene);
-    //     break;
-    // case 5:
-    //     escena_dragon(width, height, camera, scene);
-    //     break;
-    // case 6:
-    //     // cornellBox(width, height, camera, scene);
-    //     difusos_3(width, height, camera, scene);
-    //     break;
-    // case 7:
-    //     phong_250(width, height, camera, scene);
-    //     break;
-    // case 8:
-    //     // escenaDOF(width, height, camera, scene);
-    //     escena_dof(width, height, camera, scene);
-    //     break;
-    // case 9:
-    //     dielectric_4(width, height, camera, scene);
-    //     break;
-    // case 10:
-    //     texture_1(width, height, camera, scene);
-    //     // texture_2(width, height, camera, scene);
-    //     break;
+    case 3:
+        escena_dragon(width, height, camera, scene);
+        break;
+    case 4:
+        escena_dof(width, height, camera, scene);
+        break;
+    case 5:
+        // dielectric(width, height, camera, scene);
+        // texture_1(width, height, camera, scene);
+        // texture_2(width, height, camera, scene);
+        break;
+    case 6:
+        textures(width, height, camera, scene);
+        break;
+    case 7:
+        escena_concurso(width, height, camera, scene);
+        break;
     default:
         default_scene(width, height, camera, scene);
+        // sudor(width, height, camera, scene);
         break;
     }
 

@@ -21,33 +21,35 @@
 #include <vector>
 
 // Default values
-#define STEP 0.0f
+#define STEP 1.0f
 #define VALUE 1.0f
 #define GAMMA 2.2f
 #define A 0.16f
+#define L 0.7f
 #define S 0.6f
 
 void help() {
     std::cout << "Usage: tone_mapper input-file.ppm [options ...] [output-file.{ppm|hdr}]\n\n"
                  "Options:\n"
-                 "  -exposure step      Multiply each pixel by 2^step to adjust the exposure\n"
-                 "  -clamp              Discard all values greater than 255 (1 in floating point precision)\n"
-                 "  -equalize           Linear transformation of all values from minimum to the maximum (normalization)\n"
-                 "  -clamp-and-equalize value\n"
-                 "                      Clamp all values greater than 'value' and equalize the rest of them\n"
-                 "  -gamma-curve gamma  Apply a gamma curve to all the values\n"
-                 "  -clamp-and-gamma-curve value gamma\n"
-                 "                      Apply a gamma curve after clamping all the values greater than 'value'\n"
-                 "  -reinhard02 a l     Apply the Reinhard 2002 operator with a given 'a' key value and 'l' value\n"
-                 "  -mantiuk08 a s      Apply the Mantiuk 2008 operator with a given 'a' key value and 's' value\n"
-                 "  -h, -help           Show this help message and quit\n"
-                 "\nUse the string 'default' to indicate the default value\n"
+                 "  -exposure STEP        Multiply each pixel by 2^STEP to adjust the exposure\n"
+                 "  -clamp                Discard all values greater than 255 (1 in floating point precision)\n"
+                 "  -equalize             Linear transformation of all values from minimum to the maximum (normalization)\n"
+                 "  -clamp-and-equalize VALUE\n"
+                 "                        Clamp all values greater than VALUE and equalize the rest of them\n"
+                 "  -gamma-curve GAMMA    Apply a gamma curve to all the values\n"
+                 "  -clamp-and-gamma-curve VALUE GAMMA\n"
+                 "                        Apply a gamma curve after clamping all the values greater than VALUE\n"
+                 "  -reinhard02 A L       Apply the Reinhard 2002 operator with a given A key value and L value\n"
+                 "  -mantiuk08 A S        Apply the Mantiuk 2008 operator with a given A key value and S value\n"
+                 "  -?, -h, -help         Show this help message and quit\n"
+                 "\nUse the string 'default' as argument value to use the default value\n"
                  "Default values:\n"
-                 "  step = 0\n"
-                 "  value = 1\n"
-                 "  gamma = 2.2\n"
-                 "  a = 0.16\n"
-                 "  s = 0.6\n"
+                 "  STEP = 1\n"
+                 "  VALUE = 1\n"
+                 "  GAMMA = 2.2\n"
+                 "  A = 0.16\n"
+                 "  L = 0.7\n"
+                 "  S = 0.6\n"
                  "\nIf no output-file is provided, the image is saved as: out_'input-file'.ppm"
               << std::endl;
 }
@@ -79,7 +81,7 @@ int main(int argc, char **argv) {
     // Values
     float step, value, gamma, a, s, l;
 
-    if (argc <= 1 || argc == 2 && (argv[1] == "-h" || argv[1] == "-help")) {
+    if (argc <= 1 || argc == 2 && (std::string(argv[1]) == "-h" || std::string(argv[1]) == "-help" || std::string(argv[1]) == "-?")) {
         help();
         return 0;
     }
@@ -133,7 +135,7 @@ int main(int argc, char **argv) {
             } else if (arg == "-reinhard02") {
                 a = getArgValue(argc, argv, i, A);
                 i++;
-                l = getArgValue(argc, argv, i, A);
+                l = getArgValue(argc, argv, i, L);
                 i++;
                 std::cout << "luma: " << maxLuma << std::endl;
                 operators.push_back(std::make_shared<Reinhard02>(a, logAverageLuminance(img), l * maxLuma));
@@ -143,7 +145,7 @@ int main(int argc, char **argv) {
                 s = getArgValue(argc, argv, i, S);
                 i++;
                 operators.push_back(std::make_shared<Mantiuk08>(a, s, logAverageLuminance(img), maxValue));
-            } else if (arg == "-h" || arg == "-help") {
+            } else if (arg == "-h" || arg == "-help" || arg == "-?") {
                 help();
                 return 0;
             } else {
