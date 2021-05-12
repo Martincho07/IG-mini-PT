@@ -117,7 +117,7 @@ plástico.
 4. Tiene tres esferas, una detrás de otra, y la cámara es de tipo *thin lens*.
 5. Está formada por varias esferas dielécticas y difusas.
 6. Ejemplo de mapeo de texturas.
-7. Escena de la sección de introducción.
+7. Escena de la primera sección.
 
 |Escena 2|Escena 3|
 |:---:|:---:|
