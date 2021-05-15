@@ -46,7 +46,7 @@ Ray PinholeCamera::calculate_ray(float x, float y) const {
 Ray ThinLensCamera::calculate_ray(float x, float y) const {
     float ua, va;
 
-    // Rejection sampling
+    // // Rejection sampling
     // float r1, r2;
     // do {
     //     r1 = random_float();
@@ -57,6 +57,7 @@ Ray ThinLensCamera::calculate_ray(float x, float y) const {
     // ua = (max - min) * r1 + min;
     // va = (max - min) * r2 + min;
 
+    // Importance sampling
     // https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly
     float arand = aperture_radius * sqrt(random_float());
     float theta = random_float() * 2 * M_PI;

@@ -32,7 +32,7 @@ void help() {
                  "    -h, --height HEIGHT     Output image height (default 800)\n"
                  "    -c, --color_res RES     Output image color resolution (default 10000000) \n"
                  "  Rendering options:\n"
-                 "    -p, --pixel_rays PPP    Number of points per pixel (default 100)\n"
+                 "    -p, --pixel_paths PPP   Number of paths per pixel (default 100)\n"
                  "    -t, --threads N         Number of hardware concurrent threads (default max. threads)\n"
                  "    -s, --scene N           Scene to render\n"
                  "                              [0-10] (default 0)\n"
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     // options descriptor
     static struct option longopts[] = {
         {"scene", required_argument, 0, 's'},
-        {"pixel_rays", required_argument, 0, 'p'},
+        {"pixel_paths", required_argument, 0, 'p'},
         {"threads", required_argument, 0, 't'},
         {"help", no_argument, 0, '?'},
         {"out_file", no_argument, 0, 'o'},
@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
     width = 800;
     height = 800;
     color_res = 10000000;
-    std::string output_file = "image.ppm";
+    std::string output_file = "image_hdr.ppm";
     std::string integrator_type = "pathtracing";
 
     int ch;
@@ -163,7 +163,6 @@ int main(int argc, char **argv) {
     std::cout << "Camera: o " << camera->o << " r " << camera->r
               << " u " << camera->u << " f " << camera->f << std::endl;
 
-    // std::cout << "Numero de consumers: " << num_threads << std::endl;
     std::cout << "\nRendering scene " << selected_scene << " ("
               << pixel_rays << " ppp, "
               << num_threads << " threads, "
@@ -174,19 +173,19 @@ int main(int argc, char **argv) {
     Image image(width, height);
     ConcurrentBoundedQueue<std::vector<Pixel>> cbq(NUM_REGIONS * NUM_REGIONS);
 
-    // Creacion de los N consumers que rederizaran la imagen
+    // Creation of the N consumers that will render the scene
     std::vector<std::thread> consumers(num_threads);
 
     for (int m = 0; m < num_threads; m++)
         consumers[m] = std::thread(&consumer_task, std::ref(cbq), scene, std::ref(image), integrator, pixel_rays);
 
-    // El productor llena la cola para que los consumers
-    // cojan elementos y hagan el renderizado
+    // The productor fills the queue so the consumers can take elements
+    // and render them
     producer_task(cbq, camera->u, camera->r, width, height);
 
     auto init = std::chrono::steady_clock::now();
 
-    // Se pone a trabajar a los N consumers
+    // Join the N consumers
     for (int m = 0; m < num_threads; m++)
         consumers[m].join();
 

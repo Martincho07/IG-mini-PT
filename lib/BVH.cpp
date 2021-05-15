@@ -82,9 +82,8 @@ void BVH::build_bounding_box(const std::vector<std::shared_ptr<Shape>> &shapes) 
 }
 
 float BVH::intersect(const Ray &ray, SurfaceInteraction &si) const {
-    // If the ray doesn't intersect with the bouding box, there is no intersection
+    // If the ray doesn't intersect with the bounding box, there is no intersection
     if (!bb.intersect(ray)) {
-        // ErrorExit("Entrado no interseca")
         return false;
     }
 

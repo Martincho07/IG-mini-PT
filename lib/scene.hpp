@@ -63,7 +63,7 @@ class Scene {
     // Get light
     std::shared_ptr<LightSource> get_light(int idx) const;
 
-    // Sample a random light
+    // Sample a random light source using importance sampling based on its powers
     float sample_light(std::shared_ptr<LightSource> &light) const;
 
     // Return first object that intersects a ray

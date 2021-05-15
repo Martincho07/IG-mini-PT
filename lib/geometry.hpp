@@ -205,7 +205,7 @@ struct Point3 {
         return Point3(-x, -y, -z);
     }
 
-    // Cast a vector to a point
+    // Cast a point to a vector
     explicit operator Vector3() const {
         return Vector3(x, y, z);
     }

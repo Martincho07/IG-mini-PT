@@ -35,7 +35,7 @@ RGB Scene::get_background() const {
 }
 
 void Scene::add_shape(const std::shared_ptr<Shape> shape) {
-    // Add a shape to the BVH
+    // Add a shape to scene
 
     // If the shape is a triangle mesh, add each triangle separately
     std::shared_ptr<TriangleMesh> tm = std::dynamic_pointer_cast<TriangleMesh>(shape);
@@ -67,7 +67,6 @@ std::shared_ptr<LightSource> Scene::get_light(int idx) const {
 }
 
 float Scene::sample_light(std::shared_ptr<LightSource> &light) const {
-    // Sample a random light using importance sampling based on its powers
     float rand = random_float(0, total_power);
     float acum = 0;
     for (std::shared_ptr<LightSource> l : lights) {

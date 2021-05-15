@@ -45,7 +45,7 @@ Options:
     -h, --height HEIGHT     Output image height (default 800)
     -c, --color_res RES     Output image color resolution (default 10000000) 
   Rendering options:
-    -p, --pixel_rays PPP    Number of points per pixel (default 100)
+    -p, --pixel_paths PPP   Number of paths per pixel (default 100)
     -t, --threads N         Number of hardware concurrent threads (default max. threads)
     -s, --scene N           Scene to render
                               [0-10] (default 0)

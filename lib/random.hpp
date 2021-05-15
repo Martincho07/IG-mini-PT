@@ -22,7 +22,7 @@ float random_float(float n);
 // Return a random real number between <min> and <max>
 float random_float(float min, float max);
 
-// Sampling funcions
+//// Sampling funcions
 
 // Random direction sampled uniformly on unit hemisphere
 Vector3 uniform_hemisphere_sample();

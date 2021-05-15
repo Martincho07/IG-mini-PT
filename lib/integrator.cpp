@@ -147,7 +147,7 @@ RGB NormalMapIntegrator::render(float x, float y, const Scene &scene) const {
 
     if (scene.first_intersection(ray, si)) {
 
-        // Real normals
+        // // Real normals
         // Vector3 n = si.into ? si.normal : -si.normal;
 
         Vector3 n = si.normal;

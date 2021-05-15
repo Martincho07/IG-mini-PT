@@ -31,35 +31,8 @@ float Plane::intersect(const Ray &ray) const {
 };
 
 float Sphere::intersect(const Ray &ray) const {
+    // Ray direction is normalized, so its magnitude is always 1
 
-    /*
-    float mod = modulus(ray.d);
-    float a = mod * mod;
-
-    float b = dot(ray.d, ray.o - center) * 2;
-
-    mod = modulus(ray.o - center);
-    float c = mod * mod - r * r;
-
-    float delta = b * b - 4 * a * c;
-
-    if (delta < EPSILON) {
-        return -1.0;
-    } else if (delta == EPSILON) {
-        return (-b + sqrt(delta)) / (2 * b);
-    } else {
-        float first = (-b + sqrt(delta)) / (2 * a);
-        float second = (-b - sqrt(delta)) / (2 * a);
-        float min = std::min(first, second);
-        if (min < EPSILON) {
-            return std::max(first, second);
-        } else {
-            return min;
-        }
-    }
-    */
-
-    // La dirección del rayo está normalizada así que a siempre vale 1
     float b = dot(ray.d, ray.o - center) * 2;
 
     float mod = modulus(ray.o - center);
@@ -81,40 +54,6 @@ float Sphere::intersect(const Ray &ray) const {
             return min;
         }
     }
-
-    /*
-    // Solve t^2*d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
-    Vector3 op = center - ray.o; // p is the sphere center (C)
-    // float t, eps = 1e-4;                     // eps is a small fudge factor
-    float t;
-    float b = dot(op, ray.d);                // 1/2 b from quadratic eq. setup
-    float det = b * b - dot(op, op) + r * r; // (b^2-4ac)/4: a=1 because ray normalized
-    if (det < EPSILON)                       // ray misses sphere
-        return -1;
-    else {
-        det = sqrt(det);
-        if ((t = b - det) > EPSILON)
-            return t;
-        else if ((t = b + det) > EPSILON)
-            return t;
-        else
-            return -1;
-    }
-    */
-
-    /*
-    // Solve t^2*d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
-    Vector3 op = center - ray.o; // p is the sphere center (C)
-    // float t, eps = 1e-4;                     // eps is a small fudge factor
-    float t, eps = 1e-2;                     // eps is a small fudge factor
-    float b = dot(op, ray.d);                // 1/2 b from quadratic eq. setup
-    float det = b * b - dot(op, op) + r * r; // (b^2-4ac)/4: a=1 because ray normalized
-    if (det < 0)                             // ray misses sphere
-        return 0;
-    else
-        det = sqrt(det);
-    return (t = b - det) > eps ? t : ((t = b + det) > eps ? t : 0); // return smaller positive t
-    */
 }
 
 float Triangle::intersect(const Ray &ray) const {
@@ -136,7 +75,7 @@ float Triangle::intersect(const Ray &ray) const {
     s = ray.o - v1;
     u = f * dot(s, h);
 
-    // In the following two if you don't have to compare with EPSILON
+    // In the following two ifs you don't have to compare with EPSILON
 
     if (u < 0.0f || u > 1.0f)
         return -1.0f;
@@ -340,6 +279,7 @@ AABB TriangleMesh::bounding_box() const {
 }
 
 bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes, const Ray &ray, SurfaceInteraction &si) {
+    // Intersect with all the shapes in 'shapes' and return the closest interaction
 
     float t_min = FLT_MAX;
     float t = 0;
@@ -361,18 +301,16 @@ bool shapes_first_intersection(const std::vector<std::shared_ptr<Shape>> &shapes
         // Surface interaction point
         Point3 si_point = ray.get_point(t_min);
 
-        // Calculate propely oriented normal
+        // Calculate normal
         Vector3 si_normal = shape->normal(si_point);
 
         // Determine if ray is entering the shape
         bool into = true;
         if (dot(ray.d, si_normal) >= 0.0) {
-            // Error("into", shape->material->type);
             into = false;
+            // Flip normal sense
             si_normal = -si_normal;
         }
-
-        // si_normal = dot(ray.d, si_normal) < 0.0 ? si_normal : -si_normal;
 
         si = SurfaceInteraction(shape, t_min, si_point, si_normal, into);
         return true;

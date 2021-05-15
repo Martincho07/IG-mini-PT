@@ -20,13 +20,13 @@
 
 // wo ray direction in world coordinates
 // Calculates the outgoing ray direction using the reflection law
-// The returned the direction is in world coordinates
+// The returned direction is in world coordinates
 Vector3 specular_reflection(const Vector3 &wo, const Vector3 &normal) {
     return -wo + normal * 2.0f * dot(normal, wo);
 };
 
 // Generates a random ray within the hemisphere
-// The returned the direction is in world coordinates
+// The returned direction is in world coordinates
 Vector3 diffuse_reflection(const Vector3 &normal, const Point3 &intersection_point) {
     // Calculate coordinate system local to the intersection point in the direction
     // of the normal
